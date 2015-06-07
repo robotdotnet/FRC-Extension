@@ -72,6 +72,8 @@
       <Button guid="guidFRC_ExtensionCmdSet" id="cmdidDeployCode" priority="0x0100" type="Button">
         <Parent guid="guidFRC_ExtensionCmdSet" id="MyMenuGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Deploy Code</ButtonText>
         </Strings>

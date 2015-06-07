@@ -2,9 +2,12 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.ComponentModel.Design;
 using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell.Settings;
 using Microsoft.Win32;
@@ -12,6 +15,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
+using VSLangProj;
 
 namespace RobotDotNet.FRC_Extension
 {
@@ -34,6 +38,9 @@ namespace RobotDotNet.FRC_Extension
     // This attribute is needed to let the shell know that this package exposes some menus.
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(GuidList.guidFRC_ExtensionPkgString)]
+    //This attribute allows the extension to automatically update if it is a robot package.
+    [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]
+    //This gives us an options page.
     [ProvideOptionPage(typeof(SettingsPageGrid), "FRC Options", "FRC Options", 0, 0, true)]
     public sealed class FRC_ExtensionPackage : Package
     {
@@ -64,13 +71,17 @@ namespace RobotDotNet.FRC_Extension
             Debug.WriteLine (string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
             base.Initialize();
 
+
+
             // Add our command handlers for menu (commands must exist in the .vsct file)
             OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if ( null != mcs )
             {
-                // Create the command for the menu item.
+                //Creating the deploy button. The BeforeQueryStatus event allows us to enable or disable the
+                //button based on if we are a WPILib project or not.
                 CommandID menuCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet, (int)PkgCmdIDList.cmdidDeployCode);
-                MenuCommand menuItem = new MenuCommand(DeployCodeCallback, menuCommandID );
+                OleMenuCommand menuItem = new OleMenuCommand(DeployCodeCallback, menuCommandID );
+                menuItem.BeforeQueryStatus += QueryDeployButton;
                 mcs.AddCommand( menuItem );
 
                 CommandID installCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet,
@@ -85,6 +96,39 @@ namespace RobotDotNet.FRC_Extension
             }
         }
         #endregion
+
+        //This is called every time the menu is open, to check and see
+        private void QueryDeployButton(object sender, EventArgs e)
+        {
+            var menuCommand = sender as OleMenuCommand;
+            if (menuCommand != null)
+            {
+                var dte = GetService(typeof (DTE)) as DTE;
+                var sb = (SolutionBuild2) dte.Solution.SolutionBuild;
+
+                
+
+                bool visable = false;
+                if (sb.StartupProjects != null)
+                {
+                    string project = ((Array)sb.StartupProjects).Cast<string>().First();
+                    Project startupProject = dte.Solution.Item(project);
+                    var vsproject = startupProject.Object as VSLangProj.VSProject;
+                    if (vsproject != null)
+                    {
+                        //If we are an assembly, and its named WPILib, enable the deploy
+                        if ((from Reference reference in vsproject.References where reference.SourceProject == null select reference.Name).Any(name => name.Contains("WPILib")))
+                        {
+                            visable = true;
+                        }
+                    }
+                }
+
+                menuCommand.Visible = visable;
+                if (menuCommand.Visible)
+                    menuCommand.Enabled = ((Array) sb.StartupProjects).Cast<string>().Count() == 1;
+            }
+        }
 
         /// <summary>
         /// This function is the callback used to execute a command when the a menu item is clicked.

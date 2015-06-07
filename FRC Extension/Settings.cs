@@ -15,10 +15,10 @@ namespace RobotDotNet.FRC_Extension
     [CLSCompliant(false), ComVisible(true)]
     public class SettingsPageGrid : DialogPage
     {
-        [Category("Team Options"), DisplayName("Team Number"), Description("My integer option")]
+        [Category("Team Options"), DisplayName("Team Number"), Description("Enter your team number here.")]
         public int TeamNumber { get; set; }
 
-        [Category("Team Options"), DisplayName("Force USB?"), Description("My bool option")]
-        public bool ForceUSB { get; set; }
+        [Category("Team Options"), DisplayName("Auto Start Netconsole?"), Description("Auto start the netconsole viewer when running code?")]
+        public bool Netconsole { get; set; }
     }
 }

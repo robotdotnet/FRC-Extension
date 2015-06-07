@@ -8,24 +8,37 @@ using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using RoboRIO_Tool;
 
 namespace RobotDotNet.FRC_Extension
 {
-    internal static class OutputWriter
+    internal class OutputWriter : IConsoleWriter
     {
-        private static Window s_window = null;
-        private static IVsOutputWindowPane s_outputPane = null;
+        private Window m_window = null;
+        private IVsOutputWindowPane m_outputPane = null;
 
-        private static bool s_initialized = false;
+        private bool m_initialized = false;
 
-        public static void Initialize()
+        private static OutputWriter s_instance;
+
+        public static OutputWriter Instance
         {
-            if (s_initialized)
+            get { return s_instance ?? (s_instance = new OutputWriter()); }
+        }
+
+        private OutputWriter()
+        {
+            
+        }
+
+        private void Initialize()
+        {
+            if (m_initialized)
                 return;
             DTE dte = Package.GetGlobalService(typeof (SDTE)) as DTE;
-            s_window = dte.Windows.Item(EnvDTE.Constants.vsWindowKindOutput);
+            m_window = dte.Windows.Item(EnvDTE.Constants.vsWindowKindOutput);
 
-            if (s_window == null)
+            if (m_window == null)
                 return;
 
             IVsOutputWindow outputWindow = Package.GetGlobalService(typeof (SVsOutputWindow)) as IVsOutputWindow;
@@ -33,24 +46,53 @@ namespace RobotDotNet.FRC_Extension
                 return;
             Guid paneGuid = VSConstants.OutputWindowPaneGuid.GeneralPane_guid;
             outputWindow.CreatePane(ref paneGuid, "FRC", 1, 0);
-            outputWindow.GetPane(ref paneGuid, out s_outputPane);
+            outputWindow.GetPane(ref paneGuid, out m_outputPane);
 
-            if (s_outputPane == null)
+            if (m_outputPane == null)
                 return;
 
-            s_initialized = true;
+            m_initialized = true;
 
         }
 
-        public static void WriteToPane(string output)
+        public void Write(string value)
         {
-            if (!s_initialized)
+            if (!m_initialized)
                 Initialize();
-            if (!s_initialized) return;
-            s_window.Visible = true;
-            s_outputPane.OutputStringThreadSafe(output + "\n");
-            s_outputPane.Activate();
+            if (!m_initialized) return;
+            m_window.Visible = true;
+            m_outputPane.OutputStringThreadSafe(value);
+            m_outputPane.Activate();
         }
 
+        public void Write(int value)
+        {
+            Write(value.ToString());
+        }
+
+        public void Write(double value)
+        {
+            Write(value.ToString());
+        }
+
+        public void WriteLine(string value)
+        {
+            if (!m_initialized)
+                Initialize();
+            if (!m_initialized) return;
+            m_window.Visible = true;
+            m_outputPane.OutputStringThreadSafe(value + "\n");
+            m_outputPane.Activate();
+        }
+
+        public void WriteLine(int value)
+        {
+            WriteLine(value.ToString());
+        }
+
+        public void WriteLine(double value)
+        {
+            WriteLine(value.ToString());
+        }
     }
 }

@@ -16,7 +16,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RobotDotNet.FRC_Extension</RootNamespace>
     <AssemblyName>FRC Extension</AssemblyName>
-    <SignAssembly>True</SignAssembly>
+    <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
@@ -56,6 +56,12 @@
     <Reference Include="Microsoft.VisualStudio.Shell.Immutable.10.0" />
     <Reference Include="Microsoft.VisualStudio.Shell.Immutable.11.0" />
     <Reference Include="Microsoft.VisualStudio.Shell.Immutable.12.0" />
+    <Reference Include="Renci.SshNet">
+      <HintPath>..\..\robotdotnet-tools\RoboRIO Tool\bin\Release\Renci.SshNet.dll</HintPath>
+    </Reference>
+    <Reference Include="RoboRIO-Tool">
+      <HintPath>..\..\robotdotnet-tools\RoboRIO Tool\bin\Release\RoboRIO-Tool.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -125,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DeployManager.cs" />
+    <Compile Include="GlobalConnections.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="OutputWriter.cs" />
     <Compile Include="Resources.Designer.cs">
@@ -152,6 +159,12 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="packages\NetworkTablesDotNet.0.2.1.nupkg">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="packages\WPILib.0.5.2.nupkg">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>

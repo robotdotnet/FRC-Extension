@@ -57,6 +57,9 @@ namespace RobotDotNet.FRC_Extension
         }
 
 
+        private OutputWriter writer;
+        private bool deploying = false;
+        OleMenuCommand deployMenuItem;
 
         /////////////////////////////////////////////////////////////////////////////
         // Overridden Package Implementation
@@ -70,6 +73,8 @@ namespace RobotDotNet.FRC_Extension
         {
             Debug.WriteLine (string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
             base.Initialize();
+            writer = OutputWriter.Instance;
+
 
 
 
@@ -80,20 +85,24 @@ namespace RobotDotNet.FRC_Extension
                 //Creating the deploy button. The BeforeQueryStatus event allows us to enable or disable the
                 //button based on if we are a WPILib project or not.
                 CommandID menuCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet, (int)PkgCmdIDList.cmdidDeployCode);
-                OleMenuCommand menuItem = new OleMenuCommand(DeployCodeCallback, menuCommandID );
-                menuItem.BeforeQueryStatus += QueryDeployButton;
-                mcs.AddCommand( menuItem );
+                deployMenuItem = new OleMenuCommand(DeployCodeCallback, menuCommandID);
+                deployMenuItem.BeforeQueryStatus += QueryDeployButton;
+                mcs.AddCommand(deployMenuItem);
 
                 CommandID installCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet,
                     (int) PkgCmdIDList.cmdidInstall);
                 MenuCommand installItem = new MenuCommand(InstallCallback, installCommandID);
                 mcs.AddCommand(installItem);
 
+                //For settings, we just want to pop up the standard settings menu.
                 CommandID settingsCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet,
                     (int)PkgCmdIDList.cmdidSettings);
-                MenuCommand settingsItem = new MenuCommand(SettingsCallback, settingsCommandID);
+                MenuCommand settingsItem = new MenuCommand(((sender, e) => ShowOptionPage(typeof (SettingsPageGrid))), settingsCommandID);
                 mcs.AddCommand(settingsItem);
             }
+            
+            GlobalConnections.Initialize();
+
         }
         #endregion
 
@@ -123,10 +132,16 @@ namespace RobotDotNet.FRC_Extension
                         }
                     }
                 }
+                if (deploying)
+                    visable = false;
 
                 menuCommand.Visible = visable;
                 if (menuCommand.Visible)
-                    menuCommand.Enabled = ((Array) sb.StartupProjects).Cast<string>().Count() == 1;
+                {
+                    bool enabled = ((Array)sb.StartupProjects).Cast<string>().Count() == 1;
+                    
+                    menuCommand.Enabled = enabled;
+                }
             }
         }
 
@@ -137,33 +152,34 @@ namespace RobotDotNet.FRC_Extension
         /// </summary>
         private void DeployCodeCallback(object sender, EventArgs e)
         {
-            OutputWriter.WriteToPane("Deploy Button Pressed.");
-
-            //Writing Team Number
-            SettingsPageGrid page = (SettingsPageGrid) GetDialogPage(typeof (SettingsPageGrid));
-            OutputWriter.WriteToPane(page.TeamNumber.ToString());
-
-            // Show a Message Box to prove we were here
-            IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
-            Guid clsid = Guid.Empty;
-            int result;
-            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
-                       0,
-                       ref clsid,
-                       "FRC Extension",
-                       string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.ToString()),
-                       string.Empty,
-                       0,
-                       OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                       OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
-                       OLEMSGICON.OLEMSGICON_INFO,
-                       0,        // false
-                       out result));
+            if (!deploying)
+            {
+                
+                try
+                {
+                    new System.Threading.Thread(() =>
+                    {
+                        deploying = true;
+                        deployMenuItem.Visible = false;
+                        DeployManager m = new DeployManager(GetService(typeof(DTE)) as DTE);
+                        SettingsPageGrid page = (SettingsPageGrid)GetDialogPage(typeof(SettingsPageGrid));
+                        m.DeployCode(page);
+                        writer.WriteLine("Successfully Deployed Robot Code.");
+                        deploying = false;
+                        deployMenuItem.Visible = true;
+                    }).Start();
+                }
+                catch (Exception ex)
+                {
+                    writer.WriteLine(ex.ToString());
+                }
+                
+            }
         }
 
         private void InstallCallback(object sender, EventArgs e)
         {
-            OutputWriter.WriteToPane("Install Button Pressed.");
+            OutputWriter.Instance.WriteLine("Install Button Pressed.");
 
 
             // Show a Message Box to prove we were here
@@ -182,33 +198,6 @@ namespace RobotDotNet.FRC_Extension
                        OLEMSGICON.OLEMSGICON_INFO,
                        0,        // false
                        out result));
-        }
-
-
-        private void SettingsCallback(object sender, EventArgs e)
-        {
-            OutputWriter.WriteToPane("Settings Button Pressed.");
-            /*
-
-            // Show a Message Box to prove we were here
-            IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
-            Guid clsid = Guid.Empty;
-            int result;
-            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
-                       0,
-                       ref clsid,
-                       " Message ",
-                       string.Format(CultureInfo.CurrentCulture, "Inside {0}.SettingsCallback()", this.ToString()),
-                       string.Empty,
-                       0,
-                       OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                       OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
-                       OLEMSGICON.OLEMSGICON_INFO,
-                       0,        // false
-                       out result));
-             * */
-
-            this.ShowOptionPage(typeof (SettingsPageGrid));
         }
     }
 

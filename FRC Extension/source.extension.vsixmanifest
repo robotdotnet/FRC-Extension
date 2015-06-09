@@ -3,7 +3,7 @@
   <Metadata>
     <Identity Id="FRC_Extension" Version="0.1" Language="en-US" Publisher="RobotDotNet" />
     <DisplayName>FRC Extension</DisplayName>
-    <Description>Information about my package</Description>
+    <Description xml:space="preserve">A plugin for deploying DotNet code onto FRC Robots. Includes an Extension and Templates.</Description>
   </Metadata>
   <Installation InstalledByMsi="false">
     <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[12.0]" />

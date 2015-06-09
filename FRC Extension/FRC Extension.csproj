@@ -161,10 +161,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages\NetworkTablesDotNet.0.2.1.nupkg">
+    <Content Include="packages\NetworkTablesDotNet.0.2.5.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\WPILib.0.5.2.nupkg">
+    <Content Include="packages\WPILib.0.5.5.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="packages.config" />
@@ -178,6 +178,7 @@
   <ItemGroup>
     <VSCTCompile Include="FRC Extension.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
+      <SubType>Designer</SubType>
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>

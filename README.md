@@ -37,6 +37,6 @@ Project Templates
 -----------------
 When you create a new project, under the CSharp category, you will see an FRC menu. If you do not, make sure your .Net version is set to 4.5 or newer at the top of the new project window. Select one of these to create a new WPILib project.
 
-Iten Templates
+Item Templates
 --------------
 When you are inside a project, if you right click on the project or a folder and select "Add New Item", in that menu there will be an FRC category where you can find the item templates.

@@ -96,7 +96,7 @@ namespace RobotDotNet.FRC_Extension
 
                 CommandID netconsoleCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet,
                     (int) PkgCmdIDList.cmdidNetconsole);
-                OleMenuCommand netconsoleItem = new OleMenuCommand(NetconsoleCallback, menuCommandID);
+                OleMenuCommand netconsoleItem = new OleMenuCommand(NetconsoleCallback, netconsoleCommandID);
                 netconsoleItem.BeforeQueryStatus += QueryDeployButton;
                 mcs.AddCommand(netconsoleItem);
 

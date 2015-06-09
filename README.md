@@ -25,8 +25,11 @@ Usage
 =====
 
 This plugin adds 3 things.
-1. FRC Menu Item, which allows users to deploy robot code
+
+1. FRC Menu Item, which allows users to deploy robot code.
+
 2. Project templates, which already include the WPILib references in them.
+
 3. Item templates, of which there are 2 types. There are general item templates which are just general classes, which might include some special features. There are also command templates, which are used for creating your own commands.
 
 Menu Extension

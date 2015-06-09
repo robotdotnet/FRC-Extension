@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -97,7 +98,7 @@ namespace RobotDotNet.FRC_Extension
                 CommandID netconsoleCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet,
                     (int) PkgCmdIDList.cmdidNetconsole);
                 OleMenuCommand netconsoleItem = new OleMenuCommand(NetconsoleCallback, netconsoleCommandID);
-                netconsoleItem.BeforeQueryStatus += QueryDeployButton;
+                netconsoleItem.BeforeQueryStatus += QueryNetConsole;
                 mcs.AddCommand(netconsoleItem);
 
                 //For settings, we just want to pop up the standard settings menu.
@@ -147,6 +148,24 @@ namespace RobotDotNet.FRC_Extension
                     bool enabled = ((Array)sb.StartupProjects).Cast<string>().Count() == 1;
                     
                     menuCommand.Enabled = enabled;
+                }
+            }
+        }
+
+        private void QueryNetConsole(object sender, EventArgs e)
+        {
+            var menuCommand = sender as OleMenuCommand;
+            if (menuCommand != null)
+            {
+                bool visable = File.Exists(@"C:\Program Files\NetConsole for cRIO\NetConsole.exe") ||
+                               File.Exists(@"C:\Program Files (x86)\NetConsole for cRIO\NetConsole.exe");
+
+                
+
+                menuCommand.Visible = visable;
+                if (menuCommand.Visible)
+                {
+                    menuCommand.Enabled = true;
                 }
             }
         }

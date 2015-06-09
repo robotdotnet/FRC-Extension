@@ -94,6 +94,12 @@ namespace RobotDotNet.FRC_Extension
                 MenuCommand installItem = new MenuCommand(InstallCallback, installCommandID);
                 mcs.AddCommand(installItem);
 
+                CommandID netconsoleCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet,
+                    (int) PkgCmdIDList.cmdidNetconsole);
+                OleMenuCommand netconsoleItem = new OleMenuCommand(NetconsoleCallback, menuCommandID);
+                netconsoleItem.BeforeQueryStatus += QueryDeployButton;
+                mcs.AddCommand(netconsoleItem);
+
                 //For settings, we just want to pop up the standard settings menu.
                 CommandID settingsCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet,
                     (int)PkgCmdIDList.cmdidSettings);
@@ -175,6 +181,14 @@ namespace RobotDotNet.FRC_Extension
                 }
                 
             }
+        }
+
+        private void NetconsoleCallback(object sender, EventArgs e)
+        {
+            new System.Threading.Thread(() =>
+            {
+                DeployManager.StartNetConsole();
+            }).Start();
         }
 
         private void InstallCallback(object sender, EventArgs e)

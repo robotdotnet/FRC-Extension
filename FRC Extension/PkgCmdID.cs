@@ -9,7 +9,7 @@ namespace RobotDotNet.FRC_Extension
         public const uint cmdidDeployCode =        0x100;
         public const uint cmdidInstall = 0x101;
         public const uint cmdidSettings = 0x102;
-
+        public const uint cmdidNetconsole = 0x103;
 
     };
 }

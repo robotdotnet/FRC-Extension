@@ -209,7 +209,7 @@ namespace RobotDotNet.FRC_Extension
             GlobalConnections.commandManager.RunCommands(commands.ToArray());
         }
 
-        public void StartNetConsole()
+        public static void StartNetConsole()
         {
             if (System.Diagnostics.Process.GetProcessesByName("NetConsole.exe").Length == 0)
             {

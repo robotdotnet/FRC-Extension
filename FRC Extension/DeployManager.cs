@@ -119,7 +119,7 @@ namespace RobotDotNet.FRC_Extension
                 GlobalConnections.connectionManager.ConnectionComplete -= ConnectCompleted;
                 OutputWriter.Instance.WriteLine(GlobalConnections.connectionManager.GetConnectionStatus());
 
-                if (nt && wpilib && halbase && halrio)
+                if (nt && wpilib && halbase && halrio && GlobalConnections.connectionManager.Connected)
                 {
                     OutputWriter.Instance.WriteLine("Successfully Connected to RoboRIO. Starting File deploy.");
                     bool retVal = GlobalConnections.fileDeployManager.DeployFiles(files.ToArray(), "/home/lvuser/mono");
@@ -128,10 +128,10 @@ namespace RobotDotNet.FRC_Extension
                     OutputWriter.Instance.WriteLine("Successfully Deployed Files. Starting Code.");
                     UploadCode(robotExe, page);
                 }
-
-
-
-
+                else if (! GlobalConnections.connectionManager.Connected)
+                {
+                    writer.WriteLine("Failed to Connect to RoboRIO. Exiting.");
+                }
             }
             else
             {

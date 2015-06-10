@@ -202,10 +202,45 @@
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
     </ProjectReference>
+    <ProjectReference Include="..\Templates\CSharp\Item Templates\Commands\PIDSubsystem\PIDSubsystem.csproj">
+      <Project>{263618AC-BE45-4C95-AFEB-6E613628FA93}</Project>
+      <Name>PIDSubsystem</Name>
+      <VSIXSubPath>ItemTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
+    <ProjectReference Include="..\Templates\CSharp\Item Templates\Commands\Subsystem\Subsystem.csproj">
+      <Project>{EC287D7C-FFA4-4FC5-8EBD-DE45AC9B487B}</Project>
+      <Name>Subsystem</Name>
+      <VSIXSubPath>ItemTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
+    <ProjectReference Include="..\Templates\CSharp\Item Templates\Commands\Trigger\Trigger.csproj">
+      <Project>{EBD6627A-7F9F-4828-9A6A-CFFFDD8FA58B}</Project>
+      <Name>Trigger</Name>
+      <VSIXSubPath>ItemTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
+    <ProjectReference Include="..\Templates\CSharp\Item Templates\SingleInstanceClass\SingleInstanceClass.csproj">
+      <Project>{4321F0E6-FC2E-4770-8556-ADE409AB53A3}</Project>
+      <Name>SingleInstanceClass</Name>
+      <VSIXSubPath>ItemTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
+    <ProjectReference Include="..\Templates\CSharp\Item Templates\WPILibClass\WPILibClass.csproj">
+      <Project>{4D1A696E-490D-49BE-987C-5A6FE3B65B7E}</Project>
+      <Name>WPILibClass</Name>
+      <VSIXSubPath>ItemTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
     <ProjectReference Include="..\Templates\CSharp\Project Templates\CommandRobot\CommandRobot.csproj">
       <Project>{C8E54708-3CD1-426B-9A89-9CDE8BED7845}</Project>
       <Name>CommandRobot</Name>
-      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+      <VSIXSubPath>ItemTemplates</VSIXSubPath>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
     </ProjectReference>

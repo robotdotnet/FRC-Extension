@@ -16,7 +16,6 @@
   <Assets>
     <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
     <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="IterativeRobot" d:TargetPath="|IterativeRobot;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
-    <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="CommandRobot" d:TargetPath="|CommandRobot;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
     <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="SampleRobot" d:TargetPath="|SampleRobot;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
     <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="Command" d:TargetPath="|Command;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
     <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="CommandGroup" d:TargetPath="|CommandGroup;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
@@ -25,5 +24,6 @@
     <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="PIDSubsystem" d:TargetPath="|PIDSubsystem;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
     <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="Subsystem" d:TargetPath="|Subsystem;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
     <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="Trigger" d:TargetPath="|Trigger;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
+    <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="CommandRobot" d:TargetPath="|CommandRobot;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
   </Assets>
 </PackageManifest>

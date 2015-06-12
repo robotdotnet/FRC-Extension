@@ -240,7 +240,7 @@
     <ProjectReference Include="..\Templates\CSharp\Project Templates\CommandRobot\CommandRobot.csproj">
       <Project>{C8E54708-3CD1-426B-9A89-9CDE8BED7845}</Project>
       <Name>CommandRobot</Name>
-      <VSIXSubPath>ItemTemplates</VSIXSubPath>
+      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
     </ProjectReference>

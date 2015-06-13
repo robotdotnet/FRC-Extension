@@ -52,6 +52,7 @@ namespace RobotDotNet.FRC_Extension
                 bool nt = false;
                 bool halbase = false; 
                 bool halrio = false;
+                bool libHAL = false;
                 List<string> files = new List<string>();
                 if (Directory.Exists(buildDir))
                 {
@@ -97,12 +98,23 @@ namespace RobotDotNet.FRC_Extension
                             }
 
                         }
+                        if (f.Contains(".so"))
+                        {
+                            if (f.Contains("libHALAthena_shared.so"))
+                            {
+                                OutputWriter.Instance.WriteLine("Found libHALAthena_shared.so");
+                                libHAL = true;
+                                files.Add(f);
+                                continue;
+
+                            }
+                        }
                         writer.WriteLine(Path.GetFileName("Found " + f));
                         files.Add(f);
                     }
                 }
                 writer.WriteLine("Parsed All Files.");
-                if (nt && wpilib && halbase && halrio)
+                if (nt && wpilib && halbase && halrio && libHAL)
                 {
                     writer.WriteLine("Found all needed WPILib files.");
                 }
@@ -119,7 +131,7 @@ namespace RobotDotNet.FRC_Extension
                 GlobalConnections.connectionManager.ConnectionComplete -= ConnectCompleted;
                 OutputWriter.Instance.WriteLine(GlobalConnections.connectionManager.GetConnectionStatus());
 
-                if (nt && wpilib && halbase && halrio && GlobalConnections.connectionManager.Connected)
+                if (nt && wpilib && halbase && halrio && libHAL && GlobalConnections.connectionManager.Connected)
                 {
                     OutputWriter.Instance.WriteLine("Successfully Connected to RoboRIO. Starting File deploy.");
                     bool retVal = GlobalConnections.fileDeployManager.DeployFiles(files.ToArray(), "/home/lvuser/mono");

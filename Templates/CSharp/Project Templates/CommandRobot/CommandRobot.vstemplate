@@ -30,8 +30,8 @@
   <WizardData>
     <packages repository="extension"
           repositoryId="FRC_Extension">
-       <package id="WPILib" version="0.5.5"/>
-       <package id="NetworkTablesDotNet" version="0.2.5"/>
+       <package id="FRC.WPILib" version="2015.0.4"/>
+       <package id="FRC.NetworkTables" version="2015.0.4"/>
     </packages>
   </WizardData>
 </VSTemplate>

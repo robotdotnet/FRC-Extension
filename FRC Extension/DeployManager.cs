@@ -78,7 +78,7 @@ namespace RobotDotNet.FRC_Extension
                                 files.Add(f);
                                 continue;
                             }
-                            if (f.Contains("NetworkTablesDotNet.dll"))
+                            if (f.Contains("NetworkTables.dll"))
                             {
                                 OutputWriter.Instance.WriteLine("Found Network Tables");
                                 nt = true;

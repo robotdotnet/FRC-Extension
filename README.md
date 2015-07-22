@@ -9,7 +9,7 @@ If you find any issues, please file them at https://github.com/robotdotnet/FRC-E
 Requirements
 ============
 
-Visual Studio 2013 or Visual Studio 2015. Note that the express editions will not work. We recommend Visual Studio 2015 for the best experience.
+Visual Studio 2013 or Visual Studio 2015. Note that the express editions will not work. We recommend Visual Studio 2015 Community for the best experience.
 
 Installation
 ============
@@ -18,7 +18,11 @@ In Visual Studio, go to Tools | Extensions and Updates. Then select online, and 
 
 Offline Installation
 ====================
-When we have the plugin in the gallery, place link here.
+
+The offline link to the extension can be found here.
+https://visualstudiogallery.msdn.microsoft.com/7c7f4cd1-e4bc-43bb-a9f1-072c6f1197d9
+
+To install offline, download this, and install the downloaded file.
 
 
 Usage

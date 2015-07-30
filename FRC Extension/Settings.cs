@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.Shell.Settings;
 
 namespace RobotDotNet.FRC_Extension
 {
+    //This contains the properties for the extension.
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [CLSCompliant(false), ComVisible(true)]
     public class SettingsPageGrid : DialogPage

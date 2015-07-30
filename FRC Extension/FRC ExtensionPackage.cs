@@ -204,10 +204,7 @@ namespace RobotDotNet.FRC_Extension
 
         private void NetconsoleCallback(object sender, EventArgs e)
         {
-            new System.Threading.Thread(() =>
-            {
-                DeployManager.StartNetConsole();
-            }).Start();
+            new System.Threading.Thread(DeployManager.StartNetConsole).Start();
         }
 
         private void InstallCallback(object sender, EventArgs e)

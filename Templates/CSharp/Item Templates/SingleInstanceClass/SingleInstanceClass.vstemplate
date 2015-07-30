@@ -16,6 +16,6 @@
         <Assembly>System</Assembly>
       </Reference>
     </References>
-    <ProjectItem ReplaceParameters="true" TargetFileName="$safeitemname$.cs">SingleInstanceClass.cs</ProjectItem>
+    <ProjectItem ReplaceParameters="true">SingleInstanceClass.cs</ProjectItem>
   </TemplateContent>
 </VSTemplate>

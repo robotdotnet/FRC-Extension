@@ -16,6 +16,6 @@
         <Assembly>System</Assembly>
       </Reference>
     </References>
-    <ProjectItem ReplaceParameters="true" TargetFileName="$safeitemname$">WPILibClass.cs</ProjectItem>
+    <ProjectItem ReplaceParameters="true">WPILibClass.cs</ProjectItem>
   </TemplateContent>
 </VSTemplate>

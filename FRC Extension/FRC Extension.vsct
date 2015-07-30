@@ -93,6 +93,8 @@
 
       <Button guid="guidFRC_ExtensionCmdSet" id="cmdidInstall" priority="0x0101" type="Button">
         <Parent guid="guidFRC_ExtensionCmdSet" id="MyMenuGroup" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Install Tool</ButtonText>
         </Strings>
@@ -122,6 +124,8 @@
         id="cmdidNewProject" priority="0x0000"
       type="Button">
         <Parent guid="guidFRC_ExtensionCmdSet" id="SubMenuGroup" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <CommandName>cmdidNewProject</CommandName>
           <ButtonText>FRC Project</ButtonText>

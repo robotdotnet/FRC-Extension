@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
   <TemplateData>
-    <Name>Single Instance Class</Name>
+    <Name>Singleton Class</Name>
     <Description>A template to create a class that cannot be instantiated. Instead, the Instance Property returns the single instance of the class allowed to be created.</Description>
-    <Icon>SingleInstanceClass.ico</Icon>
+    <Icon>SingletonClass.ico</Icon>
     <TemplateID>7d841564-a26d-4f83-8c1e-9ba8dc2af171</TemplateID>
     <ProjectType>CSharp</ProjectType>
     <RequiredFrameworkVersion>4.5</RequiredFrameworkVersion>
@@ -16,6 +16,6 @@
         <Assembly>System</Assembly>
       </Reference>
     </References>
-    <ProjectItem ReplaceParameters="true">SingleInstanceClass.cs</ProjectItem>
+    <ProjectItem ReplaceParameters="true">SingletonClass.cs</ProjectItem>
   </TemplateContent>
 </VSTemplate>

@@ -93,6 +93,7 @@ namespace RobotDotNet.FRC_Extension
                 CommandID installCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet,
                     (int) PkgCmdIDList.cmdidInstall);
                 MenuCommand installItem = new MenuCommand(InstallCallback, installCommandID);
+                installItem.Visible = false;
                 mcs.AddCommand(installItem);
 
                 CommandID netconsoleCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet,

@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace RobotDotNet.FRC_Extension
 {
     class DeployManager
     {
+        //We need our DTE so we can grab our solution
         private readonly DTE m_dte;
 
         public DeployManager(DTE dte)
@@ -19,31 +19,37 @@ namespace RobotDotNet.FRC_Extension
             m_dte = dte;
         }
 
-        public void DeployCode(SettingsPageGrid page)
+        public void DeployCode(SettingsPageGrid page, Action settingsPopup)
         {
+            //Grab the team number, and check if it is set to 0;
             string teamNumber = page.TeamNumber.ToString();
+            if (teamNumber == "0")
+            {
+                //If its 0, we pop up a window asking teams to set it.
+                settingsPopup();
+                return;
+
+            }
+
             var writer = OutputWriter.Instance;
 
             //Connect to Robot Async
             OutputWriter.Instance.WriteLine("Attempting to Connect to RoboRIO");
             GlobalConnections.connectionManager.ConnectionComplete += ConnectCompleted;
-            GlobalConnections.connectionManager.ConnectAsync(teamNumber, false);
+            GlobalConnections.connectionManager.ConnectAsync(teamNumber);
 
             //Build Code
             writer.WriteLine("Building Robot Code");
             var sb = (SolutionBuild2)m_dte.Solution.SolutionBuild;
             sb.Build(true);
 
+            //If Build Succeded
             if (sb.LastBuildInfo == 0)
             {
                 writer.WriteLine("Successfully Built Robot Code");
                 string path = GetStartupAssemblyPath();
                 string robotExe = Path.GetFileName(path);
                 string buildDir = Path.GetDirectoryName(path);
-
-                //Project startProject = GetStartupProject();
-
-
 
 
                 writer.WriteLine("Parsing Robot Files");
@@ -147,7 +153,7 @@ namespace RobotDotNet.FRC_Extension
             }
             else
             {
-                OutputWriter.Instance.WriteLine("Build Failed.");
+                OutputWriter.Instance.WriteLine("Robot Code Build Failed.");
             }
         }
 
@@ -221,10 +227,16 @@ namespace RobotDotNet.FRC_Extension
             GlobalConnections.commandManager.RunCommands(commands.ToArray());
         }
 
+        /// <summary>
+        /// Starts NetConsole
+        /// </summary>
         public static void StartNetConsole()
         {
+            //If NetConsole is already running, don't do anything
             if (System.Diagnostics.Process.GetProcessesByName("NetConsole.exe").Length == 0)
             {
+                //Else Start Netconsole
+                //There are 2 locations it could be. Check both.
                 OutputWriter.Instance.WriteLine("Starting netconsole");
                 if (File.Exists(@"C:\Program Files (x86)\NetConsole for cRIO\NetConsole.exe"))
                 {

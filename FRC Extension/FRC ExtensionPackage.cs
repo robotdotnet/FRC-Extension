@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.ComponentModel.Design;
 using EnvDTE;
 using EnvDTE80;
+using System.Threading;
 using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell.Settings;
 using Microsoft.Win32;
@@ -57,10 +58,10 @@ namespace RobotDotNet.FRC_Extension
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
         }
 
-
-        private OutputWriter writer;
-        private bool deploying = false;
-        OleMenuCommand deployMenuItem;
+        //Store out local variables so we can control certain functions
+        private OutputWriter m_writer;
+        private bool m_deploying = false;
+        OleMenuCommand m_deployMenuItem;
 
         /////////////////////////////////////////////////////////////////////////////
         // Overridden Package Implementation
@@ -74,7 +75,7 @@ namespace RobotDotNet.FRC_Extension
         {
             Debug.WriteLine (string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
             base.Initialize();
-            writer = OutputWriter.Instance;
+            m_writer = OutputWriter.Instance;
 
 
 
@@ -85,17 +86,19 @@ namespace RobotDotNet.FRC_Extension
             {
                 //Creating the deploy button. The BeforeQueryStatus event allows us to enable or disable the
                 //button based on if we are a WPILib project or not.
-                CommandID menuCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet, (int)PkgCmdIDList.cmdidDeployCode);
-                deployMenuItem = new OleMenuCommand(DeployCodeCallback, menuCommandID);
-                deployMenuItem.BeforeQueryStatus += QueryDeployButton;
-                mcs.AddCommand(deployMenuItem);
+                CommandID deployCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet, (int)PkgCmdIDList.cmdidDeployCode);
+                m_deployMenuItem = new OleMenuCommand(DeployCodeCallback, deployCommandID);
+                m_deployMenuItem.BeforeQueryStatus += QueryDeployButton;
+                mcs.AddCommand(m_deployMenuItem);
 
+                //We don't have an install tool right now, so just disable it. We still need the code though.
                 CommandID installCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet,
                     (int) PkgCmdIDList.cmdidInstall);
                 MenuCommand installItem = new MenuCommand(InstallCallback, installCommandID);
                 installItem.Visible = false;
                 mcs.AddCommand(installItem);
 
+                //Adds a command so we can open NetConsole. 
                 CommandID netconsoleCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet,
                     (int) PkgCmdIDList.cmdidNetconsole);
                 OleMenuCommand netconsoleItem = new OleMenuCommand(NetconsoleCallback, netconsoleCommandID);
@@ -105,7 +108,7 @@ namespace RobotDotNet.FRC_Extension
                 //For settings, we just want to pop up the standard settings menu.
                 CommandID settingsCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet,
                     (int)PkgCmdIDList.cmdidSettings);
-                MenuCommand settingsItem = new MenuCommand(((sender, e) => ShowOptionPage(typeof (SettingsPageGrid))), settingsCommandID);
+                MenuCommand settingsItem = new MenuCommand(((sender, e) => OpenSettings()), settingsCommandID);
                 mcs.AddCommand(settingsItem);
             }
             
@@ -140,7 +143,7 @@ namespace RobotDotNet.FRC_Extension
                         }
                     }
                 }
-                if (deploying)
+                if (m_deploying)
                     visable = false;
 
                 menuCommand.Visible = visable;
@@ -153,6 +156,7 @@ namespace RobotDotNet.FRC_Extension
             }
         }
 
+        //Check to see if NetConsole exits. If so we can enable the open button.
         private void QueryNetConsole(object sender, EventArgs e)
         {
             var menuCommand = sender as OleMenuCommand;
@@ -172,42 +176,55 @@ namespace RobotDotNet.FRC_Extension
         }
 
         /// <summary>
-        /// This function is the callback used to execute a command when the a menu item is clicked.
-        /// See the Initialize method to see how the menu item is associated to this function using
-        /// the OleMenuCommandService service and the MenuCommand class.
+        /// The function is called when the deploy button is pressed.
         /// </summary>
-        private void DeployCodeCallback(object sender, EventArgs e)
+        private async void DeployCodeCallback(object sender, EventArgs e)
         {
-            if (!deploying)
+            if (!m_deploying)
             {
                 
                 try
                 {
-                    new System.Threading.Thread(() =>
+                    await System.Threading.Tasks.Task.Run(() =>
                     {
-                        deploying = true;
-                        deployMenuItem.Visible = false;
+                        //Disable the deploy button
+                        m_deploying = true;
+                        m_deployMenuItem.Visible = false;
                         DeployManager m = new DeployManager(GetService(typeof(DTE)) as DTE);
                         SettingsPageGrid page = (SettingsPageGrid)GetDialogPage(typeof(SettingsPageGrid));
-                        m.DeployCode(page);
-                        writer.WriteLine("Successfully Deployed Robot Code.");
-                        deploying = false;
-                        deployMenuItem.Visible = true;
+                        m.DeployCode(page, TeamNumber0Delegate);
+                        //m_writer.WriteLine("Successfully Deployed Robot Code.");
+                        m_deploying = false;
+                        m_deployMenuItem.Visible = true;
+                    });
+                    /*
+                    new System.Threading.Thread(() =>
+                    {
+                        
                     }).Start();
+                    */
                 }
                 catch (Exception ex)
                 {
-                    writer.WriteLine(ex.ToString());
+                    m_writer.WriteLine(ex.ToString());
+                    m_deploying = false;
+                    m_deployMenuItem.Visible = true;
                 }
                 
             }
         }
 
-        private void NetconsoleCallback(object sender, EventArgs e)
+        /// <summary>
+        /// This function is called when the NetConsole button is pressed.
+        /// </summary>
+        private async void NetconsoleCallback(object sender, EventArgs e)
         {
-            new System.Threading.Thread(DeployManager.StartNetConsole).Start();
+            Action funcCall = DeployManager.StartNetConsole;
+            await System.Threading.Tasks.Task.Run(funcCall);
+            //new System.Threading.Thread(DeployManager.StartNetConsole).Start();
         }
 
+        //Going to be our install callback.
         private void InstallCallback(object sender, EventArgs e)
         {
             OutputWriter.Instance.WriteLine("Install Button Pressed.");
@@ -230,7 +247,29 @@ namespace RobotDotNet.FRC_Extension
                        0,        // false
                        out result));
         }
-    }
 
+        public void OpenSettings()
+        {
+            ShowOptionPage(typeof (SettingsPageGrid));
+        }
+
+        public void TeamNumber0Delegate()
+        {
+            OutputWriter.Instance.WriteLine("Team Number Not Set");
+
+            IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
+            Guid clsid = Guid.Empty;
+            int result;
+
+            uiShell.ShowMessageBox(0, ref clsid, "Team Number Not Set",
+                $"Please see your team number. Click OK will open up the settings menu.", string.Empty, 0,
+                OLEMSGBUTTON.OLEMSGBUTTON_OKCANCEL, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST, OLEMSGICON.OLEMSGICON_INFO, 0, out result);
+
+            if (result == 1)
+            {
+                OpenSettings();
+            }
+        }
+    }
     
 }

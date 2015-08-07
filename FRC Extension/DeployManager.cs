@@ -140,11 +140,17 @@ namespace RobotDotNet.FRC_Extension
                 if (nt && wpilib && halbase && halrio && libHAL && GlobalConnections.connectionManager.Connected)
                 {
                     OutputWriter.Instance.WriteLine("Successfully Connected to RoboRIO. Starting File deploy.");
+                    //Force making mono directory
+                    GlobalConnections.commandManager.RunCommands(new [] {"mkdir -p /home/lvuser/mono"});
                     bool retVal = GlobalConnections.fileDeployManager.DeployFiles(files.ToArray(), "/home/lvuser/mono");
                     if (!retVal)
+                    {
+                        OutputWriter.Instance.WriteLine("File deploy failed.");
                         return;
+                    }
                     OutputWriter.Instance.WriteLine("Successfully Deployed Files. Starting Code.");
                     UploadCode(robotExe, page);
+                    OutputWriter.Instance.WriteLine("Successfully started code.");
                 }
                 else if (! GlobalConnections.connectionManager.Connected)
                 {
@@ -223,7 +229,7 @@ namespace RobotDotNet.FRC_Extension
             commands.Clear();
 
             commands.Add(
-                "/bin/bash -ce '[ ! -f /var/local/natinst/log/FRC_UserProgram.log ] || rm -f /var/local/natinst/log/FRC_UserProgram.log;. /etc/profile.d/natinst-path.sh; chown -R lvuser:ni /home/lvuser/py; /usr/local/frc/bin/frcKillRobot.sh -t -r'");
+                "/bin/bash -ce '[ ! -f /var/local/natinst/log/FRC_UserProgram.log ] || rm -f /var/local/natinst/log/FRC_UserProgram.log;. /etc/profile.d/natinst-path.sh; chown -R lvuser:ni /home/lvuser/mono; /usr/local/frc/bin/frcKillRobot.sh -t -r'");
             GlobalConnections.commandManager.RunCommands(commands.ToArray());
         }
 

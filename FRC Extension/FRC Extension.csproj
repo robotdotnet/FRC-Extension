@@ -80,10 +80,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\SSH.NET.2013.4.7\lib\net40\Renci.SshNet.dll</HintPath>
     </Reference>
-    <Reference Include="RoboRIO-Tool, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\RoboRIO-Tool.0.1.0\lib\net45\RoboRIO-Tool.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -152,7 +148,8 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DeployManager.cs" />
+    <Compile Include="RoboRIO Code\DeployManager.cs" />
+    <Compile Include="RoboRIO Code\DeployProperties.cs" />
     <Compile Include="GlobalConnections.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="OutputWriter.cs" />
@@ -165,6 +162,7 @@
     <Compile Include="FRC ExtensionPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PkgCmdID.cs" />
+    <Compile Include="RoboRIO Code\RoboRIOConnection.cs" />
     <Compile Include="Settings.cs">
       <SubType>Component</SubType>
     </Compile>

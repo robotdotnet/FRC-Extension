@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using RoboRIO_Tool;
 
 namespace RobotDotNet.FRC_Extension
 {
-    internal class OutputWriter : IConsoleWriter
+    /// <summary>
+    /// This class allows us to create an output windows that the RoboRIO connector can interface with.
+    /// </summary>
+    internal class OutputWriter
     {
         private Window m_window = null;
         private IVsOutputWindowPane m_outputPane = null;

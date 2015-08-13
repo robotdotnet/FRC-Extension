@@ -1,21 +1,13 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.ComponentModel.Design;
 using EnvDTE;
 using EnvDTE80;
-using System.Threading;
-using Microsoft.VisualStudio.Settings;
-using Microsoft.VisualStudio.Shell.Settings;
-using Microsoft.Win32;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using VSLangProj;
 
@@ -44,7 +36,7 @@ namespace RobotDotNet.FRC_Extension
     [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]
     //This gives us an options page.
     [ProvideOptionPage(typeof(SettingsPageGrid), "FRC Options", "FRC Options", 0, 0, true)]
-    public sealed class FRC_ExtensionPackage : Package
+    public sealed class Frc_ExtensionPackage : Package
     {
         /// <summary>
         /// Default constructor of the package.
@@ -53,7 +45,7 @@ namespace RobotDotNet.FRC_Extension
         /// not sited yet inside Visual Studio environment. The place to do all the other 
         /// initialization is the Initialize method.
         /// </summary>
-        public FRC_ExtensionPackage()
+        public Frc_ExtensionPackage()
         {
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
         }
@@ -62,6 +54,7 @@ namespace RobotDotNet.FRC_Extension
         private OutputWriter m_writer;
         private bool m_deploying = false;
         OleMenuCommand m_deployMenuItem;
+        OleMenuCommand m_debugMenuItem;
 
         /////////////////////////////////////////////////////////////////////////////
         // Overridden Package Implementation
@@ -87,9 +80,14 @@ namespace RobotDotNet.FRC_Extension
                 //Creating the deploy button. The BeforeQueryStatus event allows us to enable or disable the
                 //button based on if we are a WPILib project or not.
                 CommandID deployCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet, (int)PkgCmdIDList.cmdidDeployCode);
-                m_deployMenuItem = new OleMenuCommand(DeployCodeCallback, deployCommandID);
+                m_deployMenuItem = new OleMenuCommand((sender, e) => DeployCodeCallback(sender, e, false), deployCommandID);
                 m_deployMenuItem.BeforeQueryStatus += QueryDeployButton;
                 mcs.AddCommand(m_deployMenuItem);
+
+                CommandID debugCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet, (int)PkgCmdIDList.cmdidDebugCode);
+                m_debugMenuItem = new OleMenuCommand((sender, e) => DeployCodeCallback(sender, e, true), debugCommandID);
+                m_debugMenuItem.BeforeQueryStatus += QueryDeployButton;
+                mcs.AddCommand(m_debugMenuItem);
 
                 //We don't have an install tool right now, so just disable it. We still need the code though.
                 CommandID installCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet,
@@ -110,9 +108,14 @@ namespace RobotDotNet.FRC_Extension
                     (int)PkgCmdIDList.cmdidSettings);
                 MenuCommand settingsItem = new MenuCommand(((sender, e) => OpenSettings()), settingsCommandID);
                 mcs.AddCommand(settingsItem);
+
+                //For settings, we just want to pop up the standard settings menu.
+                CommandID aboutCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet,
+                    (int)PkgCmdIDList.cmdidAboutButton);
+                MenuCommand aboutItem = new MenuCommand(((sender, e) => OpenAbout()), aboutCommandID);
+                mcs.AddCommand(aboutItem);
             }
-            
-            GlobalConnections.Initialize();
+           
 
         }
         #endregion
@@ -178,37 +181,43 @@ namespace RobotDotNet.FRC_Extension
         /// <summary>
         /// The function is called when the deploy button is pressed.
         /// </summary>
-        private async void DeployCodeCallback(object sender, EventArgs e)
+        private async void DeployCodeCallback(object sender, EventArgs e, bool debug)
         {
+            var menuCommand = sender as OleMenuCommand;
+            if (menuCommand == null)
+            {
+                return;
+            }
             if (!m_deploying)
             {
-                
                 try
                 {
                     await System.Threading.Tasks.Task.Run(() =>
                     {
+                        SettingsPageGrid page = (SettingsPageGrid)GetDialogPage(typeof(SettingsPageGrid));
+                        //Get Team Number
+                        string teamNumber = page.TeamNumber.ToString();
+                        if (teamNumber == "0")
+                        {
+                            //If its 0, we pop up a window asking teams to set it.
+                            TeamNumberNotSetErrorPopup();
+                            return;
+
+                        }
                         //Disable the deploy button
                         m_deploying = true;
-                        m_deployMenuItem.Visible = false;
+                        menuCommand.Visible = false;
                         DeployManager m = new DeployManager(GetService(typeof(DTE)) as DTE);
-                        SettingsPageGrid page = (SettingsPageGrid)GetDialogPage(typeof(SettingsPageGrid));
-                        m.DeployCode(page, TeamNumber0Delegate);
-                        //m_writer.WriteLine("Successfully Deployed Robot Code.");
+                        m.DeployCode(teamNumber, page, debug);
                         m_deploying = false;
-                        m_deployMenuItem.Visible = true;
+                        menuCommand.Visible = true;
                     });
-                    /*
-                    new System.Threading.Thread(() =>
-                    {
-                        
-                    }).Start();
-                    */
                 }
                 catch (Exception ex)
                 {
                     m_writer.WriteLine(ex.ToString());
                     m_deploying = false;
-                    m_deployMenuItem.Visible = true;
+                    menuCommand.Visible = true;
                 }
                 
             }
@@ -253,7 +262,30 @@ namespace RobotDotNet.FRC_Extension
             ShowOptionPage(typeof (SettingsPageGrid));
         }
 
-        public void TeamNumber0Delegate()
+
+        public void OpenAbout()
+        {
+            //TODO: Get version
+
+            // Show a Message Box to prove we were here
+            IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
+            Guid clsid = Guid.Empty;
+            int result;
+            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
+                       0,
+                       ref clsid,
+                       "FRC Extension",
+                       string.Format(CultureInfo.CurrentCulture, "", this.ToString()),
+                       string.Empty,
+                       0,
+                       OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                       OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
+                       OLEMSGICON.OLEMSGICON_INFO,
+                       0,        // false
+                       out result));
+        }
+
+        public void TeamNumberNotSetErrorPopup()
         {
             OutputWriter.Instance.WriteLine("Team Number Not Set");
 

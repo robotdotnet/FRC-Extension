@@ -150,7 +150,6 @@ namespace RobotDotNet.FRC_Extension
                 bool nt = false;
                 bool halbase = false;
                 bool halrio = false;
-                bool libHAL = false;
                 files = new List<string>();
                 if (Directory.Exists(buildDir))
                 {
@@ -196,22 +195,11 @@ namespace RobotDotNet.FRC_Extension
                             }
 
                         }
-                        if (f.Contains(".so"))
-                        {
-                            if (f.Contains("libHALAthena_shared.so"))
-                            {
-                                OutputWriter.Instance.WriteLine("Found libHALAthena_shared.so");
-                                libHAL = true;
-                                files.Add(f);
-                                continue;
-
-                            }
-                        }
                         files.Add(f);
                     }
                 }
                 writer.WriteLine("Parsed All Files.");
-                if (nt && wpilib && halbase && halrio && libHAL)
+                if (nt && wpilib && halbase && halrio)
                 {
                     writer.WriteLine("Found all needed WPILib files.");
                     return true;

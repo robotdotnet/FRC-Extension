@@ -10,7 +10,7 @@ namespace RobotDotNet.FRC_Extension.MonoCode
 {
     public class MonoDownload
     {
-        public static async void DownloadMono(string fileName)
+        public static async Task DownloadMono(string fileName, IProgress<int> progress = null)
         {
             string target = DeployProperties.MonoURL + DeployProperties.MonoVersion;
 
@@ -19,6 +19,10 @@ namespace RobotDotNet.FRC_Extension.MonoCode
                 using (WebClient client = new WebClient())
                 {
                     client.Credentials = CredentialCache.DefaultNetworkCredentials;
+                    client.DownloadProgressChanged += (sender, e) =>
+                    {
+                        progress?.Report(e.ProgressPercentage);
+                    };
                     await client.DownloadFileTaskAsync(new Uri(target), fileName);
 
                 }

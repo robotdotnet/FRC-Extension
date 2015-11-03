@@ -15,7 +15,7 @@ namespace RobotDotNet.FRC_Extension
         //Netconsole Button ID
         public const uint cmdidNetconsole = 0x103;
         //
-        public const uint cmdidNewProject = 0x104;
+        public const uint cmdidDownloadMono = 0x104;
         //
         public const uint cmdidNewClass = 0x105;
 

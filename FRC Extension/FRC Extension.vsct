@@ -46,8 +46,8 @@
       priority="0x1000" type="Menu">
         <Parent guid="guidFRC_ExtensionCmdSet" id="MyMenuGroup"/>
         <Strings>
-          <ButtonText>New</ButtonText>
-          <CommandName>New</CommandName>
+          <ButtonText>Mono Tool</ButtonText>
+          <CommandName>Mono Tool</CommandName>
         </Strings>
       </Menu>
     </Menus>
@@ -138,14 +138,12 @@
 
 
       <Button guid="guidFRC_ExtensionCmdSet"
-        id="cmdidNewProject" priority="0x0000"
+        id="cmdidDownloadMono" priority="0x0000"
       type="Button">
         <Parent guid="guidFRC_ExtensionCmdSet" id="SubMenuGroup" />
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
-          <CommandName>cmdidNewProject</CommandName>
-          <ButtonText>Mono Builder</ButtonText>
+          <CommandName>cmdidDownloadMono</CommandName>
+          <ButtonText>Download Mono</ButtonText>
         </Strings>
       </Button>
 
@@ -199,7 +197,7 @@
       <IDSymbol name="cmdidAboutButton" value="0x0220"/>
       <IDSymbol name="SubMenu" value="0x1100"/>
       <IDSymbol name="SubMenuGroup" value="0x1150"/>
-      <IDSymbol name="cmdidNewProject" value="0x0104"/>
+      <IDSymbol name="cmdidDownloadMono" value="0x0104"/>
       <IDSymbol name="cmdidNewClass" value="0x0105"/>
     </GuidSymbol>
 

@@ -9,7 +9,10 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
+using RobotDotNet.FRC_Extension.MonoCode;
+using RobotDotNet.FRC_Extension.WPILibFolder;
 using VSLangProj;
+
 
 namespace RobotDotNet.FRC_Extension
 {
@@ -55,6 +58,7 @@ namespace RobotDotNet.FRC_Extension
         private bool m_deploying = false;
         OleMenuCommand m_deployMenuItem;
         OleMenuCommand m_debugMenuItem;
+        OleMenuCommand m_downloadMonoMenuItem;
 
         /////////////////////////////////////////////////////////////////////////////
         // Overridden Package Implementation
@@ -88,6 +92,12 @@ namespace RobotDotNet.FRC_Extension
                 m_debugMenuItem = new OleMenuCommand((sender, e) => DeployCodeCallback(sender, e, true), debugCommandID);
                 m_debugMenuItem.BeforeQueryStatus += QueryDeployButton;
                 mcs.AddCommand(m_debugMenuItem);
+
+                CommandID downloadMonoCommandId = new CommandID(GuidList.guidFRC_ExtensionCmdSet, (int)PkgCmdIDList.cmdidDownloadMono);
+                m_downloadMonoMenuItem = new OleMenuCommand(DownloadMonoCallback, downloadMonoCommandId);
+                m_downloadMonoMenuItem.Visible = true;
+                m_downloadMonoMenuItem.Enabled = true;
+                mcs.AddCommand(m_downloadMonoMenuItem);
 
                 //We don't have an install tool right now, so just disable it. We still need the code though.
                 CommandID installCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet,
@@ -176,6 +186,78 @@ namespace RobotDotNet.FRC_Extension
                     menuCommand.Enabled = true;
                 }
             }
+        }
+
+        private class ProgressChecker : IProgress<int>
+        {
+            private IVsStatusbar statusBar;
+            public ProgressChecker()
+            {
+                statusBar = (IVsStatusbar)ServiceProvider.GlobalProvider.GetService(typeof(SVsStatusbar));
+
+            }
+
+            private uint cookie = 0;
+            private string label = "Downloading Mono...";
+
+            public void Report(int value)
+            {
+                statusBar.Progress(ref cookie, 1, label, (uint)value, 100);
+            }
+
+            public void Finish()
+            {
+                statusBar.Progress(ref cookie, 0, "", 0, 0);
+            }
+        }
+
+        private async void DownloadMonoCallback(object sender, EventArgs e)
+        {
+            string monoFolder = WPILibFolderStructure.CreateMonoFolder();
+
+            string monoFile = monoFolder + Path.DirectorySeparatorChar + DeployProperties.MonoVersion;
+
+            bool downloadNew = true;
+
+            if (File.Exists(monoFile))
+            {
+                byte[] fileMD5 = MonoCode.MonoFile.CalculateMd5Sum(monoFile);
+                bool areSame = MonoCode.MonoFile.CheckMd5Sum(MonoCode.MonoFile.Md5SumToString(fileMD5),
+                    DeployProperties.MonoMD5);
+
+                downloadNew = !areSame;
+            }
+
+            if (downloadNew)
+            {
+                ProgressChecker checker = new ProgressChecker();
+                await MonoDownload.DownloadMono(monoFile, checker);
+                checker.Finish();
+
+                //Verify Download
+                byte[] fileMD5 = MonoCode.MonoFile.CalculateMd5Sum(monoFile);
+                bool verified = MonoCode.MonoFile.CheckMd5Sum(MonoCode.MonoFile.Md5SumToString(fileMD5),
+                    DeployProperties.MonoMD5);
+
+            }
+
+
+            // Show a Message Box to prove we were here
+            IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
+            Guid clsid = Guid.Empty;
+            int result;
+            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
+                       0,
+                       ref clsid,
+                       "FRC Extension",
+                       string.Format(CultureInfo.CurrentCulture, "", this.ToString()),
+                       string.Empty,
+                       0,
+                       OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                       OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
+                       OLEMSGICON.OLEMSGICON_INFO,
+                       0,        // false
+                       out result));
         }
 
         /// <summary>

@@ -154,7 +154,6 @@
     <Compile Include="MonoCode\MonoFileSelector.cs" />
     <Compile Include="RoboRIO Code\DeployManager.cs" />
     <Compile Include="RoboRIO Code\DeployProperties.cs" />
-    <Compile Include="GlobalConnections.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="OutputWriter.cs" />
     <Compile Include="Resources.Designer.cs">
@@ -170,6 +169,7 @@
     <Compile Include="Settings.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="WPILibFolder\WPILibFolderStructure.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">

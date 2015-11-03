@@ -1,6 +1,6 @@
 Visual Studio Extension for RobotDotNet
 =======================================
-<a href="https://www.myget.org/"><img src="https://www.myget.org/BuildSource/Badge/robotdotnet-build?identifier=a0a1e6b7-ad72-499d-87a4-2dbb5ab10784" alt="robotdotnet-build MyGet Build Status" /></a>
+[![Build status](https://ci.appveyor.com/api/projects/status/057ayxqovu3x6bsh/branch/master?svg=true)](https://ci.appveyor.com/project/robotdotnet-admin/frc-extension/branch/master)
 
 This is the source for a Visual Studio plugin for using RobotDotNet. Also includes preconfigured templates to help get started.
 

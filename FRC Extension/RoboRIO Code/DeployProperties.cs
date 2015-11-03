@@ -52,5 +52,11 @@ namespace RobotDotNet.FRC_Extension
 
         public const string RobotCommandFileName = "robotCommand";
 
+        public const string MonoMD5 = "145126881924420175520132501465663102223";
+
+        public const string MonoVersion = "Mono4.0.1.zip";
+
+        public const string MonoURL = "https://dl.bintray.com/robotdotnet-admin/Mono/";
+
     }
 }

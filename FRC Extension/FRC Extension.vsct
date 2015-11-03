@@ -145,7 +145,7 @@
         <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <CommandName>cmdidNewProject</CommandName>
-          <ButtonText>FRC Project</ButtonText>
+          <ButtonText>Mono Builder</ButtonText>
         </Strings>
       </Button>
 

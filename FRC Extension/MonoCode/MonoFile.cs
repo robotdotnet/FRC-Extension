@@ -1,31 +1,53 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.IO.Compression;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using RobotDotNet.FRC_Extension.WPILibFolder;
 
 namespace RobotDotNet.FRC_Extension.MonoCode
 {
     public class MonoFile
     {
-        public static byte[] CalculateMd5Sum(string fileName)
+        public string FileName { get; set; }
+
+        private readonly string m_extractPath;
+
+        public MonoFile(string fileName)
         {
-            if (File.Exists(fileName))
+            FileName = fileName;
+
+            string monoFolder = WPILibFolderStructure.CreateMonoFolder();
+
+            m_extractPath = monoFolder + Path.DirectorySeparatorChar + "temp";
+        }
+
+        private string Md5Sum()
+        {
+            byte[] fileMd5Sum = null;
+            
+
+            if (File.Exists(FileName))
             {
-                using (FileStream stream = new FileStream(fileName, FileMode.Open))
+                using (FileStream stream = new FileStream(FileName, FileMode.Open))
                 {
                     using (MD5 md5 = new MD5CryptoServiceProvider())
                     {
-                        return md5.ComputeHash(stream);
+                        fileMd5Sum =  md5.ComputeHash(stream);
                     }
                 }
             }
-            else
+
+            if (fileMd5Sum == null)
             {
                 return null;
             }
-        }
 
-        public static string Md5SumToString(byte[] fileMd5Sum)
-        {
             StringBuilder builder = new StringBuilder();
             foreach (var b in fileMd5Sum)
             {
@@ -34,11 +56,97 @@ namespace RobotDotNet.FRC_Extension.MonoCode
             return builder.ToString();
         }
 
-        public static bool CheckMd5Sum(string fileMd5Sum, string checkMd5Sum)
+        public static string SelectMonoFile()
         {
-            return fileMd5Sum.Equals(checkMd5Sum);
+            OpenFileDialog dialog = new OpenFileDialog();
+
+            dialog.Filter = "Zip Files(*.zip)|*.zip";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                return dialog.FileName;
+            }
+            return null;
         }
 
+        public bool CheckFileValid()
+        {
+            string fileSum = Md5Sum();
+
+            return fileSum != null && fileSum.Equals(DeployProperties.MonoMD5);
+        }
+
+        public async Task DownloadMono(IProgress<int> progress = null)
+        {
+            string target = DeployProperties.MonoURL + DeployProperties.MonoVersion;
+
+            try
+            {
+                using (WebClient client = new WebClient())
+                {
+                    client.Credentials = CredentialCache.DefaultNetworkCredentials;
+                    client.DownloadProgressChanged += (sender, e) =>
+                    {
+                        progress?.Report(e.ProgressPercentage);
+                    };
+                    await client.DownloadFileTaskAsync(new Uri(target), FileName);
+
+                }
+            }
+            catch (Exception)
+            {
+                var writer = OutputWriter.Instance;
+                writer.WriteLine($"Could not download file: {DeployProperties.MonoVersion}");
+            }
+        }
+
+        public List<string> GetUnzippedFileList()
+        {
+            return Directory.GetFiles(m_extractPath).ToList();
+        } 
+
+        public bool UnzipMonoFile()
+        {
+            CleanupMonoFile();
+
+            if (!CheckFileValid())
+                return false;
+
+
+            try
+            {
+                ZipFile.ExtractToDirectory(FileName, m_extractPath);
+                return true;
+            }
+            catch (IOException)
+            {
+                return false;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return false;
+            }
+        }
+
+        public bool CleanupMonoFile()
+        {
+            try
+            {
+                if (Directory.Exists(m_extractPath))
+                {
+                    Directory.Delete(m_extractPath, true);
+                }
+                return true;
+            }
+            catch (IOException)
+            {
+                return false;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return false;
+            }
+        }
 
     }
 }

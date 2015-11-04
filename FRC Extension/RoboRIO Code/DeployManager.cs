@@ -15,7 +15,7 @@ using RobotDotNet.FRC_Extension.RoboRIO_Code;
 
 namespace RobotDotNet.FRC_Extension
 {
-    class DeployManager
+    public class DeployManager
     {
         //We need our DTE so we can grab our solution
         private readonly DTE m_dte;
@@ -54,7 +54,7 @@ namespace RobotDotNet.FRC_Extension
             bool taskTimeout = rioConnectionTask.Wait(10000);
 
             //If our connection did not timeout
-            if (!taskTimeout || rioConnectionTask.Result == true)
+            if (taskTimeout && rioConnectionTask.Result == true)
             {
                 OutputWriter.Instance.WriteLine("Successfully Connected to RoboRIO.");
 
@@ -217,6 +217,12 @@ namespace RobotDotNet.FRC_Extension
                 files = null;
                 return false;
             }
+        }
+
+        public void GetConnectionInfos(out ConnectionInfo lvuser, out ConnectionInfo admin)
+        {
+            lvuser = m_lvuserConnectionInfo;
+            admin = m_adminConnectionInfo;
         }
 
         public bool DeployRobotFiles(List<string> files)

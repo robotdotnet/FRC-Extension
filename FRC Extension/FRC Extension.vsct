@@ -100,16 +100,6 @@
         </Strings>
       </Button>
 
-      <Button guid="guidFRC_ExtensionCmdSet" id="cmdidInstall" priority="0x0102" type="Button">
-        <Parent guid="guidFRC_ExtensionCmdSet" id="MyMenuGroup" />
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <Strings>
-          <ButtonText>Install Tool</ButtonText>
-        </Strings>
-
-      </Button>
-
       <Button guid="guidFRC_ExtensionCmdSet" id="cmdidNetconsole" priority="0x0103" type="Button">
         <Parent guid="guidFRC_ExtensionCmdSet" id="MyMenuGroup" />
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -141,6 +131,7 @@
         id="cmdidDownloadMono" priority="0x0000"
       type="Button">
         <Parent guid="guidFRC_ExtensionCmdSet" id="SubMenuGroup" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <CommandName>cmdidDownloadMono</CommandName>
           <ButtonText>Download Mono</ButtonText>
@@ -149,14 +140,13 @@
 
 
       <Button guid="guidFRC_ExtensionCmdSet"
-        id="cmdidNewClass" priority="0x0000"
+        id="cmdidInstallMono" priority="0x0000"
       type="Button">
         <Parent guid="guidFRC_ExtensionCmdSet" id="SubMenuGroup" />
         <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
-          <CommandName>cmdidNewClass</CommandName>
-          <ButtonText>FRC Class</ButtonText>
+          <CommandName>cmdidInstallMono</CommandName>
+          <ButtonText>Install Mono</ButtonText>
         </Strings>
       </Button>
 
@@ -190,7 +180,6 @@
       <IDSymbol name="TopLevelMenu" value="0x1021"/>
       <IDSymbol name="MyMenuGroup" value="0x1020" />
       <IDSymbol name="cmdidDeployCode" value="0x0100" />
-      <IDSymbol name="cmdidInstall" value="0x0101" />
       <IDSymbol name="cmdidNetconsole" value ="0x0103"/>
       <IDSymbol name="cmdidSettings" value="0x0102" />
       <IDSymbol name="cmdidDebugCode" value="0x0106"/>
@@ -198,7 +187,7 @@
       <IDSymbol name="SubMenu" value="0x1100"/>
       <IDSymbol name="SubMenuGroup" value="0x1150"/>
       <IDSymbol name="cmdidDownloadMono" value="0x0104"/>
-      <IDSymbol name="cmdidNewClass" value="0x0105"/>
+      <IDSymbol name="cmdidInstallMono" value="0x0105"/>
     </GuidSymbol>
 
 

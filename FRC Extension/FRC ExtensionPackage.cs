@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.ComponentModel.Design;
+using System.Net;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -59,6 +60,9 @@ namespace RobotDotNet.FRC_Extension
         OleMenuCommand m_deployMenuItem;
         OleMenuCommand m_debugMenuItem;
         OleMenuCommand m_downloadMonoMenuItem;
+        OleMenuCommand m_installMonoMenuItem;
+
+        MonoFile m_monoFile;
 
         /////////////////////////////////////////////////////////////////////////////
         // Overridden Package Implementation
@@ -74,6 +78,12 @@ namespace RobotDotNet.FRC_Extension
             base.Initialize();
             m_writer = OutputWriter.Instance;
 
+            string monoFolder = WPILibFolderStructure.CreateMonoFolder();
+
+            string monoFile = monoFolder + Path.DirectorySeparatorChar + DeployProperties.MonoVersion;
+
+            m_monoFile = new MonoFile(monoFile);
+
 
 
 
@@ -88,23 +98,26 @@ namespace RobotDotNet.FRC_Extension
                 m_deployMenuItem.BeforeQueryStatus += QueryDeployButton;
                 mcs.AddCommand(m_deployMenuItem);
 
+                //Debug version of the deploy button
                 CommandID debugCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet, (int)PkgCmdIDList.cmdidDebugCode);
                 m_debugMenuItem = new OleMenuCommand((sender, e) => DeployCodeCallback(sender, e, true), debugCommandID);
                 m_debugMenuItem.BeforeQueryStatus += QueryDeployButton;
                 mcs.AddCommand(m_debugMenuItem);
 
+                //Download Mono Command Id
                 CommandID downloadMonoCommandId = new CommandID(GuidList.guidFRC_ExtensionCmdSet, (int)PkgCmdIDList.cmdidDownloadMono);
                 m_downloadMonoMenuItem = new OleMenuCommand(DownloadMonoCallback, downloadMonoCommandId);
                 m_downloadMonoMenuItem.Visible = true;
                 m_downloadMonoMenuItem.Enabled = true;
                 mcs.AddCommand(m_downloadMonoMenuItem);
 
-                //We don't have an install tool right now, so just disable it. We still need the code though.
-                CommandID installCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet,
-                    (int) PkgCmdIDList.cmdidInstall);
-                MenuCommand installItem = new MenuCommand(InstallCallback, installCommandID);
-                installItem.Visible = false;
-                mcs.AddCommand(installItem);
+                CommandID installMonoCommandId = new CommandID(GuidList.guidFRC_ExtensionCmdSet, (int)PkgCmdIDList.cmdidInstallMono);
+                m_installMonoMenuItem = new OleMenuCommand(InstallMonoCallback, installMonoCommandId);
+                m_installMonoMenuItem.Visible = true;
+                m_installMonoMenuItem.Enabled = true;
+                mcs.AddCommand(m_installMonoMenuItem);
+
+
 
                 //Adds a command so we can open NetConsole. 
                 CommandID netconsoleCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet,
@@ -211,54 +224,225 @@ namespace RobotDotNet.FRC_Extension
             }
         }
 
+        public static bool CheckForInternetConnection()
+        {
+            try
+            {
+                using (var client = new WebClient())
+                {
+                    using (var stream = client.OpenRead("http://www.google.com"))
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private class TimeoutWebClient : WebClient
+        {
+            private int m_timeout;
+
+            public TimeoutWebClient(int timeout)
+            {
+                this.m_timeout = timeout;
+            }
+
+            protected override WebRequest GetWebRequest(Uri address)
+            {
+                var result = base.GetWebRequest(address);
+                result.Timeout = this.m_timeout;
+                return result;
+            }
+        }
+
         private async void DownloadMonoCallback(object sender, EventArgs e)
         {
+            //TODO: Check for Internet
+            bool haveInternet = false;
+
+            try
+            {
+                using (var client = new TimeoutWebClient(1000))
+                {
+                    using (var stream = client.OpenRead(DeployProperties.MonoURL))
+                    {
+                        haveInternet =  true;
+                        DownloadMonoPopup();
+                    }
+                }
+            }
+            catch
+            {
+                haveInternet = false;
+            }
+
+            if (!haveInternet) return;
+
+
             string monoFolder = WPILibFolderStructure.CreateMonoFolder();
 
             string monoFile = monoFolder + Path.DirectorySeparatorChar + DeployProperties.MonoVersion;
 
-            bool downloadNew = true;
+            m_monoFile.FileName = monoFile;
 
-            if (File.Exists(monoFile))
-            {
-                byte[] fileMD5 = MonoCode.MonoFile.CalculateMd5Sum(monoFile);
-                bool areSame = MonoCode.MonoFile.CheckMd5Sum(MonoCode.MonoFile.Md5SumToString(fileMD5),
-                    DeployProperties.MonoMD5);
-
-                downloadNew = !areSame;
-            }
+            bool downloadNew = !m_monoFile.CheckFileValid();
 
             if (downloadNew)
             {
                 ProgressChecker checker = new ProgressChecker();
-                await MonoDownload.DownloadMono(monoFile, checker);
+                await m_monoFile.DownloadMono(checker);
                 checker.Finish();
 
                 //Verify Download
-                byte[] fileMD5 = MonoCode.MonoFile.CalculateMd5Sum(monoFile);
-                bool verified = MonoCode.MonoFile.CheckMd5Sum(MonoCode.MonoFile.Md5SumToString(fileMD5),
-                    DeployProperties.MonoMD5);
+                bool verified = m_monoFile.CheckFileValid();
+
+                if (verified)
+                {
+                    // Show a Message Box to prove we were here
+                    IVsUIShell uiShell = (IVsUIShell) GetService(typeof (SVsUIShell));
+                    Guid clsid = Guid.Empty;
+                    int result;
+                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
+                        0,
+                        ref clsid,
+                        "Mono Successfully Downloaded",
+                        string.Format(CultureInfo.CurrentCulture, "", this.ToString()),
+                        string.Empty,
+                        0,
+                        OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                        OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
+                        OLEMSGICON.OLEMSGICON_INFO,
+                        0, // false
+                        out result));
+                }
+                else
+                {
+                    // Show a Message Box to prove we were here
+                    IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
+                    Guid clsid = Guid.Empty;
+                    int result;
+                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
+                        0,
+                        ref clsid,
+                        "Mono Download Failed. Please Try Again",
+                        string.Format(CultureInfo.CurrentCulture, "", this.ToString()),
+                        string.Empty,
+                        0,
+                        OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                        OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
+                        OLEMSGICON.OLEMSGICON_INFO,
+                        0, // false
+                        out result));
+                }
 
             }
-
-
-            // Show a Message Box to prove we were here
-            IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
-            Guid clsid = Guid.Empty;
-            int result;
-            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
-                       0,
-                       ref clsid,
-                       "FRC Extension",
-                       string.Format(CultureInfo.CurrentCulture, "", this.ToString()),
-                       string.Empty,
-                       0,
-                       OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                       OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
-                       OLEMSGICON.OLEMSGICON_INFO,
-                       0,        // false
-                       out result));
         }
+
+        private async void InstallMonoCallback(object sender, EventArgs e)
+        {
+            var menuCommand = sender as OleMenuCommand;
+            if (menuCommand == null)
+            {
+                return;
+            }
+
+            bool properFileExists = true;
+
+            properFileExists = m_monoFile.CheckFileValid();
+
+            if (properFileExists)
+            {
+                //We can deploy
+                await DeployMono(menuCommand);
+
+                //bool success = await m_monoFile.UnzipMonoFile();
+            }
+            else
+            {
+                //Ask to see if we want to load the file or download it
+                string retVal = LoadMonoPopup();
+
+                if (!string.IsNullOrEmpty(retVal))
+                {
+                    //Check for valid file.
+                    properFileExists = m_monoFile.CheckFileValid();
+
+                    if (properFileExists)
+                    {
+                        //We can deploy
+                        await DeployMono(menuCommand);
+                    }
+                    else
+                    {
+                        InvalidMonoPopup();
+                    }
+
+                }
+                else
+                {
+                    DownloadMonoPopup();
+                }
+            }
+        }
+
+        private bool m_installing = false;
+
+        private async System.Threading.Tasks.Task DeployMono(OleMenuCommand menuCommand)
+        {
+            try
+            {
+                await System.Threading.Tasks.Task.Run(() =>
+                {
+                    SettingsPageGrid page = (SettingsPageGrid) GetDialogPage(typeof (SettingsPageGrid));
+                    string teamNumber = GetTeamNumber(page);
+
+                    if (teamNumber == null) return;
+
+
+
+                    //Disable Install Button
+                    m_installing = true;
+                    menuCommand.Visible = false;
+
+                    DeployManager m = new DeployManager(GetService(typeof (DTE)) as DTE);
+                    MonoDeploy deploy = new MonoDeploy(teamNumber, m, m_monoFile);
+
+                    deploy.DeployMono();
+
+                    m_installing = false;
+                    menuCommand.Visible = true;
+
+
+                });
+
+
+            }
+            catch (Exception ex)
+            {
+                m_writer.WriteLine(ex.ToString());
+                m_installing = false;
+                menuCommand.Visible = true;
+            }
+        }
+
+        private string GetTeamNumber(SettingsPageGrid page)
+        {
+            //Get Team Number
+            string teamNumber = page.TeamNumber.ToString();
+            if (teamNumber == "0")
+            {
+                //If its 0, we pop up a window asking teams to set it.
+                TeamNumberNotSetErrorPopup();
+                return null;
+
+            }
+            return teamNumber;
+        }
+
 
         /// <summary>
         /// The function is called when the deploy button is pressed.
@@ -277,15 +461,11 @@ namespace RobotDotNet.FRC_Extension
                     await System.Threading.Tasks.Task.Run(() =>
                     {
                         SettingsPageGrid page = (SettingsPageGrid)GetDialogPage(typeof(SettingsPageGrid));
-                        //Get Team Number
-                        string teamNumber = page.TeamNumber.ToString();
-                        if (teamNumber == "0")
-                        {
-                            //If its 0, we pop up a window asking teams to set it.
-                            TeamNumberNotSetErrorPopup();
-                            return;
 
-                        }
+                        string teamNumber = GetTeamNumber(page);
+
+                        if (teamNumber == null) return;
+
                         //Disable the deploy button
                         m_deploying = true;
                         menuCommand.Visible = false;
@@ -313,30 +493,6 @@ namespace RobotDotNet.FRC_Extension
             Action funcCall = DeployManager.StartNetConsole;
             await System.Threading.Tasks.Task.Run(funcCall);
             //new System.Threading.Thread(DeployManager.StartNetConsole).Start();
-        }
-
-        //Going to be our install callback.
-        private void InstallCallback(object sender, EventArgs e)
-        {
-            OutputWriter.Instance.WriteLine("Install Button Pressed.");
-
-
-            // Show a Message Box to prove we were here
-            IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
-            Guid clsid = Guid.Empty;
-            int result;
-            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
-                       0,
-                       ref clsid,
-                       "FRC Extension",
-                       string.Format(CultureInfo.CurrentCulture, "Inside {0}.InstallCallback()", this.ToString()),
-                       string.Empty,
-                       0,
-                       OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                       OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
-                       OLEMSGICON.OLEMSGICON_INFO,
-                       0,        // false
-                       out result));
         }
 
         public void OpenSettings()
@@ -383,6 +539,63 @@ namespace RobotDotNet.FRC_Extension
             {
                 OpenSettings();
             }
+        }
+
+        public void DownloadMonoPopup()
+        {
+            // Show a Message Box to prove we were here
+            IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
+            Guid clsid = Guid.Empty;
+            int result;
+            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
+                       0,
+                       ref clsid,
+                       "Please Download Mono. This can be done by clicking the \nDownload Mono button.",
+                       string.Format(CultureInfo.CurrentCulture, "", this.ToString()),
+                       string.Empty,
+                       0,
+                       OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                       OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
+                       OLEMSGICON.OLEMSGICON_INFO,
+                       0,        // false
+                       out result));
+        }
+
+        public void InvalidMonoPopup()
+        {
+            // Show a Message Box to prove we were here
+            IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
+            Guid clsid = Guid.Empty;
+            int result;
+            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
+                       0,
+                       ref clsid,
+                       "Mono file is Invalid. Please try again.",
+                       string.Format(CultureInfo.CurrentCulture, "", this.ToString()),
+                       string.Empty,
+                       0,
+                       OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                       OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
+                       OLEMSGICON.OLEMSGICON_INFO,
+                       0,        // false
+                       out result));
+        }
+
+        public string LoadMonoPopup()
+        {
+            IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
+            Guid clsid = Guid.Empty;
+            int result;
+
+            uiShell.ShowMessageBox(0, ref clsid, "Mono File Not Found",
+                $"Mono file not found. Would you like to load an existing file?", string.Empty, 0,
+                OLEMSGBUTTON.OLEMSGBUTTON_YESNO, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST, OLEMSGICON.OLEMSGICON_INFO, 0, out result);
+
+            if (result == 6)
+            {
+                return MonoFile.SelectMonoFile();
+            }
+            return null;
         }
     }
     

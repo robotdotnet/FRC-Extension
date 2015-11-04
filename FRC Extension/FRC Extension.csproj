@@ -150,6 +150,11 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Buttons\AboutButton.cs" />
+    <Compile Include="Buttons\DeployDebugButtons.cs" />
+    <Compile Include="Buttons\MonoButtons.cs" />
+    <Compile Include="Buttons\NetConsoleButton.cs" />
+    <Compile Include="Buttons\SettingsButton.cs" />
     <Compile Include="MonoCode\MonoDeploy.cs" />
     <Compile Include="MonoCode\MonoFile.cs" />
     <Compile Include="RoboRIO Code\DeployManager.cs" />

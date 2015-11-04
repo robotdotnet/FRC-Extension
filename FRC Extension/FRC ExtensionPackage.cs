@@ -268,7 +268,7 @@ namespace RobotDotNet.FRC_Extension
             {
                 using (var client = new TimeoutWebClient(1000))
                 {
-                    using (var stream = client.OpenRead(DeployProperties.MonoURL))
+                    using (var stream = client.OpenRead(DeployProperties.MonoUrl))
                     {
                         haveInternet =  true;
                         DownloadMonoPopup();

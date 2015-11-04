@@ -56,13 +56,11 @@ namespace RobotDotNet.FRC_Extension.MonoCode
 
                 writer.WriteLine("Creating Opkg Directory");
 
-                string deployLocation = "/home/admin/opkg";
-
-                RoboRIOConnection.RunCommand($"mkdir -p {deployLocation}", admin);
+                RoboRIOConnection.RunCommand($"mkdir -p {DeployProperties.RoboRioOpgkLocation}", admin);
 
                 writer.WriteLine("Deploying Mono Files");
 
-                success = RoboRIOConnection.DeployFiles(deployFiles, deployLocation, admin);
+                success = RoboRIOConnection.DeployFiles(deployFiles, DeployProperties.RoboRioOpgkLocation, admin);
 
                 if (!success)
                 {
@@ -71,7 +69,7 @@ namespace RobotDotNet.FRC_Extension.MonoCode
 
                 writer.WriteLine("Installing Mono");
 
-                var monoRet = RoboRIOConnection.RunCommand("opgk install *.ipk", admin);
+                var monoRet = RoboRIOConnection.RunCommand(DeployProperties.OpkgInstallCommand, admin);
 
                 //Check for success.
 
@@ -83,6 +81,8 @@ namespace RobotDotNet.FRC_Extension.MonoCode
                 {
                     writer.WriteLine("Mono not installed successfully");
                 }
+
+                //TODO : Cleanup files on RIO
 
             }
             else

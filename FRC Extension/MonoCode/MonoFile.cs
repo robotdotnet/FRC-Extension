@@ -73,12 +73,12 @@ namespace RobotDotNet.FRC_Extension.MonoCode
         {
             string fileSum = Md5Sum();
 
-            return fileSum != null && fileSum.Equals(DeployProperties.MonoMD5);
+            return fileSum != null && fileSum.Equals(DeployProperties.MonoMd5);
         }
 
         public async Task DownloadMono(IProgress<int> progress = null)
         {
-            string target = DeployProperties.MonoURL + DeployProperties.MonoVersion;
+            string target = DeployProperties.MonoUrl + DeployProperties.MonoVersion;
 
             try
             {

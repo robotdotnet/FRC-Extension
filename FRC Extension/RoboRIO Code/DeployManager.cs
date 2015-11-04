@@ -68,7 +68,7 @@ namespace RobotDotNet.FRC_Extension
                 OutputWriter.Instance.WriteLine("Checking RoboRIO Image");
                 if (!CheckRoboRioImage())
                 {
-                    OutputWriter.Instance.WriteLine("roboRIO Image does not match plugin, allowed image versions: " + string.Join(", ", DeployProperties.RoboRIOAllowedImages.ToArray()));
+                    OutputWriter.Instance.WriteLine("roboRIO Image does not match plugin, allowed image versions: " + string.Join(", ", DeployProperties.RoboRioAllowedImages.ToArray()));
                     return;
                 }
                 OutputWriter.Instance.WriteLine("RoboRIO Image Correct");
@@ -240,7 +240,7 @@ namespace RobotDotNet.FRC_Extension
         public bool CheckMonoInstall()
         {
             OutputWriter.Instance.WriteLine("Checking for Mono install");
-            var retVal = RoboRIOConnection.RunCommand($"test -e {DeployProperties.RoboRIOMonoBin}", m_lvuserConnectionInfo);
+            var retVal = RoboRIOConnection.RunCommand($"test -e {DeployProperties.RoboRioMonoBin}", m_lvuserConnectionInfo);
             return retVal.ExitStatus == 0;
         }
 
@@ -269,7 +269,7 @@ namespace RobotDotNet.FRC_Extension
                 str = val.InnerText;
             }
 
-            return DeployProperties.RoboRIOAllowedImages.Any(rio => str != null && str.Contains(rio.ToString()));
+            return DeployProperties.RoboRioAllowedImages.Any(rio => str != null && str.Contains(rio.ToString()));
         }
 
         internal string GetStartupAssemblyPath()

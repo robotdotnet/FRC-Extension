@@ -27,10 +27,10 @@ namespace RobotDotNet.FRC_Extension
             $"chown lvuser:ni {DebugFlagDir}frcdebug"
         };
 
-        public const string RoboRIOMonoBin = "/usr/bin/mono";
+        public const string RoboRioMonoBin = "/usr/bin/mono";
 
-        public const string RIOImageSearchString = "FRC_roboRIO";
-        public static readonly int[] RoboRIOAllowedImages = { 23 };
+        public const string RioImageSearchString = "FRC_roboRIO";
+        public static readonly int[] RoboRioAllowedImages = { 23 };
 
         public static readonly string[] IgnoreFiles =
         {
@@ -52,11 +52,16 @@ namespace RobotDotNet.FRC_Extension
 
         public const string RobotCommandFileName = "robotCommand";
 
-        public const string MonoMD5 = "145126881924420175520132501465663102223";
+        public const string MonoMd5 = "145126881924420175520132501465663102223";
 
         public const string MonoVersion = "Mono4.0.1.zip";
 
-        public const string MonoURL = "https://dl.bintray.com/robotdotnet-admin/Mono/";
+        public const string MonoUrl = "https://dl.bintray.com/robotdotnet-admin/Mono/";
+
+
+        public const string RoboRioOpgkLocation = "/home/admin/opkg";
+
+        public const string OpkgInstallCommand = "opgk install *.ipk";
 
     }
 }

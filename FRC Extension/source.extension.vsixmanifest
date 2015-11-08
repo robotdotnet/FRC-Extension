@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="FRC_Extension" Version="2015.0.5" Language="en-US" Publisher="RobotDotNet" />
+    <Identity Id="FRC_Extension" Version="2016.0.0" Language="en-US" Publisher="RobotDotNet" />
     <DisplayName>FRC Extension</DisplayName>
     <Description xml:space="preserve">A plugin for deploying DotNet code onto FRC Robots. Includes an Extension and Templates.</Description>
   </Metadata>
@@ -26,5 +26,7 @@
     <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="Trigger" d:TargetPath="|Trigger;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
     <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="SingletonClass" d:TargetPath="|SingletonClass;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
     <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="WPILibClass" d:TargetPath="|WPILibClass;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
+    <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="LabVIEWRobot" d:TargetPath="|LabVIEWRobot;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
+    <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="AttributedCommandRobot" d:TargetPath="|AttributedCommandRobot;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
   </Assets>
 </PackageManifest>

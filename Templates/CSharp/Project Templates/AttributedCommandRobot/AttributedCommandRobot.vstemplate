@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
   <TemplateData>
-    <Name>Sample Robot</Name>
-    <Description>A robot project used for small sample programs or for hightly advanced programs with more complete control over program flow.</Description>
-    <Icon>SampleRobot.ico</Icon>
+    <Name>Attributed Command Robot</Name>
+    <Description>A robot project that uses .NET attributes to enable command based functionality.</Description>
+    <Icon>AttributedCommandRobot.ico</Icon>
     <ProjectType>CSharp</ProjectType>
     <RequiredFrameworkVersion>4.5</RequiredFrameworkVersion>
     <SortOrder>1000</SortOrder>
-    <TemplateID>076daed5-6714-45b5-8977-e04fe7d1714b</TemplateID>
+    <TemplateID>7c7380d9-641b-494d-ac67-71c83e98af07</TemplateID>
     <CreateNewFolder>true</CreateNewFolder>
     <DefaultName>Robot</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
@@ -28,6 +28,7 @@
           repositoryId="FRC_Extension">
       <package id="FRC.WPILib" version="2016.0.0.5"/>
       <package id="FRC.NetworkTables" version="2016.0.0.5"/>
+      <package id="FRC.WPILib.Extras" version="2016.0.0.5"/>
     </packages>
   </WizardData>
 </VSTemplate>

@@ -198,13 +198,16 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages\FRC.NetworkTables.2015.0.4.nupkg">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="packages\FRC.WPILib.2015.0.4.nupkg">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <None Include="packages.config" />
+    <Content Include="packages\FRC.NetworkTables.2016.0.0.5.nupkg">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="packages\FRC.WPILib.2016.0.0.5.nupkg">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="packages\FRC.WPILib.Extras.2016.0.0.5.nupkg">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
@@ -237,6 +240,20 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Templates\CSharp\Project Templates\AttributedCommandRobot\AttributedCommandRobot.csproj">
+      <Project>{E2A270CB-4CC1-41E8-8AB1-B643B6F818A4}</Project>
+      <Name>AttributedCommandRobot</Name>
+      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
+    <ProjectReference Include="..\Templates\CSharp\Project Templates\LabVIEWRobot\LabVIEWRobot.csproj">
+      <Project>{D9803506-1439-43BB-B553-62DB3841B6F9}</Project>
+      <Name>LabVIEWRobot</Name>
+      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
     <ProjectReference Include="..\Templates\CSharp\Item Templates\Commands\CommandGroup\CommandGroup.csproj">
       <Project>{7AEF40FB-9D0E-467B-A8D2-16237C64648B}</Project>
       <Name>CommandGroup</Name>

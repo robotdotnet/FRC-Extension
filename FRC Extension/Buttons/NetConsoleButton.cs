@@ -63,9 +63,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
         /// </summary>
         private async void NetconsoleCallback(object sender, EventArgs e)
         {
-            Action funcCall = DeployManager.StartNetConsole;
-            await System.Threading.Tasks.Task.Run(funcCall);
-            //new System.Threading.Thread(DeployManager.StartNetConsole).Start();
+            await DeployManager.StartNetConsole();
         }
     }
 }

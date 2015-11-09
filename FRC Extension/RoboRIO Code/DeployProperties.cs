@@ -40,6 +40,14 @@ namespace RobotDotNet.FRC_Extension
             ".manifest",
         };
 
+        public static readonly string[] RequiredFiles =
+        {
+            "WPILib.dll",
+            "HAL-Base.dll",
+            "HAL-RoboRIO.dll",
+            "NetworkTables.dll",
+        };
+
         public const string CommandDir = "/home/lvuser";
 
         public static readonly string RobotCommandDebug =

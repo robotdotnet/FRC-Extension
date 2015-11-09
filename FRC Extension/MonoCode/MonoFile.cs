@@ -90,7 +90,6 @@ namespace RobotDotNet.FRC_Extension.MonoCode
                         progress?.Report(e.ProgressPercentage);
                     };
                     await client.DownloadFileTaskAsync(new Uri(target), FileName);
-
                 }
             }
             catch (Exception)
@@ -105,7 +104,7 @@ namespace RobotDotNet.FRC_Extension.MonoCode
             return Directory.GetFiles(m_extractPath).ToList();
         } 
 
-        public bool UnzipMonoFile()
+        public async Task<bool> UnzipMonoFile()
         {
             CleanupMonoFile();
 
@@ -115,7 +114,7 @@ namespace RobotDotNet.FRC_Extension.MonoCode
 
             try
             {
-                ZipFile.ExtractToDirectory(FileName, m_extractPath);
+                await Task.Run(() => ZipFile.ExtractToDirectory(FileName, m_extractPath));
                 return true;
             }
             catch (IOException)

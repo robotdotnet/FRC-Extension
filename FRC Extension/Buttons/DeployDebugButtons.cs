@@ -98,22 +98,20 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 try
                 {
                     m_output.ProgressBarLabel = "Deploying Robot Code";
-                    await System.Threading.Tasks.Task.Run(() =>
-                    {
-                        SettingsPageGrid page;
-                        string teamNumber = m_package.GetTeamNumber(out page);
 
-                        if (teamNumber == null) return;
+                    SettingsPageGrid page;
+                    string teamNumber = m_package.GetTeamNumber(out page);
 
-                        //Disable the deploy button
-                        m_deploying = true;
-                        menuCommand.Visible = false;
-                        DeployManager m = new DeployManager(m_package.PublicGetService(typeof(DTE)) as DTE);
-                        m.DeployCode(teamNumber, page, debug);
-                        m_deploying = false;
-                        menuCommand.Visible = true;
-                        m_output.ProgressBarLabel = "Robot Code Deploy Successful";
-                    });
+                    if (teamNumber == null) return;
+
+                    //Disable the deploy button
+                    m_deploying = true;
+                    menuCommand.Visible = false;
+                    DeployManager m = new DeployManager(m_package.PublicGetService(typeof(DTE)) as DTE);
+                    await m.DeployCode(teamNumber, page, debug);
+                    m_deploying = false;
+                    menuCommand.Visible = true;
+                    m_output.ProgressBarLabel = "Robot Code Deploy Successful";
                 }
                 catch (Exception ex)
                 {

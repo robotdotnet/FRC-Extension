@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using EnvDTE;
 using EnvDTE80;
 using System.Threading.Tasks;
@@ -20,11 +21,7 @@ namespace RobotDotNet.FRC_Extension
         //We need our DTE so we can grab our solution
         private readonly DTE m_dte;
 
-        //Holds our connection variables
-        private ConnectionInfo m_adminConnectionInfo;
-        private ConnectionInfo m_lvuserConnectionInfo;
-        private ConnectionType m_connectionType;
-        private string m_connectionIp;
+        ConnectionReturn connectionValues = null;
 
         public DeployManager(DTE dte)
         {
@@ -33,7 +30,7 @@ namespace RobotDotNet.FRC_Extension
 
         
         //Uploads code to the robot and then runs it.
-        public void DeployCode(string teamNumber, SettingsPageGrid page, bool debug)
+        public async Task DeployCode(string teamNumber, SettingsPageGrid page, bool debug)
         {
 
             var writer = OutputWriter.Instance;
@@ -41,70 +38,73 @@ namespace RobotDotNet.FRC_Extension
             //Connect to Robot Async
             OutputWriter.Instance.WriteLine("Attempting to Connect to RoboRIO");
             Task<bool> rioConnectionTask = StartConnectionTask(teamNumber);
+            Task delayTask = Task.Delay(10000);
 
-            string robotExe;
-            List<string> files;
+            CodeReturnStruct codeReturn = await BuildAndPrepareCode(debug);
 
-            if (!BuildAndPrepareCode(debug, out robotExe, out files))
-            {
-                return;
-            }
+            if (codeReturn == null) return;
 
             writer.WriteLine("Waiting for Connection to Finish");
-            bool taskTimeout = rioConnectionTask.Wait(10000);
-
-            //If our connection did not timeout
-            if (taskTimeout && rioConnectionTask.Result == true)
+            if (await Task.WhenAny(rioConnectionTask, delayTask) == rioConnectionTask)
             {
-                OutputWriter.Instance.WriteLine("Successfully Connected to RoboRIO.");
+                //Completed on time
+                if (rioConnectionTask.Result == true)
+                {
+                    //Connected successfully
+                    OutputWriter.Instance.WriteLine("Successfully Connected to RoboRIO.");
 
-                if (!CheckMonoInstall())
-                {
-                    //TODO: Make this error message better
-                    OutputWriter.Instance.WriteLine("Mono not properly installed. ");
-                    return;
-                }
-                OutputWriter.Instance.WriteLine("Mono correctly installed");
-                OutputWriter.Instance.WriteLine("Checking RoboRIO Image");
-                if (!CheckRoboRioImage())
-                {
-                    OutputWriter.Instance.WriteLine("roboRIO Image does not match plugin, allowed image versions: " + string.Join(", ", DeployProperties.RoboRioAllowedImages.ToArray()));
-                    return;
-                }
-                OutputWriter.Instance.WriteLine("RoboRIO Image Correct");
-                //Force making mono directory
-                CreateMonoDirectory();
+                    if (!(await CheckMonoInstall()))
+                    {
+                        //TODO: Make this error message better
+                        OutputWriter.Instance.WriteLine("Mono not properly installed. ");
+                        return;
+                    }
+                    OutputWriter.Instance.WriteLine("Mono correctly installed");
+                    OutputWriter.Instance.WriteLine("Checking RoboRIO Image");
+                    if (!(await CheckRoboRioImage()))
+                    {
+                        OutputWriter.Instance.WriteLine("roboRIO Image does not match plugin, allowed image versions: " + string.Join(", ", DeployProperties.RoboRioAllowedImages.ToArray()));
+                        return;
+                    }
+                    OutputWriter.Instance.WriteLine("RoboRIO Image Correct");
+                    //Force making mono directory
+                    await CreateMonoDirectory();
 
-                //DeployAllFiles
-                bool retVal = DeployRobotFiles(files);
-                if (!retVal)
-                {
-                    OutputWriter.Instance.WriteLine("File deploy failed.");
-                    return;
+                    //DeployAllFiles
+                    bool retVal = await DeployRobotFiles(codeReturn.RobotFiles);
+                    if (!retVal)
+                    {
+                        OutputWriter.Instance.WriteLine("File deploy failed.");
+                        return;
+                    }
+                    OutputWriter.Instance.WriteLine("Successfully Deployed Files. Starting Code.");
+                    await UploadCode(codeReturn.RobotExe, page, debug);
+                    OutputWriter.Instance.WriteLine("Successfully started robot code.");
                 }
-                OutputWriter.Instance.WriteLine("Successfully Deployed Files. Starting Code.");
-                UploadCode(robotExe, page, debug);
-                OutputWriter.Instance.WriteLine("Successfully started robot code.");
+                else
+                {
+                    //Failed to connect
+                    writer.WriteLine("Failed to Connect to RoboRIO. Exiting.");
+                }
             }
             else
             {
+                //Timedout
                 writer.WriteLine("Failed to Connect to RoboRIO. Exiting.");
             }
         }
 
-        public Task<bool> StartConnectionTask(string teamNumber)
+        public async Task<bool> StartConnectionTask(string teamNumber)
         {
-            return Task.Run(() =>
-            {
-                bool connected = RoboRIOConnection.CheckConnection(teamNumber, out m_connectionType, out m_connectionIp,
-                    out m_lvuserConnectionInfo, out m_adminConnectionInfo);
-                if (connected)
+                ConnectionReturn connected = await RoboRIOConnection.CheckConnection(teamNumber);
+                if (connected != null)
                 {
                     StringBuilder builder = new StringBuilder();
                     builder.AppendLine("Connected to RoboRIO...");
-                    builder.AppendLine("Interface: " + m_connectionType);
-                    builder.Append("IP Address: " + m_connectionIp);
+                    builder.AppendLine("Interface: " + connected.ConnectionType);
+                    builder.Append("IP Address: " + connected.ConnectionIp);
                     OutputWriter.Instance.WriteLine(builder.ToString());
+                    connectionValues = connected;
                     return true;
                 }
                 else
@@ -112,12 +112,24 @@ namespace RobotDotNet.FRC_Extension
                     OutputWriter.Instance.WriteLine("Failed to Connect to RoboRIO...");
                     return false;
                 }
-            });
+        }
+
+        public class CodeReturnStruct
+        {
+            public string RobotExe { get; private set; }
+            public List<string> RobotFiles { get; private set; }
+
+            public CodeReturnStruct(string exe, List<string> files)
+            {
+                RobotExe = exe;
+                RobotFiles = files;
+            } 
         }
 
 
-        public bool BuildAndPrepareCode(bool debug, out string robotExe, out List<string> files)
+        public async Task<CodeReturnStruct> BuildAndPrepareCode(bool debug)
         {
+
             var writer = OutputWriter.Instance;
             //Build Code
             writer.WriteLine("Building Robot Code");
@@ -133,143 +145,108 @@ namespace RobotDotNet.FRC_Extension
                 //Switch to release
                 sb.SolutionConfigurations.Item("Release").Activate();
             }
-            sb.Build(true);
+            await Task.Run(() => sb.Build(true));
 
             //If Build Succeded
             if (sb.LastBuildInfo == 0)
             {
                 writer.WriteLine("Successfully Built Robot Code");
                 string path = GetStartupAssemblyPath();
-                robotExe = Path.GetFileName(path);
+                string robotExe = Path.GetFileName(path);
                 string buildDir = Path.GetDirectoryName(path);
 
 
                 writer.WriteLine("Parsing Robot Files");
                 //While connecting, parse all of the output files.
-                bool wpilib = false;
-                bool nt = false;
-                bool halbase = false;
-                bool halrio = false;
-                files = new List<string>();
+                List<string> files = new List<string>();
                 if (Directory.Exists(buildDir))
                 {
-                    foreach (string f in Directory.GetFiles(buildDir))
+                    await Task.Run(() =>
                     {
-                        if (DeployProperties.IgnoreFiles.Any(f.Contains))
-                            continue;
-                        if (f.Contains(".dll"))
-                        {
-                            // Special cases for HAL-Base, WPILib and NetworkTables. Also
-                            // ignoring any other HAL files.
-                            if (f.Contains("WPILib.dll"))
-                            {
-                                OutputWriter.Instance.WriteLine("Found WPILib");
-                                wpilib = true;
-                                files.Add(f);
-                                continue;
-                            }
-                            if (f.Contains("HAL-Base.dll"))
-                            {
-                                OutputWriter.Instance.WriteLine("Found HAL Base");
-                                halbase = true;
-                                files.Add(f);
-                                continue;
-                            }
-                            if (f.Contains("NetworkTables.dll"))
-                            {
-                                OutputWriter.Instance.WriteLine("Found Network Tables");
-                                nt = true;
-                                files.Add(f);
-                                continue;
-                            }
-                            if (f.Contains("HAL-RoboRIO.dll"))
-                            {
-                                OutputWriter.Instance.WriteLine("Found HAL RoboRIO");
-                                halrio = true;
-                                files.Add(f);
-                                continue;
-                            }
-                            if (f.Contains("HAL"))
-                            {
-                                continue;
-                            }
-
-                        }
-                        files.Add(f);
-                    }
+                        files.AddRange(Directory.GetFiles(buildDir).Where(f => !DeployProperties.IgnoreFiles.Any(f.Contains)));
+                    });
                 }
                 writer.WriteLine("Parsed All Files.");
-                if (nt && wpilib && halbase && halrio)
+
+                bool foundAll = true;
+
+                foreach (var requiredFile in DeployProperties.RequiredFiles)
+                {
+                    bool found = files.Any(file => file.Contains(requiredFile));
+                    if (!found)
+                    {
+                        //Did not find a required file.
+                        foundAll = false;
+                        writer.WriteLine($"Cound not find requred file: {requiredFile}");
+                    }
+                }
+
+                if (foundAll)
                 {
                     writer.WriteLine("Found all needed WPILib files.");
-                    return true;
+                    return new CodeReturnStruct(robotExe, files);
                 }
                 else
                 {
                     writer.WriteLine("Did not find all needed files. Canceling Deploy");
-                    return false;
+                    return null;
                 }
             }
             else
             {
                 writer.WriteLine("Code build failed. Canceling Deploy");
-                robotExe = null;
-                files = null;
-                return false;
+                return null;
             }
         }
 
-        public void GetConnectionInfos(out ConnectionInfo lvuser, out ConnectionInfo admin)
-        {
-            lvuser = m_lvuserConnectionInfo;
-            admin = m_adminConnectionInfo;
-        }
-
-        public bool DeployRobotFiles(List<string> files)
+        public async Task<bool> DeployRobotFiles(List<string> files)
         {
             OutputWriter.Instance.WriteLine("Deploying robot files");
-            return RoboRIOConnection.DeployFiles(files, DeployProperties.DeployDir, m_lvuserConnectionInfo);
+            return await RoboRIOConnection.DeployFiles(files, DeployProperties.DeployDir, ConnectionUser.LvUser);
         }
 
-        public void CreateMonoDirectory()
+        public async Task CreateMonoDirectory()
         {
             OutputWriter.Instance.WriteLine("Creating Mono Deploy Directory");
-            RoboRIOConnection.RunCommand($"mkdir -p {DeployProperties.DeployDir}", m_lvuserConnectionInfo);
+            await RoboRIOConnection.RunCommand($"mkdir -p {DeployProperties.DeployDir}", ConnectionUser.LvUser);
         }
 
-        public bool CheckMonoInstall()
+        public async Task<bool> CheckMonoInstall()
         {
             OutputWriter.Instance.WriteLine("Checking for Mono install");
-            var retVal = RoboRIOConnection.RunCommand($"test -e {DeployProperties.RoboRioMonoBin}", m_lvuserConnectionInfo);
+            var retVal =  await RoboRIOConnection.RunCommand($"test -e {DeployProperties.RoboRioMonoBin}", ConnectionUser.LvUser);
             return retVal.ExitStatus == 0;
         }
 
-        public bool CheckRoboRioImage()
+        public async Task<bool> CheckRoboRioImage()
         {
-            WebClient wc = new WebClient();
-
-            byte[] result = wc.UploadValues($"http://{m_connectionIp}/nisysapi/server", "POST", new NameValueCollection
+            using (WebClient wc = new WebClient())
             {
-                {"Function", "GetPropertiesOfItem" },
-                {"Plugins", "nisyscfg" },
-                {"Items", "system" }
-            });
 
-            var sstring = Encoding.Unicode.GetString(result);
+                byte[] result = await wc.UploadValuesTaskAsync($"http://{connectionValues.ConnectionIp}/nisysapi/server", "POST",
+                    new NameValueCollection
+                    {
+                        {"Function", "GetPropertiesOfItem"},
+                        {"Plugins", "nisyscfg"},
+                        {"Items", "system"}
+                    });
 
-            var doc = new XmlDocument();
-            doc.LoadXml(sstring);
+                var sstring = Encoding.Unicode.GetString(result);
 
-            var vals = doc.GetElementsByTagName("Property");
+                var doc = new XmlDocument();
+                doc.LoadXml(sstring);
 
-            string str = null;
+                var vals = doc.GetElementsByTagName("Property");
 
-            foreach (XmlElement val in vals.Cast<XmlElement>().Where(val => val.InnerText.Contains("FRC_roboRIO")))
-            {
-                str = val.InnerText;
+                string str = null;
+
+                foreach (XmlElement val in vals.Cast<XmlElement>().Where(val => val.InnerText.Contains("FRC_roboRIO")))
+                {
+                    str = val.InnerText;
+                }
+
+                return DeployProperties.RoboRioAllowedImages.Any(rio => str != null && str.Contains(rio.ToString()));
             }
-
-            return DeployProperties.RoboRioAllowedImages.Any(rio => str != null && str.Contains(rio.ToString()));
         }
 
         internal string GetStartupAssemblyPath()
@@ -297,11 +274,11 @@ namespace RobotDotNet.FRC_Extension
             return assemblyPath;
         }
 
-        public void UploadCode(string robotName, SettingsPageGrid page, bool debug)
+        public async Task UploadCode(string robotName, SettingsPageGrid page, bool debug)
         {
             if (page.Netconsole)
             {
-                StartNetConsole();
+                await StartNetConsole();
             }
             string deployedCmd;
             string deployedCmdFrame;
@@ -317,7 +294,7 @@ namespace RobotDotNet.FRC_Extension
             }
 
             //Must be run as admin, so is seperate
-            RoboRIOConnection.RunCommand("killall netconsole-host", m_adminConnectionInfo);
+            await RoboRIOConnection.RunCommand("killall netconsole-host", ConnectionUser.Admin);
 
             //Combining all other commands, since they should be safe running together.
             List<string> commands = new List<string>();
@@ -327,50 +304,54 @@ namespace RobotDotNet.FRC_Extension
                 commands.AddRange(DeployProperties.DebugFlagCommand);
             }
             commands.AddRange(DeployProperties.DeployKillCommand);
-            RoboRIOConnection.RunCommands(commands.ToArray(), m_lvuserConnectionInfo);
+            await RoboRIOConnection.RunCommands(commands.ToArray(), ConnectionUser.LvUser);
         }
 
         /// <summary>
         /// Starts NetConsole
         /// </summary>
-        public static void StartNetConsole()
+        public static async Task StartNetConsole()
         {
-            //If NetConsole is already running, don't do anything
-            if (System.Diagnostics.Process.GetProcessesByName("NetConsole.exe").Length == 0)
+            await Task.Run(() =>
             {
-                //Else Start Netconsole
-                //There are 2 locations it could be. Check both.
-                OutputWriter.Instance.WriteLine("Starting netconsole");
-                if (File.Exists(@"C:\Program Files (x86)\NetConsole for cRIO\NetConsole.exe"))
+                //If NetConsole is already running, don't do anything
+                if (System.Diagnostics.Process.GetProcessesByName("NetConsole.exe").Length == 0)
                 {
-                    try
+                    //Else Start Netconsole
+                    //There are 2 locations it could be. Check both.
+                    OutputWriter.Instance.WriteLine("Starting netconsole");
+                    if (File.Exists(@"C:\Program Files (x86)\NetConsole for cRIO\NetConsole.exe"))
                     {
-                        System.Diagnostics.Process.Start(@"C:\Program Files (x86)\NetConsole for cRIO\NetConsole.exe");
-                        OutputWriter.Instance.WriteLine("netconsole started.");
-                        return;
+                        try
+                        {
+                            System.Diagnostics.Process.Start(
+                                @"C:\Program Files (x86)\NetConsole for cRIO\NetConsole.exe");
+                            OutputWriter.Instance.WriteLine("netconsole started.");
+                            return;
+                        }
+                        catch
+                        {
+                            OutputWriter.Instance.WriteLine("Could not start netconsole");
+                            return;
+                        }
                     }
-                    catch
+                    if (File.Exists(@"C:\Program Files\NetConsole for cRIO\NetConsole.exe"))
                     {
-                        OutputWriter.Instance.WriteLine("Could not start netconsole");
-                        return;
+                        try
+                        {
+                            System.Diagnostics.Process.Start(@"C:\Program Files\NetConsole for cRIO\NetConsole.exe");
+                            OutputWriter.Instance.WriteLine("netconsole started.");
+                            return;
+                        }
+                        catch
+                        {
+                            OutputWriter.Instance.WriteLine("Could not start netconsole");
+                            return;
+                        }
                     }
+                    OutputWriter.Instance.WriteLine("Could not start netconsole");
                 }
-                if (File.Exists(@"C:\Program Files\NetConsole for cRIO\NetConsole.exe"))
-                {
-                    try
-                    {
-                        System.Diagnostics.Process.Start(@"C:\Program Files\NetConsole for cRIO\NetConsole.exe");
-                        OutputWriter.Instance.WriteLine("netconsole started.");
-                        return;
-                    }
-                    catch
-                    {
-                        OutputWriter.Instance.WriteLine("Could not start netconsole");
-                        return;
-                    }
-                }
-                OutputWriter.Instance.WriteLine("Could not start netconsole");
-            }
+            });
         }
     }
 }

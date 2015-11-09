@@ -68,7 +68,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
             {
                 using (var client = new TimeoutWebClient(1000))
                 {
-                    using (var stream = client.OpenRead(DeployProperties.MonoUrl))
+                    using (var stream = await client.OpenReadTaskAsync(DeployProperties.MonoUrl))
                     {
                         haveInternet = true;
                     }
@@ -156,8 +156,6 @@ namespace RobotDotNet.FRC_Extension.Buttons
             {
                 //We can deploy
                 await DeployMono(menuCommand);
-
-                //bool success = await m_monoFile.UnzipMonoFile();
             }
             else
             {
@@ -191,8 +189,6 @@ namespace RobotDotNet.FRC_Extension.Buttons
         {
             try
             {
-                await System.Threading.Tasks.Task.Run(() =>
-                {
                     SettingsPageGrid page;
                     string teamNumber = m_package.GetTeamNumber(out page);
 
@@ -207,14 +203,10 @@ namespace RobotDotNet.FRC_Extension.Buttons
                     DeployManager m = new DeployManager(m_package.PublicGetService(typeof(DTE)) as DTE);
                     MonoDeploy deploy = new MonoDeploy(teamNumber, m, m_monoFile);
 
-                    deploy.DeployMono();
+                    await deploy.DeployMono();
 
                     m_installing = false;
                     menuCommand.Visible = true;
-
-
-                });
-
 
             }
             catch (Exception ex)

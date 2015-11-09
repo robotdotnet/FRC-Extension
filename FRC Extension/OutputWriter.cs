@@ -9,7 +9,7 @@ namespace RobotDotNet.FRC_Extension
     /// <summary>
     /// This class allows us to create an output windows that the RoboRIO connector can interface with.
     /// </summary>
-    internal class OutputWriter : IProgress<int>
+    public class OutputWriter : IProgress<int>
     {
         private Window m_window = null;
         private IVsOutputWindowPane m_outputPane = null;

@@ -1,40 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.Shell;
 
 namespace RobotDotNet.FRC_Extension.Buttons
 {
-    public class SettingsButton
+    public class SettingsButton : ButtonBase
     {
-        private readonly OutputWriter m_output;
-
-        private readonly Frc_ExtensionPackage m_package;
-
-
-
-        public SettingsButton(Frc_ExtensionPackage package)
+        public SettingsButton(Frc_ExtensionPackage package) : base(package, false, GuidList.guidFRC_ExtensionCmdSet, (int)PkgCmdIDList.cmdidSettings)
         {
-            m_output = OutputWriter.Instance;
-            m_package = package;
-
-
-            OleMenuCommandService mcs =
-                m_package.PublicGetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if (null != mcs)
-            {
-                //For settings, we just want to pop up the standard settings menu.
-                CommandID settingsCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet,
-                    (int)PkgCmdIDList.cmdidSettings);
-                MenuCommand settingsItem = new MenuCommand(((sender, e) => OpenSettings()), settingsCommandID);
-                mcs.AddCommand(settingsItem);
-            }
         }
 
-        public void OpenSettings()
+        public override void ButtonCallback(object sender, EventArgs e)
         {
             m_package.ShowOptionPage(typeof(SettingsPageGrid));
         }

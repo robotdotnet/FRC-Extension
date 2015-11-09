@@ -161,8 +161,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Buttons\AboutButton.cs" />
-    <Compile Include="Buttons\DeployDebugButtons.cs" />
-    <Compile Include="Buttons\MonoButtons.cs" />
+    <Compile Include="Buttons\ButtonBase.cs" />
+    <Compile Include="Buttons\DeployDebugButton.cs" />
+    <Compile Include="Buttons\DownloadMonoButton.cs" />
+    <Compile Include="Buttons\InstallMonoButton.cs" />
     <Compile Include="Buttons\NetConsoleButton.cs" />
     <Compile Include="Buttons\SettingsButton.cs" />
     <Compile Include="MonoCode\MonoDeploy.cs" />

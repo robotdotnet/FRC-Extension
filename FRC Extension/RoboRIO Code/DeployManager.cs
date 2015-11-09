@@ -201,7 +201,7 @@ namespace RobotDotNet.FRC_Extension
 
         public async Task<bool> DeployRobotFiles(List<string> files)
         {
-            OutputWriter.Instance.WriteLine("Deploying robot files");
+            OutputWriter.Instance.WriteLine("m_deploying robot files");
             return await RoboRIOConnection.DeployFiles(files, DeployProperties.DeployDir, ConnectionUser.LvUser);
         }
 

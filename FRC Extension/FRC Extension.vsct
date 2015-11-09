@@ -34,7 +34,7 @@
     group; your package should define its own command set in order to avoid collisions  
     with command ids defined by other packages. -->
     <Menus>
-      <Menu guid="guidFRC_ExtensionCmdSet" id="TopLevelMenu" priority="0x700" type="Menu">
+      <Menu guid="guidFRC_ExtensionCmdSet" id="FRCMainMenu" priority="0x700" type="Menu">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS"/>
         <Strings>
           <ButtonText>FRC</ButtonText>
@@ -42,9 +42,9 @@
         </Strings>
       </Menu>
 
-      <Menu guid="guidFRC_ExtensionCmdSet" id="SubMenu"
+      <Menu guid="guidFRC_ExtensionCmdSet" id="MonoSubMenu"
       priority="0x1000" type="Menu">
-        <Parent guid="guidFRC_ExtensionCmdSet" id="MyMenuGroup"/>
+        <Parent guid="guidFRC_ExtensionCmdSet" id="FRCMainMenuGroup"/>
         <Strings>
           <ButtonText>Mono Tool</ButtonText>
           <CommandName>Mono Tool</CommandName>
@@ -58,15 +58,13 @@
          must be a menu. -->
     <Groups>
 
-      <Group guid="guidFRC_ExtensionCmdSet" id="MyMenuGroup" priority="0x0600">
-        <Parent guid="guidFRC_ExtensionCmdSet" id="TopLevelMenu"/>
+      <Group guid="guidFRC_ExtensionCmdSet" id="FRCMainMenuGroup" priority="0x0600">
+        <Parent guid="guidFRC_ExtensionCmdSet" id="FRCMainMenu"/>
       </Group>
 
-      <Group guid ="guidFRC_ExtensionCmdSet" id="SubMenuGroup" priority="0x0000">
-        <Parent guid ="guidFRC_ExtensionCmdSet" id="SubMenu"/>
+      <Group guid ="guidFRC_ExtensionCmdSet" id="MonoSubMenuGroup" priority="0x0000">
+        <Parent guid ="guidFRC_ExtensionCmdSet" id="MonoSubMenu"/>
       </Group>
-
-
 
     </Groups>
 
@@ -83,7 +81,7 @@
           If you do not want an image next to your command, remove the Icon node /> -->
 
       <Button guid="guidFRC_ExtensionCmdSet" id="cmdidDeployCode" priority="0x0100" type="Button">
-        <Parent guid="guidFRC_ExtensionCmdSet" id="MyMenuGroup" />
+        <Parent guid="guidFRC_ExtensionCmdSet" id="FRCMainMenuGroup" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
@@ -92,7 +90,7 @@
       </Button>
       
       <Button guid="guidFRC_ExtensionCmdSet" id="cmdidDebugCode" priority="0x0101" type="Button">
-        <Parent guid="guidFRC_ExtensionCmdSet" id="MyMenuGroup"/>
+        <Parent guid="guidFRC_ExtensionCmdSet" id="FRCMainMenuGroup"/>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
@@ -101,7 +99,7 @@
       </Button>
 
       <Button guid="guidFRC_ExtensionCmdSet" id="cmdidNetconsole" priority="0x0103" type="Button">
-        <Parent guid="guidFRC_ExtensionCmdSet" id="MyMenuGroup" />
+        <Parent guid="guidFRC_ExtensionCmdSet" id="FRCMainMenuGroup" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
@@ -111,7 +109,7 @@
       </Button>
 
       <Button guid="guidFRC_ExtensionCmdSet" id="cmdidSettings" priority="0x0102" type="Button">
-        <Parent guid="guidFRC_ExtensionCmdSet" id="MyMenuGroup" />
+        <Parent guid="guidFRC_ExtensionCmdSet" id="FRCMainMenuGroup" />
         <Strings>
           <ButtonText>Settings</ButtonText>
         </Strings>
@@ -119,7 +117,7 @@
       </Button>
 
       <Button guid="guidFRC_ExtensionCmdSet" id="cmdidAboutButton" priority="0x0110" type="Button">
-        <Parent guid="guidFRC_ExtensionCmdSet" id="MyMenuGroup" />
+        <Parent guid="guidFRC_ExtensionCmdSet" id="FRCMainMenuGroup" />
         <Strings>
           <ButtonText>About FRC Extension</ButtonText>
         </Strings>
@@ -130,7 +128,7 @@
       <Button guid="guidFRC_ExtensionCmdSet"
         id="cmdidDownloadMono" priority="0x0000"
       type="Button">
-        <Parent guid="guidFRC_ExtensionCmdSet" id="SubMenuGroup" />
+        <Parent guid="guidFRC_ExtensionCmdSet" id="MonoSubMenuGroup" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <CommandName>cmdidDownloadMono</CommandName>
@@ -142,7 +140,7 @@
       <Button guid="guidFRC_ExtensionCmdSet"
         id="cmdidInstallMono" priority="0x0000"
       type="Button">
-        <Parent guid="guidFRC_ExtensionCmdSet" id="SubMenuGroup" />
+        <Parent guid="guidFRC_ExtensionCmdSet" id="MonoSubMenuGroup" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <CommandName>cmdidInstallMono</CommandName>
@@ -177,15 +175,15 @@
 
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidFRC_ExtensionCmdSet" value="{65e4afe2-0805-4a28-8342-93fdea1b3758}">
-      <IDSymbol name="TopLevelMenu" value="0x1021"/>
-      <IDSymbol name="MyMenuGroup" value="0x1020" />
+      <IDSymbol name="FRCMainMenu" value="0x1021"/>
+      <IDSymbol name="FRCMainMenuGroup" value="0x1020" />
       <IDSymbol name="cmdidDeployCode" value="0x0100" />
       <IDSymbol name="cmdidNetconsole" value ="0x0103"/>
       <IDSymbol name="cmdidSettings" value="0x0102" />
       <IDSymbol name="cmdidDebugCode" value="0x0106"/>
       <IDSymbol name="cmdidAboutButton" value="0x0220"/>
-      <IDSymbol name="SubMenu" value="0x1100"/>
-      <IDSymbol name="SubMenuGroup" value="0x1150"/>
+      <IDSymbol name="MonoSubMenu" value="0x1100"/>
+      <IDSymbol name="MonoSubMenuGroup" value="0x1150"/>
       <IDSymbol name="cmdidDownloadMono" value="0x0104"/>
       <IDSymbol name="cmdidInstallMono" value="0x0105"/>
     </GuidSymbol>

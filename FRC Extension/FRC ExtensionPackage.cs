@@ -57,9 +57,9 @@ namespace RobotDotNet.FRC_Extension
 
         //Store our local variables so we can control certain functions
         private OutputWriter m_writer;
-        
-
         private MonoFile m_monoFile;
+
+
 
         internal object PublicGetService(Type serviceType)
         {
@@ -71,8 +71,13 @@ namespace RobotDotNet.FRC_Extension
             return GetDialogPage(dialogPageType);
         }
 
-        private DeployDebugButtons m_deployDebugButtons;
-        private MonoButtons m_monoButtons;
+        private DeployDebugButton m_deployButton;
+        private DeployDebugButton m_debugButton;
+
+        //private MonoButtons m_monoButtons;
+        private DownloadMonoButton m_downloadMonoButton;
+        private InstallMonoButton m_installMonoButton;
+
         private AboutButton m_aboutButton;
         private NetConsoleButton m_netConsoleButton;
         private SettingsButton m_settingsButton;
@@ -90,11 +95,22 @@ namespace RobotDotNet.FRC_Extension
             Debug.WriteLine (string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
             base.Initialize();
 
-            //Initialize our mono file
             m_writer = OutputWriter.Instance;
 
-            m_deployDebugButtons = new DeployDebugButtons(this);
-            m_monoButtons = new MonoButtons(this);
+
+            m_deployButton = new DeployDebugButton(this, (int)PkgCmdIDList.cmdidDeployCode, false);
+            m_debugButton = new DeployDebugButton(this, (int)PkgCmdIDList.cmdidDebugCode, true);
+
+            string monoFolder = WPILibFolderStructure.CreateMonoFolder();
+
+            string monoFile = monoFolder + Path.DirectorySeparatorChar + DeployProperties.MonoVersion;
+
+            m_monoFile = new MonoFile(monoFile);
+
+            m_downloadMonoButton = new DownloadMonoButton(this, m_monoFile);
+            m_installMonoButton = new InstallMonoButton(this, m_monoFile);
+
+
             m_aboutButton = new AboutButton(this);
             m_netConsoleButton = new NetConsoleButton(this);
             m_settingsButton = new SettingsButton(this);
@@ -102,14 +118,6 @@ namespace RobotDotNet.FRC_Extension
 
         }
         #endregion
-
-        
-
-        
-
-
-
-        
 
         internal string GetTeamNumber(out SettingsPageGrid page)
         {

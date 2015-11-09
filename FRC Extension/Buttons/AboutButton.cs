@@ -1,42 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace RobotDotNet.FRC_Extension.Buttons
 {
-    public class AboutButton
-    {
-        private readonly OutputWriter m_output;
+    public class AboutButton : ButtonBase
+    { 
 
-        private readonly Frc_ExtensionPackage m_package;
-
-
-
-        public AboutButton(Frc_ExtensionPackage package)
+        public AboutButton(Frc_ExtensionPackage package) : base(package, false, GuidList.guidFRC_ExtensionCmdSet, (int)PkgCmdIDList.cmdidAboutButton)
         {
-            m_output = OutputWriter.Instance;
-            m_package = package;
-
-
-            OleMenuCommandService mcs =
-                m_package.PublicGetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if (null != mcs)
-            {
-                //For settings, we just want to pop up the standard settings menu.
-                CommandID aboutCommandID = new CommandID(GuidList.guidFRC_ExtensionCmdSet,
-                    (int)PkgCmdIDList.cmdidAboutButton);
-                MenuCommand aboutItem = new MenuCommand(((sender, e) => OpenAbout()), aboutCommandID);
-                mcs.AddCommand(aboutItem);
-            }
         }
 
-        public void OpenAbout()
+        public override void ButtonCallback(object sender, EventArgs e)
         {
             //TODO: Get version
 

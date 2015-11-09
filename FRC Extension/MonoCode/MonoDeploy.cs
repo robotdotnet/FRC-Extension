@@ -53,7 +53,7 @@ namespace RobotDotNet.FRC_Extension.MonoCode
 
                     await RoboRIOConnection.RunCommand($"mkdir -p {DeployProperties.RoboRioOpgkLocation}", ConnectionUser.Admin);
 
-                    writer.WriteLine("Deploying Mono Files");
+                    writer.WriteLine("m_deploying Mono Files");
 
                     success = await RoboRIOConnection.DeployFiles(deployFiles, DeployProperties.RoboRioOpgkLocation, ConnectionUser.Admin);
 

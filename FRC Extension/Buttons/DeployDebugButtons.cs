@@ -53,8 +53,6 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 var dte = m_package.PublicGetService(typeof(DTE)) as DTE;
                 var sb = (SolutionBuild2)dte.Solution.SolutionBuild;
 
-
-
                 bool visable = false;
                 if (sb.StartupProjects != null)
                 {

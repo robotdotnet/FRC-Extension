@@ -12,6 +12,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using RobotDotNet.FRC_Extension.MonoCode;
 using RobotDotNet.FRC_Extension.WPILibFolder;
+using Task = System.Threading.Tasks.Task;
 
 namespace RobotDotNet.FRC_Extension.Buttons
 {
@@ -62,8 +63,97 @@ namespace RobotDotNet.FRC_Extension.Buttons
 
         private async void DownloadMonoCallback(object sender, EventArgs e)
         {
-            bool haveInternet = false;
+            var menuCommand = sender as OleMenuCommand;
+            if (menuCommand == null)
+            {
+                return;
+            }
 
+            if (!m_downloading)
+            {
+                try
+                {
+
+                    m_downloading = true;
+                    menuCommand.Visible = false;
+                    if (!(await CheckForInternetConnection()))
+                    {
+                        m_downloading = false;
+                        menuCommand.Visible = true;
+                        return;
+                    }
+
+                    string monoFolder = WPILibFolderStructure.CreateMonoFolder();
+
+                    string monoFile = monoFolder + Path.DirectorySeparatorChar + DeployProperties.MonoVersion;
+
+                    m_monoFile.FileName = monoFile;
+
+                    bool downloadNew = !m_monoFile.CheckFileValid();
+
+                    if (downloadNew)
+                    {
+                        m_output.ProgressBarLabel = "Downloading Mono";
+                        await m_monoFile.DownloadMono(m_output);
+
+                        //Verify Download
+                        bool verified = m_monoFile.CheckFileValid();
+
+                        if (verified)
+                        {
+                            // Show a Message Box to prove we were here
+                            IVsUIShell uiShell = (IVsUIShell)m_package.PublicGetService(typeof(SVsUIShell));
+                            Guid clsid = Guid.Empty;
+                            int result;
+                            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
+                                0,
+                                ref clsid,
+                                "Mono Successfully Downloaded",
+                                string.Format(CultureInfo.CurrentCulture, "", this.ToString()),
+                                string.Empty,
+                                0,
+                                OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
+                                OLEMSGICON.OLEMSGICON_INFO,
+                                0, // false
+                                out result));
+                        }
+                        else
+                        {
+                            // Show a Message Box to prove we were here
+                            IVsUIShell uiShell = (IVsUIShell)m_package.PublicGetService(typeof(SVsUIShell));
+                            Guid clsid = Guid.Empty;
+                            int result;
+                            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
+                                0,
+                                ref clsid,
+                                "Mono Download Failed. Please Try Again",
+                                string.Format(CultureInfo.CurrentCulture, "", this.ToString()),
+                                string.Empty,
+                                0,
+                                OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
+                                OLEMSGICON.OLEMSGICON_INFO,
+                                0, // false
+                                out result));
+                        }
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    m_output.WriteLine(ex.ToString());
+                    m_downloading = false;
+                    menuCommand.Visible = true;
+                }
+                m_downloading = false;
+                menuCommand.Visible = true;
+            }
+        }
+
+        private static async Task<bool> CheckForInternetConnection()
+        {
+            bool haveInternet;
             try
             {
                 using (var client = new TimeoutWebClient(1000))
@@ -79,65 +169,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 haveInternet = false;
             }
 
-            if (!haveInternet) return;
-
-
-            string monoFolder = WPILibFolderStructure.CreateMonoFolder();
-
-            string monoFile = monoFolder + Path.DirectorySeparatorChar + DeployProperties.MonoVersion;
-
-            m_monoFile.FileName = monoFile;
-
-            bool downloadNew = !m_monoFile.CheckFileValid();
-
-            if (downloadNew)
-            {
-                m_output.ProgressBarLabel = "Downloading Mono";
-                await m_monoFile.DownloadMono(m_output);
-
-                //Verify Download
-                bool verified = m_monoFile.CheckFileValid();
-
-                if (verified)
-                {
-                    // Show a Message Box to prove we were here
-                    IVsUIShell uiShell = (IVsUIShell)m_package.PublicGetService(typeof(SVsUIShell));
-                    Guid clsid = Guid.Empty;
-                    int result;
-                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
-                        0,
-                        ref clsid,
-                        "Mono Successfully Downloaded",
-                        string.Format(CultureInfo.CurrentCulture, "", this.ToString()),
-                        string.Empty,
-                        0,
-                        OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                        OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
-                        OLEMSGICON.OLEMSGICON_INFO,
-                        0, // false
-                        out result));
-                }
-                else
-                {
-                    // Show a Message Box to prove we were here
-                    IVsUIShell uiShell = (IVsUIShell)m_package.PublicGetService(typeof(SVsUIShell));
-                    Guid clsid = Guid.Empty;
-                    int result;
-                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
-                        0,
-                        ref clsid,
-                        "Mono Download Failed. Please Try Again",
-                        string.Format(CultureInfo.CurrentCulture, "", this.ToString()),
-                        string.Empty,
-                        0,
-                        OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                        OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
-                        OLEMSGICON.OLEMSGICON_INFO,
-                        0, // false
-                        out result));
-                }
-
-            }
+            return haveInternet;
         }
 
         private async void InstallMonoCallback(object sender, EventArgs e)
@@ -148,44 +180,65 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 return;
             }
 
-            bool properFileExists = true;
-
-            properFileExists = m_monoFile.CheckFileValid();
-
-            if (properFileExists)
+            if (!m_installing)
             {
-                //We can deploy
-                await DeployMono(menuCommand);
-            }
-            else
-            {
-                //Ask to see if we want to load the file or download it
-                string retVal = LoadMonoPopup();
-
-                if (!string.IsNullOrEmpty(retVal))
+                try
                 {
-                    //Check for valid file.
+                    bool properFileExists = true;
+
                     properFileExists = m_monoFile.CheckFileValid();
 
                     if (properFileExists)
                     {
                         //We can deploy
+                        m_installing = true;
+                        menuCommand.Visible = false;
                         await DeployMono(menuCommand);
+                        m_installing = false;
+                        menuCommand.Visible = true;
                     }
                     else
                     {
-                        InvalidMonoPopup();
-                    }
+                        //Ask to see if we want to load the file or download it
+                        string retVal = LoadMonoPopup();
 
+                        if (!string.IsNullOrEmpty(retVal))
+                        {
+                            //Check for valid file.
+                            properFileExists = m_monoFile.CheckFileValid();
+
+                            if (properFileExists)
+                            {
+                                //We can deploy
+                                m_installing = true;
+                                menuCommand.Visible = false;
+                                await DeployMono(menuCommand);
+                                m_installing = false;
+                                menuCommand.Visible = true;
+                            }
+                            else
+                            {
+                                InvalidMonoPopup();
+                            }
+
+                        }
+                        else
+                        {
+                            DownloadMonoPopup();
+                        }
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    DownloadMonoPopup();
+                    m_output.WriteLine(ex.ToString());
+                    m_installing = false;
+                    menuCommand.Visible = true;
+                    m_output.ProgressBarLabel = "Mono Install Failed";
                 }
             }
         }
 
-        private async System.Threading.Tasks.Task DeployMono(OleMenuCommand menuCommand)
+        private async Task DeployMono(OleMenuCommand menuCommand)
         {
             try
             {

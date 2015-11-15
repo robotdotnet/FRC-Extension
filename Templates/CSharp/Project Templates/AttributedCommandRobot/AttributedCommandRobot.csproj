@@ -73,6 +73,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\ExampleAutonomousCommand.cs" />
+    <Compile Include="Commands\ExampleCommand.cs" />
+    <Compile Include="RobotMap.cs" />
+    <Compile Include="Subsystems\ExampleSubsystem.cs" />
     <None Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

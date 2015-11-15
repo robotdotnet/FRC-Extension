@@ -2,7 +2,7 @@
 <VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
   <TemplateData>
     <Name>Attributed Command Robot</Name>
-    <Description>A robot project that uses .NET attributes to enable command based functionality.</Description>
+    <Description>A robot project that uses .NET attributes to enable set up commands and subsystems without requiring extra code.</Description>
     <Icon>AttributedCommandRobot.ico</Icon>
     <ProjectType>CSharp</ProjectType>
     <RequiredFrameworkVersion>4.5</RequiredFrameworkVersion>
@@ -17,6 +17,9 @@
       <ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
       <ProjectItem ReplaceParameters="true" TargetFileName="$safeprojectname$.cs" OpenInEditor="true">Robot.cs</ProjectItem>
       <ProjectItem ReplaceParameters="true">Program.cs</ProjectItem>
+      <ProjectItem ReplaceParameters="true">Commands/ExampleAutonomousCommand.cs</ProjectItem>
+      <ProjectItem ReplaceParameters="true">Commands/ExampleCommand.cs</ProjectItem>
+      <ProjectItem ReplaceParameters="true">Subsystems/ExampleSubsystem.cs</ProjectItem>
     </Project>
   </TemplateContent>
   <WizardExtension>

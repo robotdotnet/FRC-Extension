@@ -2,6 +2,7 @@
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -73,10 +74,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\ExampleAutonomousCommand.cs" />
-    <Compile Include="Commands\ExampleCommand.cs" />
-    <Compile Include="RobotMap.cs" />
-    <Compile Include="Subsystems\ExampleSubsystem.cs" />
+    <None Include="Commands\ExampleAutonomousCommand.cs" />
+    <None Include="Commands\ExampleCommand.cs" />
+    <None Include="RobotMap.cs" />
+    <None Include="Subsystems\ExampleSubsystem.cs" />
     <None Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

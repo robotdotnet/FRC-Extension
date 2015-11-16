@@ -201,9 +201,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="packages\FRC.NetworkTables.2016.0.0.97.nupkg" />
-    <None Include="packages\FRC.WPILib.2016.0.0.29.nupkg" />
-    <None Include="packages\FRC.WPILib.Extras.2016.0.0.29.nupkg" />
+    <Content Include="packages\FRC.NetworkTables.2016.0.0.97.nupkg">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="packages\FRC.WPILib.2016.0.0.29.nupkg">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="packages\FRC.WPILib.Extras.2016.0.0.29.nupkg">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>

@@ -51,12 +51,12 @@ namespace RobotDotNet.FRC_Extension
         public const string CommandDir = "/home/lvuser";
 
         public static readonly string RobotCommandDebug =
-            "env LD_PRELOAD=/lib/libstdc++.so.6.0.20 /usr/local/frc/bin/netconsole-host mono --debug " + DeployDir + "/{0}";
+            "env LD_PRELOAD=/lib/libstdc++.so.6.0.20 /usr/local/frc/bin/netconsole-host mono --debug \"" + DeployDir + "/{0}\"";
 
         public const string RobotCommandDebugFileName = "robotDebugCommand";
 
         public static readonly string RobotCommand =
-            "env LD_PRELOAD=/lib/libstdc++.so.6.0.20 /usr/local/frc/bin/netconsole-host mono " + DeployDir + "/{0}";
+            "env LD_PRELOAD=/lib/libstdc++.so.6.0.20 /usr/local/frc/bin/netconsole-host mono \"" + DeployDir + "/{0}\"";
 
         public const string RobotCommandFileName = "robotCommand";
 

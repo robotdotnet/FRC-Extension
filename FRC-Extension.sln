@@ -3,41 +3,41 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FRC-Extension", "FRC-Extension\FRC-Extension.csproj", "{D68E4367-9381-4140-B090-7445E4BD3073}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{B9F75D30-BCEA-499B-AC12-2A89253CAD51}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CSharp", "CSharp", "{9F7C36BB-948A-402D-BAB2-6FEBECC792EC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Item Templates", "Item Templates", "{B4F71629-51D2-4DB7-9122-55A872235A47}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ItemTemplates", "ItemTemplates", "{B4F71629-51D2-4DB7-9122-55A872235A47}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commands", "Commands", "{BEC57D35-61CB-496A-BB37-85DD187880DF}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Project Templates", "Project Templates", "{B6DC656B-5E9A-4230-BD9E-A52B134BD0B5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProjectTemplates", "ProjectTemplates", "{B6DC656B-5E9A-4230-BD9E-A52B134BD0B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandRobot", "Templates\CSharp\Project Templates\CommandRobot\CommandRobot.csproj", "{C8E54708-3CD1-426B-9A89-9CDE8BED7845}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandRobot", "Templates\CSharp\Project-Templates\CommandRobot\CommandRobot.csproj", "{C8E54708-3CD1-426B-9A89-9CDE8BED7845}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IterativeRobot", "Templates\CSharp\Project Templates\IterativeRobot\IterativeRobot.csproj", "{67898DB3-7BF6-4654-A9EA-B7AE87385E88}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IterativeRobot", "Templates\CSharp\Project-Templates\IterativeRobot\IterativeRobot.csproj", "{67898DB3-7BF6-4654-A9EA-B7AE87385E88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleRobot", "Templates\CSharp\Project Templates\SampleRobot\SampleRobot.csproj", "{D92655E3-184C-407A-9E08-95F40898C16B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleRobot", "Templates\CSharp\Project-Templates\SampleRobot\SampleRobot.csproj", "{D92655E3-184C-407A-9E08-95F40898C16B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SingletonClass", "Templates\CSharp\Item Templates\SingleInstanceClass\SingletonClass.csproj", "{4321F0E6-FC2E-4770-8556-ADE409AB53A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SingletonClass", "Templates\CSharp\Item-Templates\SingleInstanceClass\SingletonClass.csproj", "{4321F0E6-FC2E-4770-8556-ADE409AB53A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPILibClass", "Templates\CSharp\Item Templates\WPILibClass\WPILibClass.csproj", "{4D1A696E-490D-49BE-987C-5A6FE3B65B7E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPILibClass", "Templates\CSharp\Item-Templates\WPILibClass\WPILibClass.csproj", "{4D1A696E-490D-49BE-987C-5A6FE3B65B7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Command", "Templates\CSharp\Item Templates\Commands\Command\Command.csproj", "{C5C8649D-8F84-4E61-B387-618A54E2803B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Command", "Templates\CSharp\Item-Templates\Commands\Command\Command.csproj", "{C5C8649D-8F84-4E61-B387-618A54E2803B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandGroup", "Templates\CSharp\Item Templates\Commands\CommandGroup\CommandGroup.csproj", "{7AEF40FB-9D0E-467B-A8D2-16237C64648B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandGroup", "Templates\CSharp\Item-Templates\Commands\CommandGroup\CommandGroup.csproj", "{7AEF40FB-9D0E-467B-A8D2-16237C64648B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PIDSubsystem", "Templates\CSharp\Item Templates\Commands\PIDSubsystem\PIDSubsystem.csproj", "{263618AC-BE45-4C95-AFEB-6E613628FA93}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PIDSubsystem", "Templates\CSharp\Item-Templates\Commands\PIDSubsystem\PIDSubsystem.csproj", "{263618AC-BE45-4C95-AFEB-6E613628FA93}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Subsystem", "Templates\CSharp\Item Templates\Commands\Subsystem\Subsystem.csproj", "{EC287D7C-FFA4-4FC5-8EBD-DE45AC9B487B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Subsystem", "Templates\CSharp\Item-Templates\Commands\Subsystem\Subsystem.csproj", "{EC287D7C-FFA4-4FC5-8EBD-DE45AC9B487B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trigger", "Templates\CSharp\Item Templates\Commands\Trigger\Trigger.csproj", "{EBD6627A-7F9F-4828-9A6A-CFFFDD8FA58B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trigger", "Templates\CSharp\Item-Templates\Commands\Trigger\Trigger.csproj", "{EBD6627A-7F9F-4828-9A6A-CFFFDD8FA58B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FRC Extension", "FRC Extension\FRC Extension.csproj", "{D68E4367-9381-4140-B090-7445E4BD3073}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AttributedCommandRobot", "Templates\CSharp\Project-Templates\AttributedCommandRobot\AttributedCommandRobot.csproj", "{E2A270CB-4CC1-41E8-8AB1-B643B6F818A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AttributedCommandRobot", "Templates\CSharp\Project Templates\AttributedCommandRobot\AttributedCommandRobot.csproj", "{E2A270CB-4CC1-41E8-8AB1-B643B6F818A4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabVIEWRobot", "Templates\CSharp\Project Templates\LabVIEWRobot\LabVIEWRobot.csproj", "{D9803506-1439-43BB-B553-62DB3841B6F9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabVIEWRobot", "Templates\CSharp\Project-Templates\LabVIEWRobot\LabVIEWRobot.csproj", "{D9803506-1439-43BB-B553-62DB3841B6F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

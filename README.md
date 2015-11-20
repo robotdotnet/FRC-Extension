@@ -47,3 +47,7 @@ When you create a new project, under the CSharp category, you will see an FRC me
 Item Templates
 --------------
 When you are inside a project, if you right click on the project or a folder and select "Add New Item", in that menu there will be an FRC category where you can find the item templates.
+
+License
+=======
+See [LICENSE.txt](LICENSE.txt)

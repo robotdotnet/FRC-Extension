@@ -50,4 +50,4 @@ When you are inside a project, if you right click on the project or a folder and
 
 License
 =======
-See [LICENSE.txt](LICENSE.txt)
+See [LICENSE.txt](FRC Extension/LICENSE.txt)

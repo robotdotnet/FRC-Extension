@@ -201,6 +201,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <Content Include="LICENSE.txt">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="packages\FRC.NetworkTables.2016.0.0.97.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

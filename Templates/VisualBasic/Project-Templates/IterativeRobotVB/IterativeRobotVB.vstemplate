@@ -1,0 +1,33 @@
+﻿<VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <Name>Iterative Robot</Name>
+    <Description>A robot project used for small sample programs or for hightly advanced programs with more complete control over program flow.</Description>
+    <Icon>IterativeRobotVB.ico</Icon>
+    <ProjectType>VisualBasic</ProjectType>
+    <TemplateID>1ba5985b-aed7-46fd-9333-d3048dee8116</TemplateID>
+    <SortOrder>1000</SortOrder>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>Robot</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+    <RequiredFrameworkVersion>4.5</RequiredFrameworkVersion>
+  </TemplateData>
+  <TemplateContent>
+    <Project File="ProjectTemplate.vbproj" ReplaceParameters="true">
+      <ProjectItem ReplaceParameters="true" TargetFileName="My Project\AssemblyInfo.vb">AssemblyInfo.vb</ProjectItem>
+      <ProjectItem ReplaceParameters="true" TargetFileName="$safeprojectname$.vb" OpenInEditor="true">Robot.vb</ProjectItem>
+      <ProjectItem ReplaceParameters="true">Program.vb</ProjectItem>
+    </Project>
+  </TemplateContent>
+  <WizardExtension>
+    <Assembly>NuGet.VisualStudio.Interop, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</Assembly>
+    <FullClassName>NuGet.VisualStudio.TemplateWizard</FullClassName>
+  </WizardExtension>
+  <WizardData>
+    <packages repository="extension"
+          repositoryId="FRC_Extension">
+      <package id="FRC.WPILib" version="2016.0.0.29"/>
+      <package id="FRC.NetworkTables" version="2016.0.0.97"/>
+    </packages>
+  </WizardData>
+</VSTemplate>

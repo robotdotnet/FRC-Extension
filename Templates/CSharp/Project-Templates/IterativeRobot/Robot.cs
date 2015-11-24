@@ -6,41 +6,42 @@ using WPILib;
 
 namespace $safeprojectname$
 {
-    /**
-     * The VM is configured to automatically run this class, and to call the
-     * functions corresponding to each mode, as described in the IterativeRobot
-     * documentation. 
-     */
+    /// <summary>
+    /// The VM is configured to automatically run this class, and to call the
+    /// functions corresponding to each mode, as described in the IterativeRobot
+    /// documentation. 
+    /// </summary>
     public class $safeprojectname$ : IterativeRobot
     {
-        /**
-         * This function is run when the robot is first started up and should be
-         * used for any initialization code.
-         */
+
+        /// <summary>
+        /// This function is run when the robot is first started up and should be
+        /// used for any initialization code.
+        /// </summary>
         public override void RobotInit()
         {
-            
+
         }
 
-        /**
-         * This function is called periodically during autonomous
-         */
+        /// <summary>
+        /// This function is called periodically during autonomous
+        /// </summary>
         public override void AutonomousPeriodic()
         {
 
         }
 
-        /**
-         * This function is called periodically during operator control
-         */
+        /// <summary>
+        /// This function is called periodically during operator control
+        /// </summary>
         public override void TeleopPeriodic() 
         {
-        
+
         }
     
-        /**
-         * This function is called periodically during test mode
-         */
+        /// <summary>
+        /// This function is called periodically during test mode
+        /// </summary>
         public override void TestPeriodic() 
         {
     

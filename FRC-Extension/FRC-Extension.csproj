@@ -35,7 +35,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RobotDotNet.FRC_Extension</RootNamespace>
-    <AssemblyName>FRC Extension</AssemblyName>
+    <AssemblyName>FRC-Extension</AssemblyName>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
@@ -245,6 +245,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Templates\VisualBasic\Project-Templates\IterativeRobotVB\IterativeRobotVB.vbproj">
+      <Project>{F6724218-0C31-4428-A217-B4318E3026B2}</Project>
+      <Name>IterativeRobotVB</Name>
+      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
     <ProjectReference Include="..\Templates\CSharp\Project-Templates\AttributedCommandRobot\AttributedCommandRobot.csproj">
       <Project>{E2A270CB-4CC1-41E8-8AB1-B643B6F818A4}</Project>
       <Name>AttributedCommandRobot</Name>

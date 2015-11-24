@@ -22,7 +22,7 @@ Offline Installation
 The offline link to the extension can be found here.
 https://visualstudiogallery.msdn.microsoft.com/7c7f4cd1-e4bc-43bb-a9f1-072c6f1197d9
 
-To install offline, download this, and install the downloaded file.
+To install offline, download this, and install the downloaded file. This can also be used to update the extension offline.
 
 
 Usage
@@ -30,7 +30,7 @@ Usage
 
 This plugin adds 3 things.
 
-1. FRC Menu Item, which allows users to deploy robot code.
+1. FRC Menu Item, which allows users to deploy robot code, in addition to downloading and installing Mono onto the RoboRIO.
 
 2. Project templates, which already include the WPILib references in them.
 
@@ -38,6 +38,9 @@ This plugin adds 3 things.
 
 Menu Extension
 -------------
+In the FRC menu, the Settings button and the Mono folder will always exist. The Deploy and Debug buttons will only show up if you are in a WPILib project. The Netconsole button will only show up if Netconsole is detected.
+
+Upon first attempt at deploying mono or a robot project, the extention will ask you to set your team number.
 
 
 Project Templates

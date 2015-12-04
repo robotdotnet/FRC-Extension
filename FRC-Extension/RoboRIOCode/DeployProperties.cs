@@ -30,7 +30,7 @@ namespace RobotDotNet.FRC_Extension
         public const string RoboRioMonoBin = "/usr/bin/mono";
 
         public const string RioImageSearchString = "FRC_roboRIO";
-        public static readonly int[] RoboRioAllowedImages = { 23 };
+        public static readonly int[] RoboRioAllowedImages = { 15 };
 
         public static readonly string[] IgnoreFiles =
         {
@@ -43,20 +43,19 @@ namespace RobotDotNet.FRC_Extension
         public static readonly string[] RequiredFiles =
         {
             "WPILib.dll",
-            "HAL-Base.dll",
-            "HAL-RoboRIO.dll",
+            "HAL.dll",
             "NetworkTables.dll",
         };
 
         public const string CommandDir = "/home/lvuser";
 
         public static readonly string RobotCommandDebug =
-            "env LD_PRELOAD=/lib/libstdc++.so.6.0.20 /usr/local/frc/bin/netconsole-host mono --debug \"" + DeployDir + "/{0}\"";
+            "env LD_LIBRARY_PATH=/usr/local/frc/rpath-lib/ /usr/local/frc/bin/netconsole-host mono --debug \"" + DeployDir + "/{0}\"";
 
         public const string RobotCommandDebugFileName = "robotDebugCommand";
 
         public static readonly string RobotCommand =
-            "env LD_PRELOAD=/lib/libstdc++.so.6.0.20 /usr/local/frc/bin/netconsole-host mono \"" + DeployDir + "/{0}\"";
+            "env LD_LIBRARY_PATH=/usr/local/frc/rpath-lib/ /usr/local/frc/bin/netconsole-host mono \"" + DeployDir + "/{0}\"";
 
         public const string RobotCommandFileName = "robotCommand";
 

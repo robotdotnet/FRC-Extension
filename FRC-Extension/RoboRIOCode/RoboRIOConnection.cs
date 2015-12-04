@@ -45,7 +45,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIO_Code
     {
 
 
-        public const string RoboRioMdnsFormatString = "roborio-{0}.local";
+        public const string RoboRioMdnsFormatString = "roborio-{0}-FRC.local";
         public const string RoboRioUSBIp = "172.22.11.2";
         public const string RoboRioIpFormatString = "10.{0}.{1}.2";
 

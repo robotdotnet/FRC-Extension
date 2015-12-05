@@ -294,7 +294,8 @@ namespace RobotDotNet.FRC_Extension
             }
 
             //Must be run as admin, so is seperate
-            await RoboRIOConnection.RunCommand("killall netconsole-host", ConnectionUser.Admin);
+            //Check to see if the thing below is in the official extension.
+            //await RoboRIOConnection.RunCommand("killall netconsole-host", ConnectionUser.Admin);
 
             //Combining all other commands, since they should be safe running together.
             List<string> commands = new List<string>();

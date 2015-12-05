@@ -28,7 +28,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
             {
                 try
                 {
-                    m_output.ProgressBarLabel = "m_deploying Robot Code";
+                    m_output.ProgressBarLabel = "Deploying Robot Code";
 
                     SettingsPageGrid page;
                     string teamNumber = m_package.GetTeamNumber(out page);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using EnvDTE;
 using EnvDTE80;
@@ -9,12 +10,32 @@ namespace RobotDotNet.FRC_Extension.Buttons
 {
     public class DeployDebugButton : ButtonBase
     {
-        protected bool m_debugButton;
-        protected bool m_deploying = false;
+        protected readonly bool m_debugButton;
+        protected static bool s_deploying = false;
+        protected static readonly List<OleMenuCommand> s_deployCommands = new List<OleMenuCommand>();
 
         public DeployDebugButton(Frc_ExtensionPackage package, int pkgCmdIdOfButton, bool debug) : base(package, true, GuidList.guidFRC_ExtensionCmdSet, pkgCmdIdOfButton)
         {
             m_debugButton = debug;
+            s_deployCommands.Add(m_oleMenuItem);
+        }
+
+        private void DisableAllButtons()
+        {
+            foreach (var oleMenuCommand in s_deployCommands)
+            {
+                oleMenuCommand.Visible = false;
+            }
+            s_deploying = true;
+        }
+
+        private void EnableAllButtons()
+        {
+            foreach (var oleMenuCommand in s_deployCommands)
+            {
+                oleMenuCommand.Visible = true;
+            }
+            s_deploying = false;
         }
 
         public override async void ButtonCallback(object sender, EventArgs e)
@@ -24,7 +45,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
             {
                 return;
             }
-            if (!m_deploying)
+            if (!s_deploying)
             {
                 try
                 {
@@ -35,20 +56,17 @@ namespace RobotDotNet.FRC_Extension.Buttons
 
                     if (teamNumber == null) return;
 
-                    //Disable the deploy button
-                    m_deploying = true;
-                    menuCommand.Visible = false;
+                    //Disable the deploy buttons
+                    DisableAllButtons();
                     DeployManager m = new DeployManager(m_package.PublicGetService(typeof(DTE)) as DTE);
                     await m.DeployCode(teamNumber, page, m_debugButton);
-                    m_deploying = false;
-                    menuCommand.Visible = true;
+                    EnableAllButtons();
                     m_output.ProgressBarLabel = "Robot Code Deploy Successful";
                 }
                 catch (Exception ex)
                 {
                     m_output.WriteLine(ex.ToString());
-                    m_deploying = false;
-                    menuCommand.Visible = true;
+                    EnableAllButtons();
                     m_output.ProgressBarLabel = "Robot Code Deploy Failed";
                 }
 
@@ -78,7 +96,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
                         }
                     }
                 }
-                if (m_deploying)
+                if (s_deploying)
                     visable = false;
 
                 menuCommand.Visible = visable;

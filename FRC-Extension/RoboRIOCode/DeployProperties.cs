@@ -13,10 +13,10 @@ namespace RobotDotNet.FRC_Extension
         public const string DeployDir = "/home/lvuser/mono";
         public static readonly string[] DeployKillCommand =
         {
-            "[ ! -f /var/local/natinst/log/FRC_UserProgram.log ] || rm -f /var/local/natinst/log/FRC_UserProgram.log",
-            $"chown -R lvuser:ni {DeployDir}",
-            ". /etc/profile.d/natinst-path.sh",
-            "/usr/local/frc/bin/frcKillRobot.sh -t -r"
+            //"[ ! -f /var/local/natinst/log/FRC_UserProgram.log ] || rm -f /var/local/natinst/log/FRC_UserProgram.log",
+            //$"chown -R lvuser:ni {DeployDir}",
+            ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r",
+            //"/usr/local/frc/bin/frcKillRobot.sh -t -r"
         };
 
         public const string DebugFlagDir = "/tmp/";

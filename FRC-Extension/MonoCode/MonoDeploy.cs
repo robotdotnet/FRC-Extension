@@ -53,7 +53,7 @@ namespace RobotDotNet.FRC_Extension.MonoCode
 
                     await RoboRIOConnection.RunCommand($"mkdir -p {DeployProperties.RoboRioOpgkLocation}", ConnectionUser.Admin);
 
-                    writer.WriteLine("m_deploying Mono Files");
+                    writer.WriteLine("Deploying Mono Files");
 
                     success = await RoboRIOConnection.DeployFiles(deployFiles, DeployProperties.RoboRioOpgkLocation, ConnectionUser.Admin);
 
@@ -67,8 +67,9 @@ namespace RobotDotNet.FRC_Extension.MonoCode
                     var monoRet = await RoboRIOConnection.RunCommand(DeployProperties.OpkgInstallCommand, ConnectionUser.Admin);
 
                     //Check for success.
+                    bool monoSuccess = await m_deployManager.CheckMonoInstall();
 
-                    if (await m_deployManager.CheckMonoInstall())
+                    if (monoSuccess)
                     {
                         writer.WriteLine("Mono Installed Successfully");
                     }
@@ -77,9 +78,10 @@ namespace RobotDotNet.FRC_Extension.MonoCode
                         writer.WriteLine("Mono not installed successfully");
                     }
 
-                    //TODO : Cleanup files on RIO
-
+                    //Removing ipk files from the RoboRIO
                     await RoboRIOConnection.RunCommand($"rm -rf {DeployProperties.RoboRioOpgkLocation}", ConnectionUser.Admin);
+
+                    writer.WriteLine("Done. You may now deploy code to your robot.");
                 }
                 else
                 {

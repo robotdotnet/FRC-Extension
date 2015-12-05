@@ -31,6 +31,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
             {
                 try
                 {
+                    m_monoFile.ResetToDefaultDirectory();
                     bool properFileExists = true;
 
                     properFileExists = m_monoFile.CheckFileValid();
@@ -51,6 +52,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
 
                         if (!string.IsNullOrEmpty(retVal))
                         {
+                            m_monoFile.FileName = retVal;
                             //Check for valid file.
                             properFileExists = m_monoFile.CheckFileValid();
 

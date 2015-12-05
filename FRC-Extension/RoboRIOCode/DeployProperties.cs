@@ -49,26 +49,23 @@ namespace RobotDotNet.FRC_Extension
 
         public const string CommandDir = "/home/lvuser";
 
-        public static readonly string RobotCommandDebug =
-            "env LD_LIBRARY_PATH=/usr/local/frc/rpath-lib/ /usr/local/frc/bin/netconsole-host mono --debug \"" + DeployDir + "/{0}\"";
+        public const string RobotCommandDebug = "env LD_LIBRARY_PATH=/usr/local/frc/rpath-lib/ /usr/local/frc/bin/netconsole-host mono --debug \"" + DeployDir + "/{0}\"";
 
         public const string RobotCommandDebugFileName = "robotDebugCommand";
 
-        public static readonly string RobotCommand =
-            "env LD_LIBRARY_PATH=/usr/local/frc/rpath-lib/ /usr/local/frc/bin/netconsole-host mono \"" + DeployDir + "/{0}\"";
+        public const string RobotCommand = "env LD_LIBRARY_PATH=/usr/local/frc/rpath-lib/ /usr/local/frc/bin/netconsole-host mono \"" + DeployDir + "/{0}\"";
 
         public const string RobotCommandFileName = "robotCommand";
 
-        public const string MonoMd5 = "145126881924420175520132501465663102223";
+        public const string MonoMd5 = "1852022171552091945152452461853193134197150";
 
-        public const string MonoVersion = "Mono4.0.1.zip";
+        public const string MonoVersion = "Mono4.2.1.zip";
 
         public const string MonoUrl = "https://dl.bintray.com/robotdotnet-admin/Mono/";
 
-
         public const string RoboRioOpgkLocation = "/home/admin/opkg";
 
-        public const string OpkgInstallCommand = "opgk install *.ipk";
+        public static readonly string OpkgInstallCommand = $"opkg install {RoboRioOpgkLocation}/*.ipk";
 
     }
 }

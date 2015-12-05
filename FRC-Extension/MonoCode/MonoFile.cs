@@ -27,6 +27,12 @@ namespace RobotDotNet.FRC_Extension.MonoCode
             m_extractPath = monoFolder + Path.DirectorySeparatorChar + "temp";
         }
 
+        public void ResetToDefaultDirectory()
+        {
+            string monoFolder = WPILibFolderStructure.CreateMonoFolder();
+            FileName = monoFolder + Path.DirectorySeparatorChar + DeployProperties.MonoVersion;
+        }
+
         private string Md5Sum()
         {
             byte[] fileMd5Sum = null;
@@ -72,6 +78,7 @@ namespace RobotDotNet.FRC_Extension.MonoCode
         public bool CheckFileValid()
         {
             string fileSum = Md5Sum();
+            OutputWriter.Instance.WriteLine(fileSum);
 
             return fileSum != null && fileSum.Equals(DeployProperties.MonoMd5);
         }

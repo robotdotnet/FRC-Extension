@@ -44,11 +44,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
                         return;
                     }
 
-                    string monoFolder = WPILibFolderStructure.CreateMonoFolder();
-
-                    string monoFile = monoFolder + Path.DirectorySeparatorChar + DeployProperties.MonoVersion;
-
-                    m_monoFile.FileName = monoFile;
+                    m_monoFile.ResetToDefaultDirectory();
 
                     bool downloadNew = !m_monoFile.CheckFileValid();
 

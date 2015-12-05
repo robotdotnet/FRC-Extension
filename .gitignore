@@ -7,7 +7,7 @@
 *.sln.docstates
 
 #Upload user file only for the extension
-!FRC Extension.csproj.user
+!FRC-Extension.csproj.user
 
 # Build results
 [Dd]ebug/

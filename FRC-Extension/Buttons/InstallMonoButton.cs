@@ -19,6 +19,11 @@ namespace RobotDotNet.FRC_Extension.Buttons
             m_monoFile = monoFile;
         }
 
+        internal OleMenuCommand GetMenuCommand()
+        {
+            return m_oleMenuItem;
+        }
+
         public override async void ButtonCallback(object sender, EventArgs e)
         {
             var menuCommand = sender as OleMenuCommand;
@@ -59,11 +64,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
                             if (properFileExists)
                             {
                                 //We can deploy
-                                m_installing = true;
-                                menuCommand.Visible = false;
                                 await DeployMono(menuCommand);
-                                m_installing = false;
-                                menuCommand.Visible = true;
                             }
                             else
                             {
@@ -86,7 +87,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 }
             }
         }
-        private async Task DeployMono(OleMenuCommand menuCommand)
+        internal async Task DeployMono(OleMenuCommand menuCommand)
         {
             try
             {

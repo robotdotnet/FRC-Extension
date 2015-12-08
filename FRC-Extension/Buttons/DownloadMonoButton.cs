@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using RobotDotNet.FRC_Extension.MonoCode;
-using RobotDotNet.FRC_Extension.WPILibFolder;
 
 namespace RobotDotNet.FRC_Extension.Buttons
 {
@@ -14,11 +13,13 @@ namespace RobotDotNet.FRC_Extension.Buttons
     {
         private readonly MonoFile m_monoFile;
         private bool m_downloading = false;
+        private readonly InstallMonoButton m_installButton;
 
-        public DownloadMonoButton(Frc_ExtensionPackage package, MonoFile monoFile)
-            : base(package, false, GuidList.guidFRC_ExtensionCmdSet, (int) PkgCmdIDList.cmdidDownloadMono)
+        public DownloadMonoButton(Frc_ExtensionPackage package, MonoFile monoFile, InstallMonoButton installButton)
+            : base(package, false, GuidList.guidFRC_ExtensionCmdSet, (int)PkgCmdIDList.cmdidDownloadMono)
         {
             m_monoFile = monoFile;
+            m_installButton = installButton;
         }
 
 
@@ -62,18 +63,23 @@ namespace RobotDotNet.FRC_Extension.Buttons
                             IVsUIShell uiShell = (IVsUIShell)m_package.PublicGetService(typeof(SVsUIShell));
                             Guid clsid = Guid.Empty;
                             int result;
-                            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
+                            uiShell.ShowMessageBox(
                                 0,
                                 ref clsid,
-                                "Mono Successfully Downloaded",
+                                "Mono Successfully Downloaded. Would you like to install it to the RoboRIO?",
                                 string.Format(CultureInfo.CurrentCulture, "", this.ToString()),
                                 string.Empty,
                                 0,
-                                OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                                OLEMSGBUTTON.OLEMSGBUTTON_YESNO,
                                 OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
                                 OLEMSGICON.OLEMSGICON_INFO,
                                 0, // false
-                                out result));
+                                out result);
+                            if (result == 6)
+                            {
+                                //Install Mono.
+                                await m_installButton.DeployMono(m_installButton.GetMenuCommand());
+                            }
                         }
                         else
                         {

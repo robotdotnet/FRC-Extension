@@ -100,6 +100,7 @@ namespace RobotDotNet.FRC_Extension
 
             m_deployButton = new DeployDebugButton(this, (int)PkgCmdIDList.cmdidDeployCode, false);
             m_debugButton = new DeployDebugButton(this, (int)PkgCmdIDList.cmdidDebugCode, true);
+            
 
             string monoFolder = WPILibFolderStructure.CreateMonoFolder();
 
@@ -107,9 +108,9 @@ namespace RobotDotNet.FRC_Extension
 
             m_monoFile = new MonoFile(monoFile);
 
-            m_downloadMonoButton = new DownloadMonoButton(this, m_monoFile);
             m_installMonoButton = new InstallMonoButton(this, m_monoFile);
-
+            m_downloadMonoButton = new DownloadMonoButton(this, m_monoFile, m_installMonoButton);
+            
 
             m_aboutButton = new AboutButton(this);
             m_netConsoleButton = new NetConsoleButton(this);

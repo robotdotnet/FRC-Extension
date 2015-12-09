@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 $if$ ($targetframeworkversion$ >= 3.5)using System.Linq;
-$endif$using System.Text;
+$endif$
 using WPILib;
 using WPILib.Extras;
 
@@ -9,7 +9,7 @@ namespace $safeprojectname$
 {
 	public class $safeprojectname$ : LabVIEWRobot
     {
-        public override void RobotInit()
+        public override void Begin()
         {
 
         }

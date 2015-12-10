@@ -74,6 +74,8 @@ namespace RobotDotNet.FRC_Extension
         private DeployDebugButton m_deployButton;
         private DeployDebugButton m_debugButton;
 
+        private KillButton m_killButton;
+
         //private MonoButtons m_monoButtons;
         private DownloadMonoButton m_downloadMonoButton;
         private InstallMonoButton m_installMonoButton;
@@ -100,6 +102,8 @@ namespace RobotDotNet.FRC_Extension
 
             m_deployButton = new DeployDebugButton(this, (int)PkgCmdIDList.cmdidDeployCode, false);
             m_debugButton = new DeployDebugButton(this, (int)PkgCmdIDList.cmdidDebugCode, true);
+
+            m_killButton = new KillButton(this);
             
 
             string monoFolder = WPILibFolderStructure.CreateMonoFolder();

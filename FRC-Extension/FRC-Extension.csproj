@@ -165,6 +165,7 @@
     <Compile Include="Buttons\DeployDebugButton.cs" />
     <Compile Include="Buttons\DownloadMonoButton.cs" />
     <Compile Include="Buttons\InstallMonoButton.cs" />
+    <Compile Include="Buttons\KillButton.cs" />
     <Compile Include="Buttons\NetConsoleButton.cs" />
     <Compile Include="Buttons\SettingsButton.cs" />
     <Compile Include="MonoCode\MonoDeploy.cs" />

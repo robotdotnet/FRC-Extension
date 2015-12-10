@@ -98,7 +98,15 @@
         </Strings>
       </Button>
 
-      <Button guid="guidFRC_ExtensionCmdSet" id="cmdidNetconsole" priority="0x0103" type="Button">
+      <Button guid="guidFRC_ExtensionCmdSet" id="cmdidKillCode" priority="0x0102" type="Button">
+        <Parent guid="guidFRC_ExtensionCmdSet" id="FRCMainMenuGroup"/>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Kill Robot Code</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidFRC_ExtensionCmdSet" id="cmdidNetconsole" priority="0x0104" type="Button">
         <Parent guid="guidFRC_ExtensionCmdSet" id="FRCMainMenuGroup" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
@@ -108,7 +116,7 @@
 
       </Button>
 
-      <Button guid="guidFRC_ExtensionCmdSet" id="cmdidSettings" priority="0x0102" type="Button">
+      <Button guid="guidFRC_ExtensionCmdSet" id="cmdidSettings" priority="0x0103" type="Button">
         <Parent guid="guidFRC_ExtensionCmdSet" id="FRCMainMenuGroup" />
         <Strings>
           <ButtonText>Settings</ButtonText>
@@ -181,6 +189,7 @@
       <IDSymbol name="cmdidNetconsole" value ="0x0103"/>
       <IDSymbol name="cmdidSettings" value="0x0102" />
       <IDSymbol name="cmdidDebugCode" value="0x0106"/>
+      <IDSymbol name="cmdidKillCode" value="0x0107"/>
       <IDSymbol name="cmdidAboutButton" value="0x0220"/>
       <IDSymbol name="MonoSubMenu" value="0x1100"/>
       <IDSymbol name="MonoSubMenuGroup" value="0x1150"/>

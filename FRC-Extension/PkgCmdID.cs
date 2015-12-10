@@ -23,5 +23,7 @@ namespace RobotDotNet.FRC_Extension
 
         public const uint cmdidKillButton = 0x107;
 
+        public const uint cmdidSaveMonoFile = 0x108;
+
     };
 }

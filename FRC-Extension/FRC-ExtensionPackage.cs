@@ -79,6 +79,7 @@ namespace RobotDotNet.FRC_Extension
         //private MonoButtons m_monoButtons;
         private DownloadMonoButton m_downloadMonoButton;
         private InstallMonoButton m_installMonoButton;
+        private SaveMonoButton m_saveMonoButton;
 
         private AboutButton m_aboutButton;
         private NetConsoleButton m_netConsoleButton;
@@ -114,6 +115,7 @@ namespace RobotDotNet.FRC_Extension
 
             m_installMonoButton = new InstallMonoButton(this, m_monoFile);
             m_downloadMonoButton = new DownloadMonoButton(this, m_monoFile, m_installMonoButton);
+            m_saveMonoButton = new SaveMonoButton(this, m_monoFile);
             
 
             m_aboutButton = new AboutButton(this);

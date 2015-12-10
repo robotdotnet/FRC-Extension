@@ -46,8 +46,8 @@
       priority="0x1000" type="Menu">
         <Parent guid="guidFRC_ExtensionCmdSet" id="FRCMainMenuGroup"/>
         <Strings>
-          <ButtonText>Mono Tool</ButtonText>
-          <CommandName>Mono Tool</CommandName>
+          <ButtonText>Mono Tools</ButtonText>
+          <CommandName>Mono Tools</CommandName>
         </Strings>
       </Menu>
     </Menus>
@@ -156,6 +156,17 @@
         </Strings>
       </Button>
 
+      <Button guid="guidFRC_ExtensionCmdSet"
+        id="cmdidSaveMonoFile" priority="0x0000"
+      type="Button">
+        <Parent guid="guidFRC_ExtensionCmdSet" id="MonoSubMenuGroup" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <Strings>
+          <CommandName>cmdidSaveMonoFile</CommandName>
+          <ButtonText>Save Mono File</ButtonText>
+        </Strings>
+      </Button>
 
 
     </Buttons>
@@ -190,6 +201,7 @@
       <IDSymbol name="cmdidSettings" value="0x0102" />
       <IDSymbol name="cmdidDebugCode" value="0x0106"/>
       <IDSymbol name="cmdidKillCode" value="0x0107"/>
+      <IDSymbol name="cmdidSaveMonoFile" value="0x0108"/>
       <IDSymbol name="cmdidAboutButton" value="0x0220"/>
       <IDSymbol name="MonoSubMenu" value="0x1100"/>
       <IDSymbol name="MonoSubMenuGroup" value="0x1150"/>

@@ -78,7 +78,6 @@ namespace RobotDotNet.FRC_Extension.MonoCode
         public bool CheckFileValid()
         {
             string fileSum = Md5Sum();
-            OutputWriter.Instance.WriteLine(fileSum);
 
             return fileSum != null && fileSum.Equals(DeployProperties.MonoMd5);
         }

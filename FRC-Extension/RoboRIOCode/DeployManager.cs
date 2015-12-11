@@ -30,17 +30,23 @@ namespace RobotDotNet.FRC_Extension
 
         
         //Uploads code to the robot and then runs it.
-        public async Task DeployCode(string teamNumber, SettingsPageGrid page, bool debug)
+        public async Task DeployCode(string teamNumber, SettingsPageGrid page, bool debug, Project robotProject)
         {
 
             var writer = OutputWriter.Instance;
+
+            if (robotProject == null)
+            {
+                writer.WriteLine("Robot Project not valid. Contact RobotDotNet for support.");
+                return;
+            }
 
             //Connect to Robot Async
             OutputWriter.Instance.WriteLine("Attempting to Connect to RoboRIO");
             Task<bool> rioConnectionTask = StartConnectionTask(teamNumber);
             Task delayTask = Task.Delay(10000);
 
-            CodeReturnStruct codeReturn = await BuildAndPrepareCode(debug);
+            CodeReturnStruct codeReturn = await BuildAndPrepareCode(debug, robotProject);
 
             if (codeReturn == null) return;
 
@@ -127,7 +133,7 @@ namespace RobotDotNet.FRC_Extension
         }
 
 
-        public async Task<CodeReturnStruct> BuildAndPrepareCode(bool debug)
+        public async Task<CodeReturnStruct> BuildAndPrepareCode(bool debug, Project robotProject)
         {
 
             var writer = OutputWriter.Instance;
@@ -151,7 +157,8 @@ namespace RobotDotNet.FRC_Extension
             if (sb.LastBuildInfo == 0)
             {
                 writer.WriteLine("Successfully Built Robot Code");
-                string path = GetStartupAssemblyPath();
+                //string path = GetStartupAssemblyPath();
+                string path = GetAssemblyPath(robotProject);
                 string robotExe = Path.GetFileName(path);
                 string buildDir = Path.GetDirectoryName(path);
 
@@ -247,20 +254,6 @@ namespace RobotDotNet.FRC_Extension
 
                 return DeployProperties.RoboRioAllowedImages.Any(rio => str != null && str.Contains(rio.ToString()));
             }
-        }
-
-        internal string GetStartupAssemblyPath()
-        {
-            Project startupProject = GetStartupProject();
-            return GetAssemblyPath(startupProject);
-        }
-
-        private Project GetStartupProject()
-        {
-            var sb = (SolutionBuild2)m_dte.Solution.SolutionBuild;
-            string project = ((Array)sb.StartupProjects).Cast<string>().First();
-            Project startupProject = m_dte.Solution.Item(project);
-            return startupProject;
         }
 
         internal string GetAssemblyPath(Project vsProject)

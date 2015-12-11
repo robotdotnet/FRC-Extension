@@ -29,7 +29,7 @@ namespace RobotDotNet.FRC_Extension
         public const string RoboRioMonoBin = "/usr/bin/mono";
 
         public const string RioImageSearchString = "FRC_roboRIO";
-        public static readonly int[] RoboRioAllowedImages = { 15 };
+        public static readonly int[] RoboRioAllowedImages = { 18 };
 
         public static readonly string[] IgnoreFiles =
         {

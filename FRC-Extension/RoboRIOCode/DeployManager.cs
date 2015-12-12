@@ -196,6 +196,7 @@ namespace RobotDotNet.FRC_Extension
                 else
                 {
                     writer.WriteLine("Did not find all needed files. Canceling Deploy");
+                    writer.WriteLine("Please make sure the WPILib is the newest version from NuGet.");
                     return null;
                 }
             }

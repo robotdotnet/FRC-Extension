@@ -215,6 +215,9 @@
     <Content Include="packages\FRC.WPILib.Extras.2016.0.0.29.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="packages\monogame.framework.windowsdx.3.4.0.459.nupkg">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
@@ -247,6 +250,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Templates\CSharp\Project-Templates\WindowsMonoGameSimulator\WindowsMonoGameSimulator.csproj">
+      <Project>{5B5754D7-AF0E-428B-8A1F-D6382A18A4F5}</Project>
+      <Name>WindowsMonoGameSimulator</Name>
+      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
     <ProjectReference Include="..\Templates\VisualBasic\Project-Templates\IterativeRobotVB\IterativeRobotVB.vbproj">
       <Project>{F6724218-0C31-4428-A217-B4318E3026B2}</Project>
       <Name>IterativeRobotVB</Name>

@@ -139,10 +139,17 @@ namespace RobotDotNet.FRC_Extension.SimulatorWizards
         public void ProjectFinishedGenerating(Project project)
         {
             var vsproject = project.Object as VSLangProj.VSProject;
-
+            
+            
             if (vsproject != null && m_robotProject != null)
             {
                 vsproject.References.AddProject(m_robotProject);
+            }
+
+            DTE dte = Package.GetGlobalService(typeof(DTE)) as DTE;
+            if (dte != null)
+            {
+                dte.Solution.Properties.Item("StartupProject").Value = project.Name;
             }
         }
 

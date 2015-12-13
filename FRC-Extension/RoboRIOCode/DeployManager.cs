@@ -62,14 +62,15 @@ namespace RobotDotNet.FRC_Extension
                     if (!(await CheckMonoInstall()))
                     {
                         //TODO: Make this error message better
-                        OutputWriter.Instance.WriteLine("Mono not properly installed. ");
+                        OutputWriter.Instance.WriteLine("Mono not properly installed. Please try reinstalling to Mono Runtime.");
                         return;
                     }
                     OutputWriter.Instance.WriteLine("Mono correctly installed");
                     OutputWriter.Instance.WriteLine("Checking RoboRIO Image");
                     if (!(await CheckRoboRioImage()))
                     {
-                        OutputWriter.Instance.WriteLine("roboRIO Image does not match plugin, allowed image versions: " + string.Join(", ", DeployProperties.RoboRioAllowedImages.ToArray()));
+                        OutputWriter.Instance.WriteLine("RoboRIO Image does not match plugin, allowed image versions: " + string.Join(", ", DeployProperties.RoboRioAllowedImages.ToArray()));
+                        OutputWriter.Instance.WriteLine("Please follow FIRST's instructions on imaging your RoboRIO, and try again.");
                         return;
                     }
                     OutputWriter.Instance.WriteLine("RoboRIO Image Correct");

@@ -75,7 +75,7 @@ namespace RobotDotNet.FRC_Extension.MonoCode
                     }
                     else
                     {
-                        writer.WriteLine("Mono not installed successfully");
+                        writer.WriteLine("Mono not installed successfully. Please try again.");
                     }
 
                     //Removing ipk files from the RoboRIO

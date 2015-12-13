@@ -7,7 +7,7 @@ namespace $safeprojectname$
 {
     public static void Main()
     {
-        RobotBase.Main(null, typeof($mainrobotnamespace.$mainrobotclass));
+        RobotBase.Main(null, typeof($robotnamespace$.$robotclass$));
     }
 }
 

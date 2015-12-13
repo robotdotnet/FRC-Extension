@@ -41,6 +41,7 @@ namespace RobotDotNet.FRC_Extension
     [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]
     //This gives us an options page.
     [ProvideOptionPage(typeof(SettingsPageGrid), "FRC Options", "FRC Options", 0, 0, true)]
+    [ProvideBindingPath]
     public sealed class Frc_ExtensionPackage : Package
     {
         /// <summary>

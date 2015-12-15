@@ -60,6 +60,14 @@ namespace RobotDotNet.FRC_Extension
 
         }
 
+        public void Clear()
+        {
+            if (!m_initialized)
+                Initialize();
+            if (!m_initialized) return;
+            m_outputPane.Clear();
+        }
+
         public void Write(string value)
         {
             if (!m_initialized)

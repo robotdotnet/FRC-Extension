@@ -3,6 +3,7 @@ using System.Globalization;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Renci.SshNet.Common;
 using RobotDotNet.FRC_Extension.MonoCode;
 using Task = System.Threading.Tasks.Task;
 
@@ -77,6 +78,13 @@ namespace RobotDotNet.FRC_Extension.Buttons
                             DownloadMonoPopup();
                         }
                     }
+                }
+                catch (SshConnectionException)
+                {
+                    m_output.WriteLine("Connection to RoboRIO lost. Install aborted.");
+                    m_installing = false;
+                    menuCommand.Visible = true;
+                    m_output.ProgressBarLabel = "Mono Install Failed";
                 }
                 catch (Exception ex)
                 {

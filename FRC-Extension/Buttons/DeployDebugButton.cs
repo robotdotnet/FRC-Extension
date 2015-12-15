@@ -4,6 +4,7 @@ using System.Linq;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
+using Renci.SshNet.Common;
 using VSLangProj;
 
 namespace RobotDotNet.FRC_Extension.Buttons
@@ -52,7 +53,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 try
                 {
                     m_output.ProgressBarLabel = "Deploying Robot Code";
-
+                    OutputWriter.Instance.Clear();
                     SettingsPageGrid page;
                     string teamNumber = m_package.GetTeamNumber(out page);
 
@@ -60,10 +61,16 @@ namespace RobotDotNet.FRC_Extension.Buttons
 
                     //Disable the deploy buttons
                     DisableAllButtons();
-                    DeployManager m = new DeployManager(m_package.PublicGetService(typeof(DTE)) as DTE);
+                    DeployManager m = new DeployManager(m_package.PublicGetService(typeof (DTE)) as DTE);
                     await m.DeployCode(teamNumber, page, m_debugButton, m_robotProject);
                     EnableAllButtons();
                     m_output.ProgressBarLabel = "Robot Code Deploy Successful";
+                }
+                catch (SshConnectionException)
+                {
+                    m_output.WriteLine("Connection to RoboRIO lost. Deploy aborted.");
+                    EnableAllButtons();
+                    m_output.ProgressBarLabel = "Robot Code Deploy Failed";
                 }
                 catch (Exception ex)
                 {

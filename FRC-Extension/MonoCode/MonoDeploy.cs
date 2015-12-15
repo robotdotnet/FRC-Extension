@@ -25,6 +25,7 @@ namespace RobotDotNet.FRC_Extension.MonoCode
         internal async Task DeployMono()
         {
             var writer = OutputWriter.Instance;
+            writer.Clear();
 
             //Connect to RoboRIO
             writer.WriteLine("Attempting to Connect to RoboRIO");

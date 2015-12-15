@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FRC-Extension", "FRC-Extension\FRC-Extension.csproj", "{D68E4367-9381-4140-B090-7445E4BD3073}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F6724218-0C31-4428-A217-B4318E3026B2} = {F6724218-0C31-4428-A217-B4318E3026B2}
+		{5B5754D7-AF0E-428B-8A1F-D6382A18A4F5} = {5B5754D7-AF0E-428B-8A1F-D6382A18A4F5}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{B9F75D30-BCEA-499B-AC12-2A89253CAD51}"
 EndProject

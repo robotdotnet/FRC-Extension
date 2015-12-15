@@ -13,7 +13,7 @@ namespace RobotDotNet.FRC_Extension
         public const string DeployDir = "/home/lvuser/mono";
         public static readonly string[] DeployKillCommand =
         {
-            ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r",
+            ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r;",
         };
 
         public const string KillOnlyCommand = "/usr/local/frc/bin/frcKillRobot.sh";

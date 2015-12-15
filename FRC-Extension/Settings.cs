@@ -21,5 +21,8 @@ namespace RobotDotNet.FRC_Extension
 
         [Category("Team Options"), DisplayName("Auto Start Netconsole?"), Description("Auto start the netconsole viewer when running code?")]
         public bool Netconsole { get; set; }
+
+        [Category("Extension Options"), DisplayName("Enable Verbose Output?"), Description("Enables verbose output during the deploy process?")]
+        public bool Verbose { get; set; }
     }
 }

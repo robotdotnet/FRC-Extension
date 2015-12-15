@@ -60,7 +60,7 @@ namespace RobotDotNet.FRC_Extension
         private OutputWriter m_writer;
         private MonoFile m_monoFile;
 
-
+        public static Frc_ExtensionPackage Instance { get; private set; }
 
         internal object PublicGetService(Type serviceType)
         {
@@ -96,6 +96,7 @@ namespace RobotDotNet.FRC_Extension
         /// </summary>
         protected override void Initialize()
         {
+            Instance = this;
             Debug.WriteLine (string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
             base.Initialize();
 

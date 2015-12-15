@@ -171,8 +171,14 @@ namespace RobotDotNet.FRC_Extension.RoboRIO_Code
                 {
                     return null;
                 }
+                var settings = (SettingsPageGrid)Frc_ExtensionPackage.Instance.PublicGetDialogPage(typeof(SettingsPageGrid));
+                bool verbose = settings.Verbose;
                 foreach (string s in commands)
                 {
+                    if (verbose)
+                    {
+                        OutputWriter.Instance.WriteLine($"Running command: {s}");
+                    }
                     await Task.Run(() =>
                     {
                         var x = ssh.RunCommand(s);
@@ -209,6 +215,12 @@ namespace RobotDotNet.FRC_Extension.RoboRIO_Code
                 {
                     return null;
                 }
+                var settings = (SettingsPageGrid)Frc_ExtensionPackage.Instance.PublicGetDialogPage(typeof(SettingsPageGrid));
+                bool verbose = settings.Verbose;
+                if (verbose)
+                {
+                    OutputWriter.Instance.WriteLine($"Running command: {command}");
+                }
                 return await Task.Run(() => ssh.RunCommand(command));
             }
         }
@@ -239,8 +251,14 @@ namespace RobotDotNet.FRC_Extension.RoboRIO_Code
                 {
                     return false;
                 }
+                var settings = (SettingsPageGrid)Frc_ExtensionPackage.Instance.PublicGetDialogPage(typeof(SettingsPageGrid));
+                bool verbose = settings.Verbose;
                 foreach (FileInfo fileInfo in from string s in files where File.Exists(s) select new FileInfo(s))
                 {
+                    if (verbose)
+                    {
+                        OutputWriter.Instance.WriteLine($"Deploying File: {fileInfo.Name.ToString()}");
+                    }
                     await Task.Run(() => scp.Upload(fileInfo, deployLocation));
                 }
             }

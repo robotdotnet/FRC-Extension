@@ -300,6 +300,9 @@ namespace RobotDotNet.FRC_Extension
             }
             commands.AddRange(DeployProperties.DeployKillCommand);
             await RoboRIOConnection.RunCommands(commands.ToArray(), ConnectionUser.LvUser);
+
+            //Run sync so files are written to disk.
+            await RoboRIOConnection.RunCommand("sync", ConnectionUser.LvUser);
         }
 
         /// <summary>

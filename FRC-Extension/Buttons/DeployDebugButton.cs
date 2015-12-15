@@ -92,20 +92,53 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 bool visable = false;
                 m_robotProject = null;
 
-                foreach (Project project in dte.Solution.Projects)
-                {
-                    if (project.Globals.VariableExists["RobotProject"])
-                    {
-                        var vsproject = project.Object as VSLangProj.VSProject;
+                SettingsPageGrid grid = (SettingsPageGrid) m_package.PublicGetDialogPage(typeof (SettingsPageGrid));
 
-                        if (vsproject != null)
+                if (grid.DebugMode)
+                {
+                    var sb = (SolutionBuild2) dte.Solution.SolutionBuild;
+
+                    if (sb.StartupProjects != null)
+                    {
+                        if (sb.StartupProjects != null)
                         {
-                            //If we are an assembly, and its named WPILib, enable the deploy
-                            if ((from Reference reference in vsproject.References where reference.SourceProject == null select reference.Name).Any(name => name.Contains("WPILib")))
+                            string project = ((Array) sb.StartupProjects).Cast<string>().First();
+                            Project startupProject = dte.Solution.Item(project);
+                            var vsproject = startupProject.Object as VSLangProj.VSProject;
+                            if (vsproject != null)
                             {
-                                visable = true;
-                                m_robotProject = project;
-                                break;
+                                //If we are an assembly, and its named WPILib, enable the deploy
+                                if (
+                                    (from Reference reference in vsproject.References
+                                        where reference.SourceProject == null
+                                        select reference.Name).Any(name => name.Contains("WPILib")))
+                                {
+                                    visable = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (Project project in dte.Solution.Projects)
+                    {
+                        if (project.Globals.VariableExists["RobotProject"])
+                        {
+                            var vsproject = project.Object as VSLangProj.VSProject;
+
+                            if (vsproject != null)
+                            {
+                                //If we are an assembly, and its named WPILib, enable the deploy
+                                if (
+                                    (from Reference reference in vsproject.References
+                                        where reference.SourceProject == null
+                                        select reference.Name).Any(name => name.Contains("WPILib")))
+                                {
+                                    visable = true;
+                                    m_robotProject = project;
+                                    break;
+                                }
                             }
                         }
                     }

@@ -172,7 +172,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIO_Code
                     return null;
                 }
                 var settings = (SettingsPageGrid)Frc_ExtensionPackage.Instance.PublicGetDialogPage(typeof(SettingsPageGrid));
-                bool verbose = settings.Verbose;
+                bool verbose = settings.Verbose || settings.DebugMode;
                 foreach (string s in commands)
                 {
                     if (verbose)
@@ -216,7 +216,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIO_Code
                     return null;
                 }
                 var settings = (SettingsPageGrid)Frc_ExtensionPackage.Instance.PublicGetDialogPage(typeof(SettingsPageGrid));
-                bool verbose = settings.Verbose;
+                bool verbose = settings.Verbose || settings.DebugMode;
                 if (verbose)
                 {
                     OutputWriter.Instance.WriteLine($"Running command: {command}");
@@ -252,7 +252,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIO_Code
                     return false;
                 }
                 var settings = (SettingsPageGrid)Frc_ExtensionPackage.Instance.PublicGetDialogPage(typeof(SettingsPageGrid));
-                bool verbose = settings.Verbose;
+                bool verbose = settings.Verbose || settings.DebugMode;
                 foreach (FileInfo fileInfo in from string s in files where File.Exists(s) select new FileInfo(s))
                 {
                     if (verbose)

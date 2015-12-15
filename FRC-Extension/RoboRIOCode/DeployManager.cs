@@ -66,6 +66,7 @@ namespace RobotDotNet.FRC_Extension
                         return;
                     }
                     OutputWriter.Instance.WriteLine("Mono correctly installed");
+
                     OutputWriter.Instance.WriteLine("Checking RoboRIO Image");
                     if (!(await CheckRoboRioImage()))
                     {

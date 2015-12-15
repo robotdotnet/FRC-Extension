@@ -66,6 +66,10 @@
         <Parent guid ="guidFRC_ExtensionCmdSet" id="MonoSubMenu"/>
       </Group>
 
+      <Group guid="guidFRC_ExtensionCmdSet" id="MonoSetRobotProjectGroup" priority="0x0600">
+        <Parent guid ="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE"/>
+      </Group>
+
     </Groups>
 
     <!--Buttons section. -->
@@ -80,6 +84,16 @@
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
 
+      <Button guid="guidFRC_ExtensionCmdSet" id="cmdidSetRobotProject" priority="0x0102" type="Button">
+        <Parent guid="guidFRC_ExtensionCmdSet" id="MonoSetRobotProjectGroup"/>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <Strings>
+          <ButtonText>Set Main Robot Project</ButtonText>
+          <CommandName>cmdidSetRobotProject</CommandName>
+        </Strings>
+      </Button>
+      
       <Button guid="guidFRC_ExtensionCmdSet" id="cmdidDeployCode" priority="0x0100" type="Button">
         <Parent guid="guidFRC_ExtensionCmdSet" id="FRCMainMenuGroup" />
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -207,6 +221,8 @@
       <IDSymbol name="MonoSubMenuGroup" value="0x1150"/>
       <IDSymbol name="cmdidDownloadMono" value="0x0104"/>
       <IDSymbol name="cmdidInstallMono" value="0x0105"/>
+      <IDSymbol name="MonoSetRobotProjectGroup" value="0x2052"/>
+      <IDSymbol name="cmdidSetRobotProject" value="0x2055"/>
     </GuidSymbol>
 
 

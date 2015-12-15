@@ -25,5 +25,7 @@ namespace RobotDotNet.FRC_Extension
 
         public const uint cmdidSaveMonoFile = 0x108;
 
+        public const uint cmdidSetRobotProject = 0x2055;
+
     };
 }

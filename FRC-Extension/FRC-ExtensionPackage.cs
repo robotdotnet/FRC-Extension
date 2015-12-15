@@ -86,6 +86,8 @@ namespace RobotDotNet.FRC_Extension
         private NetConsoleButton m_netConsoleButton;
         private SettingsButton m_settingsButton;
 
+        private SetMainRobotButton m_setMainRobotButton;
+
         /////////////////////////////////////////////////////////////////////////////
         // Overridden Package Implementation
         #region Package Members
@@ -123,6 +125,8 @@ namespace RobotDotNet.FRC_Extension
             m_aboutButton = new AboutButton(this);
             m_netConsoleButton = new NetConsoleButton(this);
             m_settingsButton = new SettingsButton(this);
+
+            m_setMainRobotButton = new SetMainRobotButton(this);
             
 
         }

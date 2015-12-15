@@ -173,6 +173,7 @@
     <Compile Include="Buttons\KillButton.cs" />
     <Compile Include="Buttons\NetConsoleButton.cs" />
     <Compile Include="Buttons\SaveMonoButton.cs" />
+    <Compile Include="Buttons\SetMainRobotButton.cs" />
     <Compile Include="Buttons\SettingsButton.cs" />
     <Compile Include="MonoCode\MonoDeploy.cs" />
     <Compile Include="MonoCode\MonoFile.cs" />

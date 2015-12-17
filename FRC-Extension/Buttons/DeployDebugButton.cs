@@ -125,6 +125,10 @@ namespace RobotDotNet.FRC_Extension.Buttons
                     {
                         if (project.Globals.VariableExists["RobotProject"])
                         {
+                            if (project.Globals["RobotProject"].ToString() != "yes")
+                            {
+                                continue;
+                            }
                             var vsproject = project.Object as VSLangProj.VSProject;
 
                             if (vsproject != null)

@@ -89,7 +89,7 @@
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
-          <ButtonText>Set Main Robot Project</ButtonText>
+          <ButtonText>Set As Main Robot Project</ButtonText>
           <CommandName>cmdidSetRobotProject</CommandName>
         </Strings>
       </Button>

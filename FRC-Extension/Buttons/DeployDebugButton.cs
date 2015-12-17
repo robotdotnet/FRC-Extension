@@ -27,7 +27,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
         {
             foreach (var oleMenuCommand in s_deployCommands)
             {
-                oleMenuCommand.Visible = false;
+                oleMenuCommand.Enabled = false;
             }
             s_deploying = true;
         }
@@ -36,7 +36,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
         {
             foreach (var oleMenuCommand in s_deployCommands)
             {
-                oleMenuCommand.Visible = true;
+                oleMenuCommand.Enabled = true;
             }
             s_deploying = false;
         }
@@ -151,11 +151,9 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 if (s_deploying)
                     visable = false;
 
-                menuCommand.Visible = visable;
-                if (menuCommand.Visible)
-                {
-                    menuCommand.Enabled = true;
-                }
+                menuCommand.Enabled = visable;
+
+                menuCommand.Visible = true;
             }
         }
     }

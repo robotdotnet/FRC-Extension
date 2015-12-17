@@ -23,13 +23,9 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 bool visable = File.Exists(@"C:\Program Files\NetConsole for cRIO\NetConsole.exe") ||
                                File.Exists(@"C:\Program Files (x86)\NetConsole for cRIO\NetConsole.exe");
 
+                menuCommand.Enabled = visable;
 
-
-                menuCommand.Visible = visable;
-                if (menuCommand.Visible)
-                {
-                    menuCommand.Enabled = true;
-                }
+                menuCommand.Visible = true;
             }
         }
 

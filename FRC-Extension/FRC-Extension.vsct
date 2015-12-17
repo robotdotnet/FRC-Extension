@@ -97,7 +97,7 @@
       <Button guid="guidFRC_ExtensionCmdSet" id="cmdidDeployCode" priority="0x0100" type="Button">
         <Parent guid="guidFRC_ExtensionCmdSet" id="FRCMainMenuGroup" />
         <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Deploy Code</ButtonText>
         </Strings>
@@ -106,7 +106,7 @@
       <Button guid="guidFRC_ExtensionCmdSet" id="cmdidDebugCode" priority="0x0101" type="Button">
         <Parent guid="guidFRC_ExtensionCmdSet" id="FRCMainMenuGroup"/>
         <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Debug Code</ButtonText>
         </Strings>
@@ -114,7 +114,7 @@
 
       <Button guid="guidFRC_ExtensionCmdSet" id="cmdidKillCode" priority="0x0102" type="Button">
         <Parent guid="guidFRC_ExtensionCmdSet" id="FRCMainMenuGroup"/>
-        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Kill Robot Code</ButtonText>
         </Strings>
@@ -175,7 +175,7 @@
       type="Button">
         <Parent guid="guidFRC_ExtensionCmdSet" id="MonoSubMenuGroup" />
         <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <CommandName>cmdidSaveMonoFile</CommandName>
           <ButtonText>Save Mono File</ButtonText>

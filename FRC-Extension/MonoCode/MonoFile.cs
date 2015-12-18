@@ -75,6 +75,35 @@ namespace RobotDotNet.FRC_Extension.MonoCode
             return null;
         }
 
+        public void SaveMonoFile()
+        {
+            if (!CheckFileValid()) return;
+
+            using (SaveFileDialog dialog = new SaveFileDialog())
+            {
+                dialog.Filter = "Zip Files(*.zip)|*.zip|All files (*.*)|*.*";
+
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    string fileName = dialog.FileName;
+                    try
+                    {
+                        if (File.Exists(fileName))
+                        {
+                            File.Delete(fileName);
+                        }
+                        File.Copy(FileName, fileName, true);
+
+                    }
+                    catch
+                    {
+                        MessageBox.Show("File not saved successfully.");
+                    }
+                    MessageBox.Show("File saved successfully.");
+                }
+            }
+        }
+
         public bool CheckFileValid()
         {
             string fileSum = Md5Sum();

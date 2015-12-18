@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Microsoft.VisualStudio.Shell;
 using RobotDotNet.FRC_Extension.MonoCode;
 
@@ -20,7 +21,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
 
         public override async void ButtonCallback(object sender, EventArgs e)
         {
-            //TODO Do This
+            m_monoFile.SaveMonoFile();
         }
 
         public override void QueryCallback(object sender, EventArgs e)

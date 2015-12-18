@@ -116,7 +116,7 @@
         <Parent guid="guidFRC_ExtensionCmdSet" id="FRCMainMenuGroup"/>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <ButtonText>Restart Robot Code</ButtonText>
+          <ButtonText>Kill Robot Code</ButtonText>
         </Strings>
       </Button>
 

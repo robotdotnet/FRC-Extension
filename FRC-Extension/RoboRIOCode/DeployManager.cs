@@ -86,7 +86,7 @@ namespace RobotDotNet.FRC_Extension
                         return;
                     }
                     OutputWriter.Instance.WriteLine("Successfully Deployed Files. Starting Code.");
-                    await UploadCode(codeReturn.RobotExe, page, debug);
+                    await UploadCode(codeReturn.RobotExe, page, debug, robotProject);
                     OutputWriter.Instance.WriteLine("Successfully started robot code.");
                 }
                 else
@@ -164,7 +164,7 @@ namespace RobotDotNet.FRC_Extension
                 string robotExe = Path.GetFileName(path);
                 string buildDir = Path.GetDirectoryName(path);
 
-
+                
                 writer.WriteLine("Parsing Robot Files");
                 //While connecting, parse all of the output files.
                 List<string> files = new List<string>();
@@ -207,6 +207,19 @@ namespace RobotDotNet.FRC_Extension
                 writer.WriteLine("Code build failed. Canceling Deploy");
                 return null;
             }
+        }
+
+        public string GetCommandLineArguments(Project robotProject)
+        {
+            var settings = (SettingsPageGrid)Frc_ExtensionPackage.Instance.PublicGetDialogPage(typeof(SettingsPageGrid));
+            if (!settings.ConsoleArgs)
+            {
+                return "";
+            }
+
+            Configuration configuration = robotProject.ConfigurationManager.ActiveConfiguration;
+
+            return (string) configuration.Properties.Item("StartArguments").Value;
         }
 
         public async Task<bool> DeployRobotFiles(List<string> files)
@@ -270,7 +283,7 @@ namespace RobotDotNet.FRC_Extension
             return assemblyPath;
         }
 
-        public async Task UploadCode(string robotName, SettingsPageGrid page, bool debug)
+        public async Task UploadCode(string robotName, SettingsPageGrid page, bool debug, Project robotProject)
         {
             if (page.Netconsole)
             {
@@ -289,12 +302,14 @@ namespace RobotDotNet.FRC_Extension
                 deployedCmdFrame = DeployProperties.RobotCommandFileName;
             }
 
+            string args = GetCommandLineArguments(robotProject);
+
             //Must be run as admin, so is seperate
             await RoboRIOConnection.RunCommand("killall -q netconsole-host || :", ConnectionUser.Admin);
 
             //Combining all other commands, since they should be safe running together.
             List<string> commands = new List<string>();
-            commands.Add($"echo {deployedCmd} > {DeployProperties.CommandDir}/{deployedCmdFrame}");
+            commands.Add($"echo {deployedCmd} {args} > {DeployProperties.CommandDir}/{deployedCmdFrame}");
             if (debug)
             {
                 commands.AddRange(DeployProperties.DebugFlagCommand);

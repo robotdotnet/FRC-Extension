@@ -123,7 +123,7 @@
       <Button guid="guidFRC_ExtensionCmdSet" id="cmdidNetconsole" priority="0x0104" type="Button">
         <Parent guid="guidFRC_ExtensionCmdSet" id="FRCMainMenuGroup" />
         <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Start Netconsole</ButtonText>
         </Strings>

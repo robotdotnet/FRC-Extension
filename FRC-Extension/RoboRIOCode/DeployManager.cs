@@ -30,7 +30,7 @@ namespace RobotDotNet.FRC_Extension
 
         
         //Uploads code to the robot and then runs it.
-        public async Task DeployCode(string teamNumber, SettingsPageGrid page, bool debug, Project robotProject)
+        public async Task<bool> DeployCode(string teamNumber, SettingsPageGrid page, bool debug, Project robotProject)
         {
 
             var writer = OutputWriter.Instance;
@@ -38,7 +38,7 @@ namespace RobotDotNet.FRC_Extension
             if (robotProject == null)
             {
                 writer.WriteLine("Robot Project not valid. Contact RobotDotNet for support.");
-                return;
+                return false;
             }
 
             //Connect to Robot Async
@@ -48,7 +48,7 @@ namespace RobotDotNet.FRC_Extension
 
             CodeReturnStruct codeReturn = await BuildAndPrepareCode(debug, robotProject);
 
-            if (codeReturn == null) return;
+            if (codeReturn == null) return false;
 
             writer.WriteLine("Waiting for Connection to Finish");
             if (await Task.WhenAny(rioConnectionTask, delayTask) == rioConnectionTask)
@@ -63,7 +63,7 @@ namespace RobotDotNet.FRC_Extension
                     {
                         //TODO: Make this error message better
                         OutputWriter.Instance.WriteLine("Mono not properly installed. Please try reinstalling to Mono Runtime.");
-                        return;
+                        return false;
                     }
                     OutputWriter.Instance.WriteLine("Mono correctly installed");
 
@@ -72,7 +72,7 @@ namespace RobotDotNet.FRC_Extension
                     {
                         OutputWriter.Instance.WriteLine("RoboRIO Image does not match plugin, allowed image versions: " + string.Join(", ", DeployProperties.RoboRioAllowedImages.ToArray()));
                         OutputWriter.Instance.WriteLine("Please follow FIRST's instructions on imaging your RoboRIO, and try again.");
-                        return;
+                        return false;
                     }
                     OutputWriter.Instance.WriteLine("RoboRIO Image Correct");
                     //Force making mono directory
@@ -83,22 +83,25 @@ namespace RobotDotNet.FRC_Extension
                     if (!retVal)
                     {
                         OutputWriter.Instance.WriteLine("File deploy failed.");
-                        return;
+                        return false;
                     }
                     OutputWriter.Instance.WriteLine("Successfully Deployed Files. Starting Code.");
                     await UploadCode(codeReturn.RobotExe, page, debug, robotProject);
                     OutputWriter.Instance.WriteLine("Successfully started robot code.");
+                    return true;
                 }
                 else
                 {
                     //Failed to connect
                     writer.WriteLine("Failed to Connect to RoboRIO. Exiting.");
+                    return false;
                 }
             }
             else
             {
                 //Timedout
                 writer.WriteLine("Failed to Connect to RoboRIO. Exiting.");
+                return false;
             }
         }
 

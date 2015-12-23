@@ -62,9 +62,16 @@ namespace RobotDotNet.FRC_Extension.Buttons
                     //Disable the deploy buttons
                     DisableAllButtons();
                     DeployManager m = new DeployManager(m_package.PublicGetService(typeof (DTE)) as DTE);
-                    await m.DeployCode(teamNumber, page, m_debugButton, m_robotProject);
+                    bool success = await m.DeployCode(teamNumber, page, m_debugButton, m_robotProject);
                     EnableAllButtons();
-                    m_output.ProgressBarLabel = "Robot Code Deploy Successful";
+                    if (success)
+                    {
+                        m_output.ProgressBarLabel = "Robot Code Deploy Successful";
+                    }
+                    else
+                    {
+                        m_output.ProgressBarLabel = "Robot Code Deploy Failed";
+                    }
                 }
                 catch (SshConnectionException)
                 {

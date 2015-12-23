@@ -143,17 +143,22 @@ namespace RobotDotNet.FRC_Extension
             writer.WriteLine("Building Robot Code");
             var sb = (SolutionBuild2)m_dte.Solution.SolutionBuild;
             //Check if we are building for debug or release
+            string configuration = "Release";
             if (debug)
             {
+                configuration = "Debug";
                 //Switch build to debug mode
-                sb.SolutionConfigurations.Item("Debug").Activate();
+                sb.SolutionConfigurations.Item(configuration).Activate();
             }
             else
             {
+                configuration = "Release";
                 //Switch to release
-                sb.SolutionConfigurations.Item("Release").Activate();
+                sb.SolutionConfigurations.Item(configuration).Activate();
             }
-            await Task.Run(() => sb.Build(true));
+            await Task.Run(() => sb.BuildProject(configuration, robotProject.FullName, true));
+
+            
 
             //If Build Succeded
             if (sb.LastBuildInfo == 0)

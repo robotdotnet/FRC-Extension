@@ -113,6 +113,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
                                         where reference.SourceProject == null
                                         select reference.Name).Any(name => name.Contains("WPILib")))
                                 {
+                                    m_robotProject = startupProject;
                                     visable = true;
                                 }
                             }

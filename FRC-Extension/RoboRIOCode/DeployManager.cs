@@ -312,17 +312,22 @@ namespace RobotDotNet.FRC_Extension
 
             string args = GetCommandLineArguments(robotProject);
 
-            //Must be run as admin, so is seperate
-            await RoboRIOConnection.RunCommand("killall -q netconsole-host || :", ConnectionUser.Admin);
+            //Kill the currently running robot program
+            await RoboRIOConnection.RunCommand(DeployProperties.KillOnlyCommand, ConnectionUser.LvUser);
 
             //Combining all other commands, since they should be safe running together.
             List<string> commands = new List<string>();
+
+            //Write the robotCommand file
             commands.Add($"echo {deployedCmd} {args} > {DeployProperties.CommandDir}/{deployedCmdFrame}");
             if (debug)
             {
+                //If debug write the debug flag.
                 commands.AddRange(DeployProperties.DebugFlagCommand);
             }
+            //Add all commands to restart
             commands.AddRange(DeployProperties.DeployKillCommand);
+            //run all commands
             await RoboRIOConnection.RunCommands(commands.ToArray(), ConnectionUser.LvUser);
 
             //Run sync so files are written to disk.

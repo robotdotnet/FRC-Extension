@@ -16,7 +16,7 @@ namespace RobotDotNet.FRC_Extension
             ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r;",
         };
 
-        public const string KillOnlyCommand = "/usr/local/frc/bin/frcKillRobot.sh -t";
+        public const string KillOnlyCommand = ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t";
 
         public const string DebugFlagDir = "/tmp/";
 

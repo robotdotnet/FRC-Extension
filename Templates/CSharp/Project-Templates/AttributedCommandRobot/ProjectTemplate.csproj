@@ -51,7 +51,10 @@
 	<ItemGroup>
 		<Compile Include="Program.cs" />
     <Compile Include="$safeprojectname$.cs"/>
-
+    <Compile Include="RobotMap.cs"/>
+    <Compile Include="Subsystems\ExampleAutonomousSubsystem.cs" />
+    <Compile Include="Subsystems\ExampleSubsystem.cs" />
+    <Compile Include="Commands\ExampleCommand.cs" />
 		<Compile Include="Properties\AssemblyInfo.cs" />
 	</ItemGroup>
 	<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

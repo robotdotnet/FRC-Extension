@@ -26,7 +26,7 @@ namespace $safeprojectname$
         public $safeprojectname$()
         {
             myRobot = new RobotDrive(0, 1);
-            myRobot.SetExpiration(0.1);
+            myRobot.Expiration = 0.1;
             stick = new Joystick(0);
         }
         /**
@@ -54,7 +54,7 @@ namespace $safeprojectname$
         /**
          * Runs during test mode
          */
-        public void test() 
+        public override void Test() 
         {
         }
     }

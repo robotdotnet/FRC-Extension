@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.IO;
-using System.Linq;
-using System.Text;
 using Microsoft.VisualStudio.Shell;
+using RobotDotNet.FRC_Extension.RoboRIOCode;
 
 namespace RobotDotNet.FRC_Extension.Buttons
 {

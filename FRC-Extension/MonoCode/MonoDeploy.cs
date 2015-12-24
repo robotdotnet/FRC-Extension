@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Renci.SshNet;
-using RobotDotNet.FRC_Extension.RoboRIO_Code;
+using RobotDotNet.FRC_Extension.RoboRIOCode;
 
 namespace RobotDotNet.FRC_Extension.MonoCode
 {
@@ -44,7 +39,7 @@ namespace RobotDotNet.FRC_Extension.MonoCode
             if (await Task.WhenAny(rioConnectionTask, delayTask) == rioConnectionTask)
             {
                 //Completed
-                if (rioConnectionTask.Result == true)
+                if (rioConnectionTask.Result)
                 {
                     writer.WriteLine("Successfully Connected to RoboRIO");
 

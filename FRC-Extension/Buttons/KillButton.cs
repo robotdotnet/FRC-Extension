@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
-using RobotDotNet.FRC_Extension.RoboRIO_Code;
+using RobotDotNet.FRC_Extension.RoboRIOCode;
 using Task = System.Threading.Tasks.Task;
 
 namespace RobotDotNet.FRC_Extension.Buttons
 {
     public class KillButton : ButtonBase
     {
-        private bool m_killing = false;
+        private bool m_killing;
 
         public KillButton(Frc_ExtensionPackage package)
             : base(package, false, GuidList.guidFRC_ExtensionCmdSet, (int)PkgCmdIDList.cmdidKillButton)
@@ -32,11 +29,11 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 try
                 {
                     SettingsPageGrid page;
-                    string teamNumber = m_package.GetTeamNumber(out page);
+                    string teamNumber = Package.GetTeamNumber(out page);
 
                     if (teamNumber == null) return;
 
-                    DeployManager m = new DeployManager(m_package.PublicGetService(typeof (DTE)) as DTE);
+                    DeployManager m = new DeployManager(Package.PublicGetService(typeof (DTE)) as DTE);
 
                     var writer = OutputWriter.Instance;
 
@@ -55,7 +52,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
                     if (await Task.WhenAny(rioConnectionTask, delayTask) == rioConnectionTask)
                     {
                         //Connected
-                        if (rioConnectionTask.Result == true)
+                        if (rioConnectionTask.Result)
                         {
                             writer.WriteLine("Killing currently running robot code.");
                             await RoboRIOConnection.RunCommand(DeployProperties.KillOnlyCommand, ConnectionUser.LvUser);
@@ -81,7 +78,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 }
                 catch (Exception ex)
                 {
-                    m_output.WriteLine(ex.ToString());
+                    Output.WriteLine(ex.ToString());
                     m_killing = false;
                     menuCommand.Visible = true;
                     OutputWriter.Instance.WriteLine("Code Kill Failed");

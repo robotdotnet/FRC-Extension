@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RobotDotNet.FRC_Extension
+﻿namespace RobotDotNet.FRC_Extension.RoboRIOCode
 {
     public static class DeployProperties
     {

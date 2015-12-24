@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Globalization;
-using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using RobotDotNet.FRC_Extension.MonoCode;
+using RobotDotNet.FRC_Extension.RoboRIOCode;
 
 namespace RobotDotNet.FRC_Extension.Buttons
 {
     public class DownloadMonoButton : ButtonBase
     {
         private readonly MonoFile m_monoFile;
-        private bool m_downloading = false;
+        private bool m_downloading;
         private readonly InstallMonoButton m_installButton;
 
         public DownloadMonoButton(Frc_ExtensionPackage package, MonoFile monoFile, InstallMonoButton installButton)
@@ -38,7 +38,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
 
                     m_downloading = true;
                     menuCommand.Visible = false;
-                    if (!(await CheckForInternetConnection()))
+                    if (!await CheckForInternetConnection())
                     {
                         m_downloading = false;
                         menuCommand.Visible = true;
@@ -51,8 +51,8 @@ namespace RobotDotNet.FRC_Extension.Buttons
 
                     if (downloadNew)
                     {
-                        m_output.ProgressBarLabel = "Downloading Mono";
-                        await m_monoFile.DownloadMono(m_output);
+                        Output.ProgressBarLabel = "Downloading Mono";
+                        await m_monoFile.DownloadMono(Output);
 
                         //Verify Download
                         bool verified = m_monoFile.CheckFileValid();
@@ -60,14 +60,14 @@ namespace RobotDotNet.FRC_Extension.Buttons
                         if (verified)
                         {
                             // Show a Message Box to prove we were here
-                            IVsUIShell uiShell = (IVsUIShell)m_package.PublicGetService(typeof(SVsUIShell));
+                            IVsUIShell uiShell = (IVsUIShell)Package.PublicGetService(typeof(SVsUIShell));
                             Guid clsid = Guid.Empty;
                             int result;
                             uiShell.ShowMessageBox(
                                 0,
                                 ref clsid,
                                 "Mono Successfully Downloaded. Would you like to install it to the RoboRIO?",
-                                string.Format(CultureInfo.CurrentCulture, "", this.ToString()),
+                                string.Format(CultureInfo.CurrentCulture, "", ToString()),
                                 string.Empty,
                                 0,
                                 OLEMSGBUTTON.OLEMSGBUTTON_YESNO,
@@ -84,14 +84,14 @@ namespace RobotDotNet.FRC_Extension.Buttons
                         else
                         {
                             // Show a Message Box to prove we were here
-                            IVsUIShell uiShell = (IVsUIShell)m_package.PublicGetService(typeof(SVsUIShell));
+                            IVsUIShell uiShell = (IVsUIShell)Package.PublicGetService(typeof(SVsUIShell));
                             Guid clsid = Guid.Empty;
                             int result;
                             Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
                                 0,
                                 ref clsid,
                                 "Mono Download Failed. Please Try Again",
-                                string.Format(CultureInfo.CurrentCulture, "", this.ToString()),
+                                string.Format(CultureInfo.CurrentCulture, "", ToString()),
                                 string.Empty,
                                 0,
                                 OLEMSGBUTTON.OLEMSGBUTTON_OK,
@@ -105,14 +105,14 @@ namespace RobotDotNet.FRC_Extension.Buttons
                     else
                     {
                         // Show a Message Box to prove we were here
-                        IVsUIShell uiShell = (IVsUIShell)m_package.PublicGetService(typeof(SVsUIShell));
+                        IVsUIShell uiShell = (IVsUIShell)Package.PublicGetService(typeof(SVsUIShell));
                         Guid clsid = Guid.Empty;
                         int result;
                         Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
                             0,
                             ref clsid,
                             "Mono Already Downloaded",
-                            string.Format(CultureInfo.CurrentCulture, "", this.ToString()),
+                            string.Format(CultureInfo.CurrentCulture, "", ToString()),
                             string.Empty,
                             0,
                             OLEMSGBUTTON.OLEMSGBUTTON_OK,
@@ -124,7 +124,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 }
                 catch (Exception ex)
                 {
-                    m_output.WriteLine(ex.ToString());
+                    Output.WriteLine(ex.ToString());
                     m_downloading = false;
                     menuCommand.Visible = true;
                 }
@@ -139,13 +139,13 @@ namespace RobotDotNet.FRC_Extension.Buttons
 
             public TimeoutWebClient(int timeout)
             {
-                this.m_timeout = timeout;
+                m_timeout = timeout;
             }
 
             protected override WebRequest GetWebRequest(Uri address)
             {
                 var result = base.GetWebRequest(address);
-                result.Timeout = this.m_timeout;
+                result.Timeout = m_timeout;
                 return result;
             }
         }

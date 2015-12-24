@@ -1,27 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Specialized;
-//using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading;
-using EnvDTE;
-using EnvDTE80;
 using System.Threading.Tasks;
 using System.Xml;
-using Renci.SshNet;
-using RobotDotNet.FRC_Extension.RoboRIO_Code;
+using EnvDTE;
+using EnvDTE80;
 
-namespace RobotDotNet.FRC_Extension
+namespace RobotDotNet.FRC_Extension.RoboRIOCode
 {
     public class DeployManager
     {
         //We need our DTE so we can grab our solution
         private readonly DTE m_dte;
 
-        ConnectionReturn connectionValues = null;
+        ConnectionReturn m_connectionValues;
 
         public DeployManager(DTE dte)
         {
@@ -54,12 +49,12 @@ namespace RobotDotNet.FRC_Extension
             if (await Task.WhenAny(rioConnectionTask, delayTask) == rioConnectionTask)
             {
                 //Completed on time
-                if (rioConnectionTask.Result == true)
+                if (rioConnectionTask.Result)
                 {
                     //Connected successfully
                     OutputWriter.Instance.WriteLine("Successfully Connected to RoboRIO.");
 
-                    if (!(await CheckMonoInstall()))
+                    if (!await CheckMonoInstall())
                     {
                         //TODO: Make this error message better
                         OutputWriter.Instance.WriteLine("Mono not properly installed. Please try reinstalling to Mono Runtime.");
@@ -68,7 +63,7 @@ namespace RobotDotNet.FRC_Extension
                     OutputWriter.Instance.WriteLine("Mono correctly installed");
 
                     OutputWriter.Instance.WriteLine("Checking RoboRIO Image");
-                    if (!(await CheckRoboRioImage()))
+                    if (!await CheckRoboRioImage())
                     {
                         OutputWriter.Instance.WriteLine("RoboRIO Image does not match plugin, allowed image versions: " + string.Join(", ", DeployProperties.RoboRioAllowedImages.ToArray()));
                         OutputWriter.Instance.WriteLine("Please follow FIRST's instructions on imaging your RoboRIO, and try again.");
@@ -115,7 +110,7 @@ namespace RobotDotNet.FRC_Extension
                     builder.AppendLine("Interface: " + connected.ConnectionType);
                     builder.Append("IP Address: " + connected.ConnectionIp);
                     OutputWriter.Instance.WriteLine(builder.ToString());
-                    connectionValues = connected;
+                    m_connectionValues = connected;
                     return true;
                 }
                 else
@@ -127,8 +122,8 @@ namespace RobotDotNet.FRC_Extension
 
         public class CodeReturnStruct
         {
-            public string RobotExe { get; private set; }
-            public List<string> RobotFiles { get; private set; }
+            public string RobotExe { get; }
+            public List<string> RobotFiles { get; }
 
             public CodeReturnStruct(string exe, List<string> files)
             {
@@ -146,7 +141,7 @@ namespace RobotDotNet.FRC_Extension
             writer.WriteLine("Building Robot Code");
             var sb = (SolutionBuild2)m_dte.Solution.SolutionBuild;
             //Check if we are building for debug or release
-            string configuration = "Release";
+            string configuration;
             if (debug)
             {
                 configuration = "Debug";
@@ -254,7 +249,7 @@ namespace RobotDotNet.FRC_Extension
             using (WebClient wc = new WebClient())
             {
 
-                byte[] result = await wc.UploadValuesTaskAsync($"http://{connectionValues.ConnectionIp}/nisysapi/server", "POST",
+                byte[] result = await wc.UploadValuesTaskAsync($"http://{m_connectionValues.ConnectionIp}/nisysapi/server", "POST",
                     new NameValueCollection
                     {
                         {"Function", "GetPropertiesOfItem"},

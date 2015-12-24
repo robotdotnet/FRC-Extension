@@ -4,13 +4,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Renci.SshNet;
 using Renci.SshNet.Common;
 
-namespace RobotDotNet.FRC_Extension.RoboRIO_Code
+namespace RobotDotNet.FRC_Extension.RoboRIOCode
 {
     public enum ConnectionType
     {
@@ -49,11 +47,11 @@ namespace RobotDotNet.FRC_Extension.RoboRIO_Code
         public const string RoboRioUSBIp = "172.22.11.2";
         public const string RoboRioIpFormatString = "10.{0}.{1}.2";
 
-        private static ConnectionInfo m_adminConnectionInfo = null;
-        private static ConnectionInfo m_lvUserConnectionInfo = null;
+        private static ConnectionInfo s_adminConnectionInfo;
+        private static ConnectionInfo s_lvUserConnectionInfo;
 
-        public static ConnectionInfo AdminConnectionInfo => m_adminConnectionInfo;
-        public static ConnectionInfo LvUserConnectionInfo => m_lvUserConnectionInfo;
+        public static ConnectionInfo AdminConnectionInfo => s_adminConnectionInfo;
+        public static ConnectionInfo LvUserConnectionInfo => s_lvUserConnectionInfo;
 
         public static async Task<ConnectionReturn> CheckConnection(string teamNumberS)
         {
@@ -62,7 +60,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIO_Code
 
         public static async Task<ConnectionReturn> CheckConnection(string teamNumberS, TimeSpan timeout)
         {
-            int teamNumber = 0;
+            int teamNumber;
             int.TryParse(teamNumberS, out teamNumber);
 
 
@@ -85,8 +83,8 @@ namespace RobotDotNet.FRC_Extension.RoboRIO_Code
             {
                 return new ConnectionReturn(ConnectionType.IP, roboRIOIP, true);
             }
-            m_lvUserConnectionInfo = null;
-            m_adminConnectionInfo = null;
+            s_lvUserConnectionInfo = null;
+            s_adminConnectionInfo = null;
             return null;
         }
 
@@ -123,11 +121,11 @@ namespace RobotDotNet.FRC_Extension.RoboRIO_Code
                 }
             };
 
-            m_lvUserConnectionInfo = new ConnectionInfo(ip, "lvuser", pauth, authMethod) { Timeout = timeout };
+            s_lvUserConnectionInfo = new ConnectionInfo(ip, "lvuser", pauth, authMethod) { Timeout = timeout };
 
 
-            m_adminConnectionInfo = new ConnectionInfo(ip, "admin", pauthAdmin, authMethodAdmin) { Timeout = timeout };
-            using (SshClient zeroConfClient = new SshClient(m_lvUserConnectionInfo))
+            s_adminConnectionInfo = new ConnectionInfo(ip, "admin", pauthAdmin, authMethodAdmin) { Timeout = timeout };
+            using (SshClient zeroConfClient = new SshClient(s_lvUserConnectionInfo))
             {
                 try
                 {
@@ -151,10 +149,10 @@ namespace RobotDotNet.FRC_Extension.RoboRIO_Code
             switch (user)
             {
                 case ConnectionUser.Admin:
-                    connectionInfo = m_adminConnectionInfo;
+                    connectionInfo = s_adminConnectionInfo;
                     break;
                 case ConnectionUser.LvUser:
-                    connectionInfo = m_lvUserConnectionInfo;
+                    connectionInfo = s_lvUserConnectionInfo;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(user), user, null);
@@ -196,10 +194,10 @@ namespace RobotDotNet.FRC_Extension.RoboRIO_Code
             switch (user)
             {
                 case ConnectionUser.Admin:
-                    connectionInfo = m_adminConnectionInfo;
+                    connectionInfo = s_adminConnectionInfo;
                     break;
                 case ConnectionUser.LvUser:
-                    connectionInfo = m_lvUserConnectionInfo;
+                    connectionInfo = s_lvUserConnectionInfo;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(user), user, null);
@@ -231,10 +229,10 @@ namespace RobotDotNet.FRC_Extension.RoboRIO_Code
             switch (user)
             {
                 case ConnectionUser.Admin:
-                    connectionInfo = m_adminConnectionInfo;
+                    connectionInfo = s_adminConnectionInfo;
                     break;
                 case ConnectionUser.LvUser:
-                    connectionInfo = m_lvUserConnectionInfo;
+                    connectionInfo = s_lvUserConnectionInfo;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(user), user, null);
@@ -257,7 +255,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIO_Code
                 {
                     if (verbose)
                     {
-                        OutputWriter.Instance.WriteLine($"Deploying File: {fileInfo.Name.ToString()}");
+                        OutputWriter.Instance.WriteLine($"Deploying File: {fileInfo.Name}");
                     }
                     await Task.Run(() => scp.Upload(fileInfo, deployLocation));
                 }

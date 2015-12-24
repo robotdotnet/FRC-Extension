@@ -11,18 +11,15 @@ namespace RobotDotNet.FRC_Extension
     /// </summary>
     public class OutputWriter : IProgress<int>
     {
-        private Window m_window = null;
-        private IVsOutputWindowPane m_outputPane = null;
-        private IVsStatusbar m_statusBar = null;
+        private Window m_window;
+        private IVsOutputWindowPane m_outputPane;
+        private IVsStatusbar m_statusBar;
 
-        private bool m_initialized = false;
+        private bool m_initialized;
 
         private static OutputWriter s_instance;
 
-        public static OutputWriter Instance
-        {
-            get { return s_instance ?? (s_instance = new OutputWriter()); }
-        }
+        public static OutputWriter Instance => s_instance ?? (s_instance = new OutputWriter());
 
         private OutputWriter()
         {
@@ -108,7 +105,7 @@ namespace RobotDotNet.FRC_Extension
             WriteLine(value.ToString());
         }
 
-        private uint cookie;
+        private uint m_cookie;
         private string m_progressLabel;
 
         public string ProgressBarLabel {
@@ -129,7 +126,7 @@ namespace RobotDotNet.FRC_Extension
                 Initialize();
             if (!m_initialized) return;
 
-            m_statusBar.Progress(ref cookie, 1, ProgressBarLabel, (uint)value, 100);
+            m_statusBar.Progress(ref m_cookie, 1, ProgressBarLabel, (uint)value, 100);
         }
     }
 }

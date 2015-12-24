@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TemplateWizard;
@@ -41,7 +39,7 @@ namespace RobotDotNet.FRC_Extension.SimulatorWizards
                     //Find the project with the RobotProject global, and also make sure it references WPILib.
                     if (project.Globals.VariableExists["RobotProject"])
                     {
-                        var vsproject = project.Object as VSLangProj.VSProject;
+                        var vsproject = project.Object as VSProject;
 
                         if (vsproject != null)
                         {
@@ -63,7 +61,7 @@ namespace RobotDotNet.FRC_Extension.SimulatorWizards
             }
         }
 
-        private Project m_robotProject = null;
+        private Project m_robotProject;
 
         //Find and add our robot namespace and class to the replacement dictionary.
         private void FindRobotNameAndNamespace(Dictionary<string, string> replacementsDictionary, Project robotProject)
@@ -138,7 +136,7 @@ namespace RobotDotNet.FRC_Extension.SimulatorWizards
         /// <param name="project"></param>
         public void ProjectFinishedGenerating(Project project)
         {
-            var vsproject = project.Object as VSLangProj.VSProject;
+            var vsproject = project.Object as VSProject;
             
             
             if (vsproject != null && m_robotProject != null)

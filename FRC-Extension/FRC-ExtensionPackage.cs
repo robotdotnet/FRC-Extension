@@ -2,18 +2,13 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.ComponentModel.Design;
-using System.Net;
-using EnvDTE;
-using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
 using RobotDotNet.FRC_Extension.Buttons;
 using RobotDotNet.FRC_Extension.MonoCode;
+using RobotDotNet.FRC_Extension.RoboRIOCode;
 using RobotDotNet.FRC_Extension.WPILibFolder;
-using VSLangProj;
 
 
 namespace RobotDotNet.FRC_Extension
@@ -156,7 +151,7 @@ namespace RobotDotNet.FRC_Extension
             int result;
 
             uiShell.ShowMessageBox(0, ref clsid, "Team Number Not Set",
-                $"Please see your team number. Click OK will open up the settings menu.", string.Empty, 0,
+                "Please see your team number. Click OK will open up the settings menu.", string.Empty, 0,
                 OLEMSGBUTTON.OLEMSGBUTTON_OKCANCEL, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST, OLEMSGICON.OLEMSGICON_INFO, 0, out result);
 
             if (result == 1)

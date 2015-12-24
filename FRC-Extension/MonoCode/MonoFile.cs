@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using RobotDotNet.FRC_Extension.RoboRIOCode;
 using RobotDotNet.FRC_Extension.WPILibFolder;
 
 namespace RobotDotNet.FRC_Extension.MonoCode
@@ -64,9 +65,8 @@ namespace RobotDotNet.FRC_Extension.MonoCode
 
         public static string SelectMonoFile()
         {
-            OpenFileDialog dialog = new OpenFileDialog();
+            OpenFileDialog dialog = new OpenFileDialog {Filter = "Zip Files(*.zip)|*.zip"};
 
-            dialog.Filter = "Zip Files(*.zip)|*.zip";
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {

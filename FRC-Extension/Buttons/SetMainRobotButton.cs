@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using EnvDTE;
-using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -52,7 +47,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 uint projectItemId;
 
                 IVsMonitorSelection monitorSelection =
-                    (IVsMonitorSelection)Package.GetGlobalService(
+                    (IVsMonitorSelection)Microsoft.VisualStudio.Shell.Package.GetGlobalService(
                         typeof(SVsShellMonitorSelection));
 
                 monitorSelection.GetCurrentSelection(out hierarchyPointer,
@@ -126,7 +121,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
 
         private void ClearAllProjectsInSolution()
         {
-            var dte = m_package.PublicGetService(typeof(DTE)) as DTE;
+            var dte = Package.PublicGetService(typeof(DTE)) as DTE;
             var sb = dte?.Solution;
             if (sb == null)
             {

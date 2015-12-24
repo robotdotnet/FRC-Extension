@@ -16,7 +16,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
             //TODO: Get version
 
             // Show a Message Box to prove we were here
-            IVsUIShell uiShell = (IVsUIShell)m_package.PublicGetService(typeof(SVsUIShell));
+            IVsUIShell uiShell = (IVsUIShell)Package.PublicGetService(typeof(SVsUIShell));
             Guid clsid = Guid.Empty;
             int result;
             Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(

@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Renci.SshNet.Common;
 using RobotDotNet.FRC_Extension.MonoCode;
+using RobotDotNet.FRC_Extension.RoboRIOCode;
 using Task = System.Threading.Tasks.Task;
 
 namespace RobotDotNet.FRC_Extension.Buttons
@@ -12,7 +13,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
     public class InstallMonoButton : ButtonBase
     {
         private readonly MonoFile m_monoFile;
-        private bool m_installing = false;
+        private bool m_installing;
 
         public InstallMonoButton(Frc_ExtensionPackage package, MonoFile monoFile)
             : base(package, false, GuidList.guidFRC_ExtensionCmdSet, (int) PkgCmdIDList.cmdidInstallMono)
@@ -22,7 +23,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
 
         internal OleMenuCommand GetMenuCommand()
         {
-            return m_oleMenuItem;
+            return OleMenuItem;
         }
 
         public override async void ButtonCallback(object sender, EventArgs e)
@@ -38,9 +39,8 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 try
                 {
                     m_monoFile.ResetToDefaultDirectory();
-                    bool properFileExists = true;
 
-                    properFileExists = m_monoFile.CheckFileValid();
+                    var properFileExists = m_monoFile.CheckFileValid();
 
                     if (properFileExists)
                     {
@@ -81,17 +81,17 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 }
                 catch (SshConnectionException)
                 {
-                    m_output.WriteLine("Connection to RoboRIO lost. Install aborted.");
+                    Output.WriteLine("Connection to RoboRIO lost. Install aborted.");
                     m_installing = false;
                     menuCommand.Visible = true;
-                    m_output.ProgressBarLabel = "Mono Install Failed";
+                    Output.ProgressBarLabel = "Mono Install Failed";
                 }
                 catch (Exception ex)
                 {
-                    m_output.WriteLine(ex.ToString());
+                    Output.WriteLine(ex.ToString());
                     m_installing = false;
                     menuCommand.Visible = true;
-                    m_output.ProgressBarLabel = "Mono Install Failed";
+                    Output.ProgressBarLabel = "Mono Install Failed";
                 }
             }
         }
@@ -100,7 +100,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
             try
             {
                 SettingsPageGrid page;
-                string teamNumber = m_package.GetTeamNumber(out page);
+                string teamNumber = Package.GetTeamNumber(out page);
 
                 if (teamNumber == null) return;
 
@@ -110,7 +110,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 m_installing = true;
                 menuCommand.Visible = false;
 
-                DeployManager m = new DeployManager(m_package.PublicGetService(typeof(DTE)) as DTE);
+                DeployManager m = new DeployManager(Package.PublicGetService(typeof(DTE)) as DTE);
                 MonoDeploy deploy = new MonoDeploy(teamNumber, m, m_monoFile);
 
                 await deploy.DeployMono();
@@ -121,7 +121,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
             }
             catch (Exception ex)
             {
-                m_output.WriteLine(ex.ToString());
+                Output.WriteLine(ex.ToString());
                 m_installing = false;
                 menuCommand.Visible = true;
             }
@@ -130,7 +130,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
         public void DownloadMonoPopup()
         {
             // Show a Message Box to prove we were here
-            IVsUIShell uiShell = (IVsUIShell)m_package.PublicGetService(typeof(SVsUIShell));
+            IVsUIShell uiShell = (IVsUIShell)Package.PublicGetService(typeof(SVsUIShell));
             Guid clsid = Guid.Empty;
             int result;
             Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
@@ -150,7 +150,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
         public void InvalidMonoPopup()
         {
             // Show a Message Box to prove we were here
-            IVsUIShell uiShell = (IVsUIShell)m_package.PublicGetService(typeof(SVsUIShell));
+            IVsUIShell uiShell = (IVsUIShell)Package.PublicGetService(typeof(SVsUIShell));
             Guid clsid = Guid.Empty;
             int result;
             Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
@@ -169,12 +169,12 @@ namespace RobotDotNet.FRC_Extension.Buttons
 
         public string LoadMonoPopup()
         {
-            IVsUIShell uiShell = (IVsUIShell)m_package.PublicGetService(typeof(SVsUIShell));
+            IVsUIShell uiShell = (IVsUIShell)Package.PublicGetService(typeof(SVsUIShell));
             Guid clsid = Guid.Empty;
             int result;
 
             uiShell.ShowMessageBox(0, ref clsid, "Mono File Not Found",
-                $"Mono file not found. Would you like to load an existing file?", string.Empty, 0,
+                "Mono file not found. Would you like to load an existing file?", string.Empty, 0,
                 OLEMSGBUTTON.OLEMSGBUTTON_YESNO, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST, OLEMSGICON.OLEMSGICON_INFO, 0, out result);
 
             if (result == 6)

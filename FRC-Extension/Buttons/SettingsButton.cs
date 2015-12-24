@@ -10,7 +10,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
 
         public override void ButtonCallback(object sender, EventArgs e)
         {
-            m_package.ShowOptionPage(typeof(SettingsPageGrid));
+            Package.ShowOptionPage(typeof(SettingsPageGrid));
         }
     }
 }

@@ -5,40 +5,41 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Renci.SshNet.Common;
+using RobotDotNet.FRC_Extension.RoboRIOCode;
 using VSLangProj;
 
 namespace RobotDotNet.FRC_Extension.Buttons
 {
     public class DeployDebugButton : ButtonBase
     {
-        protected readonly bool m_debugButton;
-        protected static bool s_deploying = false;
-        protected static readonly List<OleMenuCommand> s_deployCommands = new List<OleMenuCommand>();
+        protected readonly bool DebugButton;
+        protected static bool Deploying;
+        protected static readonly List<OleMenuCommand> DeployCommands = new List<OleMenuCommand>();
 
-        private Project m_robotProject = null;
+        private Project m_robotProject;
 
         public DeployDebugButton(Frc_ExtensionPackage package, int pkgCmdIdOfButton, bool debug) : base(package, true, GuidList.guidFRC_ExtensionCmdSet, pkgCmdIdOfButton)
         {
-            m_debugButton = debug;
-            s_deployCommands.Add(m_oleMenuItem);
+            DebugButton = debug;
+            DeployCommands.Add(OleMenuItem);
         }
 
         private void DisableAllButtons()
         {
-            foreach (var oleMenuCommand in s_deployCommands)
+            foreach (var oleMenuCommand in DeployCommands)
             {
                 oleMenuCommand.Enabled = false;
             }
-            s_deploying = true;
+            Deploying = true;
         }
 
         private void EnableAllButtons()
         {
-            foreach (var oleMenuCommand in s_deployCommands)
+            foreach (var oleMenuCommand in DeployCommands)
             {
                 oleMenuCommand.Enabled = true;
             }
-            s_deploying = false;
+            Deploying = false;
         }
 
         public override async void ButtonCallback(object sender, EventArgs e)
@@ -48,42 +49,35 @@ namespace RobotDotNet.FRC_Extension.Buttons
             {
                 return;
             }
-            if (!s_deploying)
+            if (!Deploying)
             {
                 try
                 {
-                    m_output.ProgressBarLabel = "Deploying Robot Code";
+                    Output.ProgressBarLabel = "Deploying Robot Code";
                     OutputWriter.Instance.Clear();
                     SettingsPageGrid page;
-                    string teamNumber = m_package.GetTeamNumber(out page);
+                    string teamNumber = Package.GetTeamNumber(out page);
 
                     if (teamNumber == null) return;
 
                     //Disable the deploy buttons
                     DisableAllButtons();
-                    DeployManager m = new DeployManager(m_package.PublicGetService(typeof (DTE)) as DTE);
-                    bool success = await m.DeployCode(teamNumber, page, m_debugButton, m_robotProject);
+                    DeployManager m = new DeployManager(Package.PublicGetService(typeof (DTE)) as DTE);
+                    bool success = await m.DeployCode(teamNumber, page, DebugButton, m_robotProject);
                     EnableAllButtons();
-                    if (success)
-                    {
-                        m_output.ProgressBarLabel = "Robot Code Deploy Successful";
-                    }
-                    else
-                    {
-                        m_output.ProgressBarLabel = "Robot Code Deploy Failed";
-                    }
+                    Output.ProgressBarLabel = success ? "Robot Code Deploy Successful" : "Robot Code Deploy Failed";
                 }
                 catch (SshConnectionException)
                 {
-                    m_output.WriteLine("Connection to RoboRIO lost. Deploy aborted.");
+                    Output.WriteLine("Connection to RoboRIO lost. Deploy aborted.");
                     EnableAllButtons();
-                    m_output.ProgressBarLabel = "Robot Code Deploy Failed";
+                    Output.ProgressBarLabel = "Robot Code Deploy Failed";
                 }
                 catch (Exception ex)
                 {
-                    m_output.WriteLine(ex.ToString());
+                    Output.WriteLine(ex.ToString());
                     EnableAllButtons();
-                    m_output.ProgressBarLabel = "Robot Code Deploy Failed";
+                    Output.ProgressBarLabel = "Robot Code Deploy Failed";
                 }
 
             }
@@ -94,12 +88,12 @@ namespace RobotDotNet.FRC_Extension.Buttons
             var menuCommand = sender as OleMenuCommand;
             if (menuCommand != null)
             {
-                var dte = m_package.PublicGetService(typeof(DTE)) as DTE;
+                var dte = Package.PublicGetService(typeof(DTE)) as DTE;
 
                 bool visable = false;
                 m_robotProject = null;
 
-                SettingsPageGrid grid = (SettingsPageGrid) m_package.PublicGetDialogPage(typeof (SettingsPageGrid));
+                SettingsPageGrid grid = (SettingsPageGrid) Package.PublicGetDialogPage(typeof (SettingsPageGrid));
 
                 if (grid.DebugMode)
                 {
@@ -111,7 +105,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
                         {
                             string project = ((Array) sb.StartupProjects).Cast<string>().First();
                             Project startupProject = dte.Solution.Item(project);
-                            var vsproject = startupProject.Object as VSLangProj.VSProject;
+                            var vsproject = startupProject.Object as VSProject;
                             if (vsproject != null)
                             {
                                 //If we are an assembly, and its named WPILib, enable the deploy
@@ -137,7 +131,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
                             {
                                 continue;
                             }
-                            var vsproject = project.Object as VSLangProj.VSProject;
+                            var vsproject = project.Object as VSProject;
 
                             if (vsproject != null)
                             {
@@ -156,7 +150,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
                     }
                 }
 
-                if (s_deploying)
+                if (Deploying)
                     visable = false;
 
                 menuCommand.Enabled = visable;

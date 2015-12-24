@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 $if$ ($targetframeworkversion$ >= 3.5)using System.Linq;
-$endif$
-using WPILib;
+$endif$using WPILib;
 
 namespace $safeprojectname$
 {
@@ -35,7 +34,7 @@ namespace $safeprojectname$
          */
         public override void Autonomous()
         {
-            myRobot.SetSafetyEnabled(false);
+            myRobot.SafetyEnabled = false;
             myRobot.Drive(-0.5, 0.0);	// drive forwards half speed
             Timer.Delay(2.0);		//    for 2 seconds
             myRobot.Drive(0.0, 0.0);	// stop robot
@@ -45,8 +44,8 @@ namespace $safeprojectname$
          * Runs the motors with arcade steering.
          */
         public override void OperatorControl() {
-            myRobot.SetSafetyEnabled(true);
-            while (IsOperatorControl() && IsEnabled()) {
+            myRobot.SafetyEnabled = true;
+            while (IsOperatorControl && IsEnabled) {
                 myRobot.ArcadeDrive(stick); // drive with arcade style (use right stick)
                 Timer.Delay(0.005);		// wait for a motor update time
             }

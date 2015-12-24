@@ -7,7 +7,7 @@ using WPILib.Extras;
 
 namespace $safeprojectname$
 {
-	public class $safeprojectname$ : LabVIEWRobot
+	public class $safeprojectname$ : LabViewRobot
     {
         public override void Begin()
         {

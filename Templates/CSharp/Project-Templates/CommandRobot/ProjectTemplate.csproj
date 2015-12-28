@@ -54,8 +54,11 @@
 	<ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="$safeprojectname$.cs" />
+    
     <Compile Include="OI.cs" />
+    
     <Compile Include="RobotMap.cs" />
+    
     <Compile Include="Subsystems\ExampleSubsystem.cs" />
     <Compile Include="Commands\ExampleCommand.cs" />
 		<Compile Include="Properties\AssemblyInfo.cs" />

@@ -35,7 +35,9 @@
           repositoryId="FRC_Extension">
       <package id="FRC.WPILib" version="2016.0.0.29"/>
       <package id="FRC.NetworkTables" version="2016.0.0.97"/>
+      <package id="FRC.WPILib.Extras" version="2016.0.0.29"/>
       <package id="monogame.framework.windowsdx" version="3.4.0.459"/>
+      <!--TODO Include MonoGame Simulator Package.-->
     </packages>
   </WizardData>
 </VSTemplate>

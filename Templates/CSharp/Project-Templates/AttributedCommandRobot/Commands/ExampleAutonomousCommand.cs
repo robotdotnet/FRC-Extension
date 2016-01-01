@@ -8,7 +8,7 @@ namespace $safeprojectname$.Commands
     [RunCommandAtPhaseStart(MatchPhase.Autonomous)]
     public class ExampleAutonomousCommand : Command
     {
-        public ExampleAutonomousCommand($safeprojectname$.Subsystems.ExampleSubsystem subsystem)
+        public ExampleAutonomousCommand(Subsystems.ExampleSubsystem subsystem)
         {
             Requires(subsystem);
         }

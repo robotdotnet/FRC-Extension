@@ -26,9 +26,9 @@
   <WizardData>
     <packages repository="extension"
           repositoryId="FRC_Extension">
-      <package id="FRC.WPILib" version="2016.0.0.29"/>
-      <package id="FRC.NetworkTables" version="2016.0.0.97"/>
-      <package id="FRC.WPILib.Extras" version="2016.0.0.29"/>
+      <package id="FRC.WPILib" version="2016.0.0.245"/>
+      <package id="FRC.NetworkTables" version="2016.0.0.146"/>
+      <package id="FRC.WPILib.Extras" version="2016.0.0.245"/>
     </packages>
   </WizardData>
 </VSTemplate>

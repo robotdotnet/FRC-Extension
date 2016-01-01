@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 $if$ ($targetframeworkversion$ >= 3.5)using System.Linq;
 $endif$using WPILib;
+using WPILib.SmartDashboard;
 
 namespace $safeprojectname$
 {
@@ -23,21 +24,57 @@ namespace $safeprojectname$
     {
         RobotDrive myRobot;
         Joystick stick;
+        const string defaultAuto = "Default";
+        const string customAuto = "My Auto";
+        string autoSelected;
+        SendableChooser chooser; 
+
+
         public $safeprojectname$()
         {
             myRobot = new RobotDrive(0, 1);
             myRobot.Expiration = 0.1;
             stick = new Joystick(0);
         }
-        /**
-         * Drive left & right motors for 2 seconds then stop
-         */
+
+        protected override void RobotInit()
+        {
+            chooser = new SendableChooser();
+            chooser.AddDefault("Default Auto", defaultAuto);
+            chooser.AddObject("My Auto", customAuto);
+            SmartDashboard.PutData("Chooser", chooser);
+        }
+
+        // This autonomous (along with the sendable chooser above) shows how to select between
+        // different autonomous modes using the dashboard. The senable chooser code works with
+        // the Java SmartDashboard. If you prefer the LabVIEW Dashboard, remove all the chooser
+        // code an uncomment the GetString code to get the uto name from the text box below
+        // the gyro.
+        // You can add additional auto modes by adding additional comparisons to the if-else
+        // structure below with additional strings. If using the SendableChooser
+        // be sure to add them to the chooser code above as well.
         public override void Autonomous()
         {
-            myRobot.SafetyEnabled = false;
-            myRobot.Drive(-0.5, 0.0);	// drive forwards half speed
-            Timer.Delay(2.0);		//    for 2 seconds
-            myRobot.Drive(0.0, 0.0);	// stop robot
+            autoSelected = (string) chooser.GetSelected();
+            //autoSelected = SmartDashboard.GetString("Auto Selector", defaultAuto);
+            Console.WriteLine("Auto selected: " + autoSelected);
+
+            switch (autoSelected)
+            {
+                case customAuto:
+                    myRobot.SafetyEnabled = false;
+                    myRobot.Drive(-0.5, 1.0); //Spin at half speed
+                    Timer.Delay(2.0);         //for 2 seconds
+                    myRobot.Drive(0.0, 0.0);  //Stop robot
+                    break;
+                case defaultAuto:
+                default:
+                    myRobot.SafetyEnabled = false;
+                    myRobot.Drive(-0.5, 0.0); //Drive forward half speed
+                    Timer.Delay(2.0);         //For 2 seconds
+                    myRobot.Drive(0.0, 0.0);  //Stop Robot
+                    break;
+            }
         }
 
         /**

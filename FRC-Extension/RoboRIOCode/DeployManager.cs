@@ -288,6 +288,9 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
 
         public async Task UploadCode(string robotName, SettingsPageGrid page, bool debug, Project robotProject)
         {
+            //TODO: Make debug work. Forcing debug to false for now so code always runs properly.
+            debug = false;
+
             if (page.Netconsole)
             {
                 await StartNetConsole();

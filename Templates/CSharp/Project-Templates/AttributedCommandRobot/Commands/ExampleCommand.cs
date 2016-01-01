@@ -5,7 +5,7 @@ namespace $safeprojectname$.Commands
 {
     public class ExampleCommand : Command
     {
-        public ExampleCommand($safeprojectname$.Subsystems.ExampleSubsystem subsystem)
+        public ExampleCommand(Subsystems.ExampleSubsystem subsystem)
         {
             Requires(subsystem);
         }

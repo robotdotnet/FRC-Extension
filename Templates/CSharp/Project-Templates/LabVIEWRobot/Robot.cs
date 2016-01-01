@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 $if$ ($targetframeworkversion$ >= 3.5)using System.Linq;
-$endif$
-using WPILib;
+$endif$using WPILib;
 using WPILib.Extras;
 
 namespace $safeprojectname$

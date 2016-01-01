@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 $if$ ($targetframeworkversion$ >= 3.5)using System.Linq;
 $endif$using WPILib;
+using WPILib.SmartDashboard;
 
 namespace $safeprojectname$
 {
@@ -23,8 +24,9 @@ namespace $safeprojectname$
     {
         RobotDrive myRobot;
         Joystick stick;
-        readonly string defaultAuto = "Default";
-        readonly string customAuto = "My Auto";
+        const string defaultAuto = "Default";
+        const string customAuto = "My Auto";
+        string autoSelected;
         SendableChooser chooser; 
 
 
@@ -35,11 +37,12 @@ namespace $safeprojectname$
             stick = new Joystick(0);
         }
 
-        public override void RobotInit()
+        protected override void RobotInit()
         {
             chooser = new SendableChooser();
             chooser.AddDefault("Default Auto", defaultAuto);
             chooser.AddObject("My Auto", customAuto);
+            SmartDashboard.PutData("Chooser", chooser);
         }
 
         // This autonomous (along with the sendable chooser above) shows how to select between

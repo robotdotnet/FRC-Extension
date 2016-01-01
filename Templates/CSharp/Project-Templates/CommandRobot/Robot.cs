@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 $if$ ($targetframeworkversion$ >= 3.5)using System.Linq;
-$endif$
-using WPILib;
+$endif$using WPILib;
 using WPILib.Commands;
 using WPILib.LiveWindow;
-using $safeprojectname$.Subsystems
-using $safeprojectname$.Commands
+using WPILib.SmartDashboard;
+using $safeprojectname$.Subsystems;
+using $safeprojectname$.Commands;
 
 namespace $safeprojectname$
 {
@@ -34,11 +34,12 @@ namespace $safeprojectname$
             chooser = new SendableChooser();
             chooser.AddDefault("Default Auto", new ExampleCommand());
             //chooser.AddObject("My Auto", new MyAutoCommand);
+            SmartDashboard.PutData("Chooser", chooser);
         }
 	
 	    public override void DisabledPeriodic()
         {
-		    Scheduler.GetInstance().Run();
+		    Scheduler.Instance.Run();
 	    }
 
         // This autonomous (along with the sendable chooser above) shows how to select between
@@ -73,7 +74,7 @@ namespace $safeprojectname$
 
         // This function is called periodically during autonomous
         public override void AutonomousPeriodic() {
-            Scheduler.GetInstance().Run();
+            Scheduler.Instance.Run();
         }
 
         public override void TeleopInit() {
@@ -96,7 +97,7 @@ namespace $safeprojectname$
         // This function is called periodically during operator control
         //
         public override void TeleopPeriodic() {
-            Scheduler.GetInstance().Run();
+            Scheduler.Instance.Run();
         }
     
         //

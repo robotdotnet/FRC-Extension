@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 $if$ ($targetframeworkversion$ >= 3.5)using System.Linq;
-$endif$
-using WPILib;
+$endif$using WPILib;
+using WPILib.SmartDashboard;
 
 namespace $safeprojectname$
 {
@@ -13,8 +13,8 @@ namespace $safeprojectname$
     /// </summary>
     public class $safeprojectname$ : IterativeRobot
     {
-        readonly string defaultAuto = "Default";
-        readonly string customAuto = "My Auto";
+        const string defaultAuto = "Default";
+        const string customAuto = "My Auto";
         string autoSelected;
         SendableChooser chooser;
 
@@ -27,6 +27,7 @@ namespace $safeprojectname$
             chooser = new SendableChooser();
             chooser.AddDefault("Default Auto", defaultAuto);
             chooser.AddObject("My Auto", customAuto);
+            SmartDashboard.PutData("Chooser", chooser);
         }
 
         // This autonomous (along with the sendable chooser above) shows how to select between

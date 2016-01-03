@@ -12,3 +12,13 @@ before_build:
 - cmd: nuget restore
 build:
   verbosity: minimal
+
+
+on_success:
+- ps: >-
+    
+    If (($env:APPVEYOR_REPO_BRANCH -eq "master") -and (!$env:APPVEYOR_PULL_REQUEST_NUMBER)) {
+
+    Get-ChildItem .\*.vsix | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+
+    }

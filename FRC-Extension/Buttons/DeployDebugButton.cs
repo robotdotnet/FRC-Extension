@@ -125,6 +125,11 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 {
                     foreach (Project project in dte.Solution.Projects)
                     {
+                        if (project.Globals == null)
+                        {
+                            //If globals are null, continue, as the project is probably disabled.
+                            continue;
+                        }
                         if (project.Globals.VariableExists["RobotProject"])
                         {
                             if (project.Globals["RobotProject"].ToString() != "yes")

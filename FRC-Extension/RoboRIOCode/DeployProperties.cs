@@ -23,7 +23,7 @@
         public const string RoboRioMonoBin = "/usr/bin/mono";
 
         public const string RioImageSearchString = "FRC_roboRIO";
-        public static readonly int[] RoboRioAllowedImages = { 18 };
+        public static readonly int[] RoboRioAllowedImages = { 19 };
 
         public static readonly string[] IgnoreFiles =
         {

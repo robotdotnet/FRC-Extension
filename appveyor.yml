@@ -19,6 +19,6 @@ on_success:
     
     If (($env:APPVEYOR_REPO_BRANCH -eq "master") -and (!$env:APPVEYOR_PULL_REQUEST_NUMBER)) {
 
-    Get-ChildItem .\*.vsix | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+    Get-ChildItem .\FRC-Extension\Output\*.vsix | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 
     }

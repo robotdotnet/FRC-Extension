@@ -36,6 +36,11 @@ namespace RobotDotNet.FRC_Extension.SimulatorWizards
                 //Loop through all projects found
                 foreach (Project project in dte.Solution.Projects)
                 {
+                    if (project.Globals == null)
+                    {
+                        //If globals are null, continue, as the project is probably disabled.
+                        continue;
+                    }
                     //Find the project with the RobotProject global, and also make sure it references WPILib.
                     if (project.Globals.VariableExists["RobotProject"])
                     {

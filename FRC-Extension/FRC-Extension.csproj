@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
   <PropertyGroup>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
@@ -219,13 +219,13 @@
     <Content Include="packages\FRC.NetworkTables.2016.0.0.148.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\FRC.Simulators.MonoGameSimulator.2016.0.0.5.nupkg">
+    <Content Include="packages\FRC.Simulators.MonoGameSimulator.2016.0.0.6.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\FRC.WPILib.2016.0.0.257.nupkg">
+    <Content Include="packages\FRC.WPILib.2016.0.0.258.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\FRC.WPILib.Extras.2016.0.0.257.nupkg">
+    <Content Include="packages\FRC.WPILib.Extras.2016.0.0.258.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="source.extension.vsixmanifest">

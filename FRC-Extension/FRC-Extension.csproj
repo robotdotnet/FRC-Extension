@@ -219,13 +219,13 @@
     <Content Include="packages\FRC.NetworkTables.2016.0.0.148.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\FRC.Simulators.MonoGameSimulator.2016.0.0.6.nupkg">
+    <Content Include="packages\FRC.Simulators.MonoGameSimulator.2016.0.0.7.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\FRC.WPILib.2016.0.0.258.nupkg">
+    <Content Include="packages\FRC.WPILib.2016.0.0.259.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\FRC.WPILib.Extras.2016.0.0.258.nupkg">
+    <Content Include="packages\FRC.WPILib.Extras.2016.0.0.259.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="source.extension.vsixmanifest">

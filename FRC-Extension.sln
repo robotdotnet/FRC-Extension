@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FRC-Extension", "FRC-Extension\FRC-Extension.csproj", "{D68E4367-9381-4140-B090-7445E4BD3073}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -50,6 +50,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProjectTemplates", "ProjectTemplates", "{820D222D-AE85-4C05-9C06-8EF43458FF0E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsMonoGameSimulator", "Templates\CSharp\Project-Templates\WindowsMonoGameSimulator\WindowsMonoGameSimulator.csproj", "{5B5754D7-AF0E-428B-8A1F-D6382A18A4F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FRC_Analyzers", "FRC-Analyzers\FRC_Analyzers\FRC_Analyzers.csproj", "{143DEF41-693E-4A25-8BDC-565A589F92DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FRC_Analyzers.Test", "FRC-Analyzers\FRC_Analyzers.Test\FRC_Analyzers.Test.csproj", "{73C857A5-820F-4ECC-B2DE-16B44E925668}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FRC_Analyzers.Vsix", "FRC-Analyzers\FRC_Analyzers.Vsix\FRC_Analyzers.Vsix.csproj", "{38A2E8A6-E05D-4890-878A-70E35CF8C06C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -179,6 +185,30 @@ Global
 		{5B5754D7-AF0E-428B-8A1F-D6382A18A4F5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5B5754D7-AF0E-428B-8A1F-D6382A18A4F5}.Release|x86.ActiveCfg = Release|Any CPU
 		{5B5754D7-AF0E-428B-8A1F-D6382A18A4F5}.Release|x86.Build.0 = Release|Any CPU
+		{143DEF41-693E-4A25-8BDC-565A589F92DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{143DEF41-693E-4A25-8BDC-565A589F92DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{143DEF41-693E-4A25-8BDC-565A589F92DB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{143DEF41-693E-4A25-8BDC-565A589F92DB}.Debug|x86.Build.0 = Debug|Any CPU
+		{143DEF41-693E-4A25-8BDC-565A589F92DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{143DEF41-693E-4A25-8BDC-565A589F92DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{143DEF41-693E-4A25-8BDC-565A589F92DB}.Release|x86.ActiveCfg = Release|Any CPU
+		{143DEF41-693E-4A25-8BDC-565A589F92DB}.Release|x86.Build.0 = Release|Any CPU
+		{73C857A5-820F-4ECC-B2DE-16B44E925668}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73C857A5-820F-4ECC-B2DE-16B44E925668}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73C857A5-820F-4ECC-B2DE-16B44E925668}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{73C857A5-820F-4ECC-B2DE-16B44E925668}.Debug|x86.Build.0 = Debug|Any CPU
+		{73C857A5-820F-4ECC-B2DE-16B44E925668}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73C857A5-820F-4ECC-B2DE-16B44E925668}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73C857A5-820F-4ECC-B2DE-16B44E925668}.Release|x86.ActiveCfg = Release|Any CPU
+		{73C857A5-820F-4ECC-B2DE-16B44E925668}.Release|x86.Build.0 = Release|Any CPU
+		{38A2E8A6-E05D-4890-878A-70E35CF8C06C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38A2E8A6-E05D-4890-878A-70E35CF8C06C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38A2E8A6-E05D-4890-878A-70E35CF8C06C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{38A2E8A6-E05D-4890-878A-70E35CF8C06C}.Debug|x86.Build.0 = Debug|Any CPU
+		{38A2E8A6-E05D-4890-878A-70E35CF8C06C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38A2E8A6-E05D-4890-878A-70E35CF8C06C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38A2E8A6-E05D-4890-878A-70E35CF8C06C}.Release|x86.ActiveCfg = Release|Any CPU
+		{38A2E8A6-E05D-4890-878A-70E35CF8C06C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

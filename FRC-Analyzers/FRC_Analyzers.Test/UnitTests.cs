@@ -9,6 +9,9 @@ using FRC_Analyzers;
 namespace FRC_Analyzers.Test
 {
     [TestClass]
+    //[DeploymentItem("ReferenceAssemblies/HAL.dll")]
+    //[DeploymentItem("ReferenceAssemblies/WPILib.dll")]
+    //[DeploymentItem("ReferenceAssemblies/WPILib.Extras.dll")]
     public class UnitTest : CodeFixVerifier
     {
 
@@ -26,33 +29,37 @@ namespace FRC_Analyzers.Test
         public void DefaultCommandConstructorTakingSubsystem()
         {
             var test = @"
-[ExportSubsystem(DefaultCommandType = typeof(Commands.Drive))] public class DriveTrain : Subsystem {}
+using WPILib.Commands;
+using WPILib.Extras.AttributedCommandModel;
+[ExportSubsystem(DefaultCommandType = typeof(Drive))] public class DriveTrain : Subsystem {}
 class Drive
 {
 }
 ";
             var expected = new DiagnosticResult
             {
-                Id = "FRC_Analyzers",
+                Id = SubsystemDefaultCommandConstructorAnalyzer.DiagnosticId,
                 Message = "The default command type needs to have a constructor that takes an instance of the subsystem.",
                 Severity = DiagnosticSeverity.Error,
                 Locations =
                     new[] {
-                            new DiagnosticResultLocation("Test0.cs", 6, 2)
+                            new DiagnosticResultLocation("Test0.cs", 4, 2)
                         }
             };
 
             VerifyCSharpDiagnostic(test, expected);
 
             var fixtest = @"
-[ExportSubsystem(DefaultCommandType = typeof(Commands.Drive))] public class DriveTrain : Subsystem {}
+using WPILib.Commands;
+using WPILib.Extras.AttributedCommandModel;
+[ExportSubsystem(DefaultCommandType = typeof(Drive))] public class DriveTrain : Subsystem {}
 class Drive
 {
     public Drive(DriveTrain subsystem)
     {
-
     }
-}";
+}
+";
             VerifyCSharpFix(test, fixtest);
         }
 

@@ -24,5 +24,8 @@ namespace RobotDotNet.FRC_Extension
 
         [Category("Extension Options"), DisplayName("Enable Extension Debug Mode"), Description("Enables debug mode for the extension. Make sure this is off for normal operation.")]
         public bool DebugMode { get; set; }
+
+        [Category("Extension Options"), DisplayName("Ignore RoboRio Image Version"), Description("Sets deploy to ignore RoboRio image. Used for Beta Testing. Do not use in season")]
+        public bool IgnoreImageRequirements { get; set; }
     }
 }

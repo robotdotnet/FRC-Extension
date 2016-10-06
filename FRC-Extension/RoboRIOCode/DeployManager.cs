@@ -65,9 +65,16 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
                     OutputWriter.Instance.WriteLine("Checking RoboRIO Image");
                     if (!await CheckRoboRioImage())
                     {
-                        OutputWriter.Instance.WriteLine("RoboRIO Image does not match plugin, allowed image versions: " + string.Join(", ", DeployProperties.RoboRioAllowedImages.ToArray()));
-                        OutputWriter.Instance.WriteLine("Please follow FIRST's instructions on imaging your RoboRIO, and try again.");
-                        return false;
+                        // Ignore image requirement on selected option
+                        if (!page.IgnoreImageRequirements)
+                        {
+                            OutputWriter.Instance.WriteLine(
+                                "RoboRIO Image does not match plugin, allowed image versions: " +
+                                string.Join(", ", DeployProperties.RoboRioAllowedImages.ToArray()));
+                            OutputWriter.Instance.WriteLine(
+                                "Please follow FIRST's instructions on imaging your RoboRIO, and try again.");
+                            return false;
+                        }
                     }
                     OutputWriter.Instance.WriteLine("RoboRIO Image Correct");
                     //Force making mono directory

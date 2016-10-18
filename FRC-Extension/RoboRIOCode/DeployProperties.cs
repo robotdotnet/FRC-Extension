@@ -37,7 +37,7 @@
         {
             "WPILib.dll",
             "HAL.dll",
-            "NetworkTables.dll",
+            "FRC.NetworkTables.Core.dll",
         };
 
         public const string CommandDir = "/home/lvuser";

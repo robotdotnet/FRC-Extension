@@ -27,5 +27,8 @@ namespace RobotDotNet.FRC_Extension
 
         [Category("Extension Options"), DisplayName("Ignore RoboRio Image Version"), Description("Sets deploy to ignore RoboRio image. Used for Beta Testing. Do not use in season")]
         public bool IgnoreImageRequirements { get; set; }
+
+        [Category("Extension Options"), DisplayName("Ignore Deploy File Requirements"), Description("Ignores the need for specific files during deploy. Used for Beta Testing. Do not use in season")]
+        public bool IgnoreFileRequirements { get; set; }
     }
 }

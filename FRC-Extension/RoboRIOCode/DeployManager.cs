@@ -41,7 +41,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             Task<bool> rioConnectionTask = StartConnectionTask(teamNumber);
             Task delayTask = Task.Delay(10000);
 
-            CodeReturnStruct codeReturn = await BuildAndPrepareCode(debug, robotProject);
+            CodeReturnStruct codeReturn = await BuildAndPrepareCode(debug, robotProject, page);
 
             if (codeReturn == null) return false;
 
@@ -140,7 +140,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
         }
 
 
-        public async Task<CodeReturnStruct> BuildAndPrepareCode(bool debug, Project robotProject)
+        public async Task<CodeReturnStruct> BuildAndPrepareCode(bool debug, Project robotProject, SettingsPageGrid page)
         {
 
             var writer = OutputWriter.Instance;
@@ -198,6 +198,12 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
                         foundAll = false;
                         writer.WriteLine($"Cound not find requred file: {requiredFile}");
                     }
+                }
+
+                if (page.IgnoreFileRequirements)
+                {
+                    // Ignore requirements for all files to be found
+                    foundAll = true;
                 }
 
                 if (foundAll)

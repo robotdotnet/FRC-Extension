@@ -77,12 +77,19 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 if (vsproject != null)
                 {
                     //If we are an assembly, and its named WPILib, enable the deploy
-                    if (
-                        (from Reference reference in vsproject.References
-                         where reference.SourceProject == null
-                         select reference.Name).Any(name => name.Contains("WPILib")))
+                    foreach (Reference reference in vsproject.References)
                     {
-                        return project;
+                        string name = reference.Name;
+                        if (name.Contains("WPILib"))
+                        {
+                            return project;
+                        }
+                        /*
+                        if (reference.SourceProject == null)
+                        {
+                            
+                        }
+                        */
                     }
                 }
 

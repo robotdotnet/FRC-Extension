@@ -6,6 +6,7 @@ using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Renci.SshNet.Common;
 using RobotDotNet.FRC_Extension.RoboRIOCode;
+using RobotDotNet.FRC_Extension.SettingsPages;
 using VSLangProj;
 
 namespace RobotDotNet.FRC_Extension.Buttons
@@ -55,15 +56,14 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 {
                     Output.ProgressBarLabel = "Deploying Robot Code";
                     OutputWriter.Instance.Clear();
-                    SettingsPageGrid page;
-                    string teamNumber = Package.GetTeamNumber(out page);
+                    string teamNumber = Package.GetTeamNumber();
 
                     if (teamNumber == null) return;
 
                     //Disable the deploy buttons
                     DisableAllButtons();
                     DeployManager m = new DeployManager(Package.PublicGetService(typeof (DTE)) as DTE);
-                    bool success = await m.DeployCode(teamNumber, page, DebugButton, m_robotProject);
+                    bool success = await m.DeployCode(teamNumber, DebugButton, m_robotProject);
                     EnableAllButtons();
                     Output.ProgressBarLabel = success ? "Robot Code Deploy Successful" : "Robot Code Deploy Failed";
                 }
@@ -93,9 +93,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 bool visable = false;
                 m_robotProject = null;
 
-                SettingsPageGrid grid = (SettingsPageGrid) Package.PublicGetDialogPage(typeof (SettingsPageGrid));
-
-                if (grid.DebugMode)
+                if (SettingsProvider.ExtensionSettingsPage.DebugMode)
                 {
                     var sb = (SolutionBuild2) dte.Solution.SolutionBuild;
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using RobotDotNet.FRC_Extension.SettingsPages;
 
 namespace RobotDotNet.FRC_Extension.Buttons
 {
@@ -10,7 +11,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
 
         public override void ButtonCallback(object sender, EventArgs e)
         {
-            Package.ShowOptionPage(typeof(SettingsPageGrid));
+            Package.ShowOptionPage(typeof(TeamSettingsPage));
         }
     }
 }

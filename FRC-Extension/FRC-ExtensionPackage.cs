@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.Shell;
 using RobotDotNet.FRC_Extension.Buttons;
 using RobotDotNet.FRC_Extension.MonoCode;
 using RobotDotNet.FRC_Extension.RoboRIOCode;
+using RobotDotNet.FRC_Extension.SettingsPages;
 using RobotDotNet.FRC_Extension.WPILibFolder;
 
 
@@ -35,7 +36,9 @@ namespace RobotDotNet.FRC_Extension
     //This attribute allows the extension to automatically update if it is a robot package.
     [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]
     //This gives us an options page.
-    [ProvideOptionPage(typeof(SettingsPageGrid), "FRC Options", "FRC Options", 0, 0, true)]
+    [ProvideOptionPage(typeof(TeamSettingsPage), "FRC Options", "Team Options", 0, 0, true)]
+    [ProvideOptionPage(typeof(ExtensionSettingsPage), "FRC Options", "Extension Options", 1, 1, true)]
+    [ProvideOptionPage(typeof(DependencySettingsPage), "FRC Options", "Dependency Options", 2, 2, true)]
     [ProvideBindingPath]
     public sealed class Frc_ExtensionPackage : Package
     {
@@ -99,6 +102,12 @@ namespace RobotDotNet.FRC_Extension
 
             m_writer = OutputWriter.Instance;
 
+            var teamPage = (TeamSettingsPage)PublicGetDialogPage(typeof(TeamSettingsPage));
+            var extPage = (ExtensionSettingsPage)PublicGetDialogPage(typeof(ExtensionSettingsPage));
+            var depPage = (DependencySettingsPage)PublicGetDialogPage(typeof(DependencySettingsPage));
+
+            SettingsProvider.SetSettingsPages(teamPage, extPage, depPage);
+
 
             m_deployButton = new DeployDebugButton(this, (int)PkgCmdIDList.cmdidDeployCode, false);
             m_debugButton = new DeployDebugButton(this, (int)PkgCmdIDList.cmdidDebugCode, true);
@@ -127,9 +136,9 @@ namespace RobotDotNet.FRC_Extension
         }
         #endregion
 
-        internal string GetTeamNumber(out SettingsPageGrid page)
+        internal string GetTeamNumber()
         {
-            page = (SettingsPageGrid)PublicGetDialogPage(typeof(SettingsPageGrid));
+            var page = SettingsProvider.TeamSettingsPage;
             //Get Team Number
             string teamNumber = page.TeamNumber.ToString();
             if (teamNumber == "0")
@@ -156,7 +165,7 @@ namespace RobotDotNet.FRC_Extension
 
             if (result == 1)
             {
-                ShowOptionPage(typeof(SettingsPageGrid));
+                ShowOptionPage(typeof(TeamSettingsPage));
             }
         }
 

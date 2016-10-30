@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using EnvDTE;
 using EnvDTE80;
+using RobotDotNet.FRC_Extension.SettingsPages;
 
 namespace RobotDotNet.FRC_Extension.RoboRIOCode
 {
@@ -25,7 +26,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
 
         
         //Uploads code to the robot and then runs it.
-        public async Task<bool> DeployCode(string teamNumber, SettingsPageGrid page, bool debug, Project robotProject)
+        public async Task<bool> DeployCode(string teamNumber, bool debug, Project robotProject)
         {
 
             var writer = OutputWriter.Instance;
@@ -41,7 +42,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             Task<bool> rioConnectionTask = StartConnectionTask(teamNumber);
             Task delayTask = Task.Delay(10000);
 
-            CodeReturnStruct codeReturn = await BuildAndPrepareCode(debug, robotProject, page);
+            CodeReturnStruct codeReturn = await BuildAndPrepareCode(debug, robotProject);
 
             if (codeReturn == null) return false;
 
@@ -66,7 +67,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
                     if (!await CheckRoboRioImage())
                     {
                         // Ignore image requirement on selected option
-                        if (!page.IgnoreImageRequirements)
+                        if (!SettingsProvider.ExtensionSettingsPage.IgnoreImageRequirements)
                         {
                             OutputWriter.Instance.WriteLine(
                                 "RoboRIO Image does not match plugin, allowed image versions: " +
@@ -88,7 +89,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
                         return false;
                     }
                     OutputWriter.Instance.WriteLine("Successfully Deployed Files. Starting Code.");
-                    await UploadCode(codeReturn.RobotExe, page, debug, robotProject);
+                    await UploadCode(codeReturn.RobotExe, debug, robotProject);
                     OutputWriter.Instance.WriteLine("Successfully started robot code.");
                     return true;
                 }
@@ -140,7 +141,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
         }
 
 
-        public async Task<CodeReturnStruct> BuildAndPrepareCode(bool debug, Project robotProject, SettingsPageGrid page)
+        public async Task<CodeReturnStruct> BuildAndPrepareCode(bool debug, Project robotProject)
         {
 
             var writer = OutputWriter.Instance;
@@ -200,7 +201,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
                     }
                 }
 
-                if (page.IgnoreFileRequirements)
+                if (SettingsProvider.ExtensionSettingsPage.IgnoreFileRequirements)
                 {
                     // Ignore requirements for all files to be found
                     foundAll = true;
@@ -227,8 +228,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
 
         public string GetCommandLineArguments(Project robotProject)
         {
-            var settings = (SettingsPageGrid)Frc_ExtensionPackage.Instance.PublicGetDialogPage(typeof(SettingsPageGrid));
-            if (!settings.ConsoleArgs)
+            if (!SettingsProvider.TeamSettingsPage.ConsoleArgs)
             {
                 return "";
             }
@@ -299,12 +299,12 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             return assemblyPath;
         }
 
-        public async Task UploadCode(string robotName, SettingsPageGrid page, bool debug, Project robotProject)
+        public async Task UploadCode(string robotName, bool debug, Project robotProject)
         {
             //TODO: Make debug work. Forcing debug to false for now so code always runs properly.
             debug = false;
 
-            if (page.Netconsole)
+            if (SettingsProvider.TeamSettingsPage.Netconsole)
             {
                 await StartNetConsole();
             }

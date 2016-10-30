@@ -28,8 +28,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
             {
                 try
                 {
-                    SettingsPageGrid page;
-                    string teamNumber = Package.GetTeamNumber(out page);
+                    string teamNumber = Package.GetTeamNumber();
 
                     if (teamNumber == null) return;
 

@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using Renci.SshNet;
 using Renci.SshNet.Common;
+using RobotDotNet.FRC_Extension.SettingsPages;
 
 namespace RobotDotNet.FRC_Extension.RoboRIOCode
 {
@@ -169,7 +170,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
                 {
                     return null;
                 }
-                var settings = (SettingsPageGrid)Frc_ExtensionPackage.Instance.PublicGetDialogPage(typeof(SettingsPageGrid));
+                var settings = SettingsProvider.ExtensionSettingsPage;
                 bool verbose = settings.Verbose || settings.DebugMode;
                 foreach (string s in commands)
                 {
@@ -213,7 +214,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
                 {
                     return null;
                 }
-                var settings = (SettingsPageGrid)Frc_ExtensionPackage.Instance.PublicGetDialogPage(typeof(SettingsPageGrid));
+                var settings = SettingsProvider.ExtensionSettingsPage;
                 bool verbose = settings.Verbose || settings.DebugMode;
                 if (verbose)
                 {
@@ -249,7 +250,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
                 {
                     return false;
                 }
-                var settings = (SettingsPageGrid)Frc_ExtensionPackage.Instance.PublicGetDialogPage(typeof(SettingsPageGrid));
+                var settings = SettingsProvider.ExtensionSettingsPage;
                 bool verbose = settings.Verbose || settings.DebugMode;
                 foreach (FileInfo fileInfo in from string s in files where File.Exists(s) select new FileInfo(s))
                 {

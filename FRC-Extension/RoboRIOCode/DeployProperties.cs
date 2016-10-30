@@ -42,11 +42,11 @@
 
         public const string CommandDir = "/home/lvuser";
 
-        public const string RobotCommandDebug = "env LD_LIBRARY_PATH=/usr/local/frc/rpath-lib/ /usr/local/frc/bin/netconsole-host mono --debug \"" + DeployDir + "/{0}\"";
+        public const string RobotCommandDebug = "env LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/GenICam_v3_0_NI/bin/Linux32_ARM/:/usr/local/frc/lib mono --debug \"" + DeployDir + "/{0}\"";
 
         public const string RobotCommandDebugFileName = "robotDebugCommand";
 
-        public const string RobotCommand = "env LD_LIBRARY_PATH=/usr/local/frc/rpath-lib/ /usr/local/frc/bin/netconsole-host mono \"" + DeployDir + "/{0}\"";
+        public const string RobotCommand = "env LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/GenICam_v3_0_NI/bin/Linux32_ARM/:/usr/local/frc/lib mono \"" + DeployDir + "/{0}\"";
 
         public const string RobotCommandFileName = "robotCommand";
 

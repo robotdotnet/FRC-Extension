@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using EnvDTE;
 using EnvDTE80;
+using RobotDotNet.FRC_Extension.MonoCode;
 using RobotDotNet.FRC_Extension.SettingsPages;
 
 namespace RobotDotNet.FRC_Extension.RoboRIOCode
@@ -80,6 +82,14 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
                     OutputWriter.Instance.WriteLine("RoboRIO Image Correct");
                     //Force making mono directory
                     await CreateMonoDirectory();
+
+                    bool nativeDeploy = await CheckAndDeployNativeLibraries(robotProject);
+
+                    if (!nativeDeploy)
+                    {
+                        OutputWriter.Instance.WriteLine("Failed to deploy native files.");
+                        return false;
+                    }
 
                     //DeployAllFiles
                     bool retVal = await DeployRobotFiles(codeReturn.RobotFiles);
@@ -288,6 +298,11 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             }
         }
 
+        internal string GetProjectPath(Project vsProject)
+        {
+            return vsProject.Properties.Item("FullPath").Value.ToString();
+        }
+
         internal string GetAssemblyPath(Project vsProject)
         {
             string fullPath = vsProject.Properties.Item("FullPath").Value.ToString();
@@ -297,6 +312,110 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             string outputFileName = vsProject.Properties.Item("OutputFileName").Value.ToString();
             string assemblyPath = Path.Combine(outputDir, outputFileName);
             return assemblyPath;
+        }
+
+        public async Task<bool> CheckAndDeployNativeLibraries(Project robotProject)
+        {
+            MemoryStream stream = new MemoryStream();
+            bool readFile =
+                    await
+                        RoboRIOConnection.ReceiveFile("/usr/local/frc/lib/NetWPILib.properties", stream,
+                            ConnectionUser.LvUser);
+
+            string nativeLoc = GetProjectPath(robotProject) + "wpinative" + Path.DirectorySeparatorChar;
+
+            var fileMd5List = await GetMD5ForFiles(nativeLoc);
+            if (!readFile)
+            {
+                // Libraries definitely do not exist, deploy
+                return await DeployNativeLibraries(fileMd5List);
+            }
+
+            stream.Position = 0;
+
+            bool foundError = false;
+            int readCount = 0;
+            StreamReader reader = new StreamReader(stream);
+            string line = null;
+            while (!string.IsNullOrWhiteSpace(line = reader.ReadLine()))
+            {
+                // Split line at =
+                string[] split = line.Split('=');
+                if (split.Length < 2) continue;
+                readCount++;
+                foreach (Tuple<string, string> tuple in fileMd5List)
+                {
+                    if (split[0] == tuple.Item1)
+                    {
+                        // Found a match file name
+                        if (split[1] != tuple.Item2)
+                        {
+                            foundError = true;
+                        }
+                        break;
+                    }
+                }
+                if (foundError) break;
+            }
+
+            reader.Dispose();
+
+            if (foundError || readCount != fileMd5List.Count)
+            {
+                return await DeployNativeLibraries(fileMd5List);
+            }
+            
+            OutputWriter.Instance.WriteLine("Native libraries exist. Skipping deploy");
+            return true;
+        }
+
+        public async Task<List<Tuple<string, string>>> GetMD5ForFiles(string fileLocation)
+        {
+            if (Directory.Exists(fileLocation))
+            {
+                string[] files = Directory.GetFiles(fileLocation);
+                List<Tuple<string,string>> retList = new List<Tuple<string, string>>(files.Length);
+                await Task.Run(() =>
+                {
+                    foreach (var file in files)
+                    {
+                        string md5 = MD5Helper.Md5Sum(file);
+                        retList.Add(new Tuple<string, string>(file, md5));
+                    }
+                });
+                return retList;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<bool> DeployNativeLibraries(List<Tuple<string, string>> files)
+        {
+            List<string> fileList = new List<string>(files.Count);
+
+            MemoryStream memStream = new MemoryStream();
+            StreamWriter writer = new StreamWriter(memStream);
+
+            foreach (Tuple<string, string> tuple in files)
+            {
+                fileList.Add(tuple.Item1);
+                await writer.WriteLineAsync($"{tuple.Item1}={tuple.Item2}");
+            }
+
+            writer.Flush();
+
+            memStream.Position = 0;
+
+            OutputWriter.Instance.WriteLine("Deploying native files");
+            bool nativeDeploy = await RoboRIOConnection.DeployFiles(fileList, "/usr/local/frc/lib", ConnectionUser.Admin);
+            bool md5Deploy = await RoboRIOConnection.DeployFile(memStream, "/usr/local/frc/lib/NetWPILib.properties", ConnectionUser.Admin);
+
+            writer.Dispose();
+            memStream.Dispose();
+
+            return nativeDeploy && md5Deploy;
         }
 
         public async Task UploadCode(string robotName, bool debug, Project robotProject)

@@ -224,7 +224,93 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             }
         }
 
-        public static async Task<bool> DeployFiles(IEnumerable files, string deployLocation, ConnectionUser user)
+        public static async Task<bool> ReceiveFile(string remoteFile, Stream receiveStream, ConnectionUser user)
+        {
+            ConnectionInfo connectionInfo;
+            switch (user)
+            {
+                case ConnectionUser.Admin:
+                    connectionInfo = s_adminConnectionInfo;
+                    break;
+                case ConnectionUser.LvUser:
+                    connectionInfo = s_lvUserConnectionInfo;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(user), user, null);
+            }
+
+            if (receiveStream == null || !receiveStream.CanWrite)
+            {
+                return false;
+            }
+
+            if (connectionInfo == null) return false;
+            using (ScpClient scp = new ScpClient(connectionInfo))
+            {
+                try
+                {
+                    await Task.Run(() => scp.Connect());
+                }
+                catch (SshOperationTimeoutException)
+                {
+                    return false;
+                }
+                var settings = SettingsProvider.ExtensionSettingsPage;
+                bool verbose = settings.Verbose || settings.DebugMode;
+                if (verbose)
+                {
+                    OutputWriter.Instance.WriteLine($"Receiving File: {remoteFile}");
+                }
+                try
+                {
+                    await Task.Run(() => scp.Download(remoteFile, receiveStream));
+                }
+                catch (SshException)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public static async Task<bool> DeployFile(Stream file, string deployLocation, ConnectionUser user)
+        {
+            ConnectionInfo connectionInfo;
+            switch (user)
+            {
+                case ConnectionUser.Admin:
+                    connectionInfo = s_adminConnectionInfo;
+                    break;
+                case ConnectionUser.LvUser:
+                    connectionInfo = s_lvUserConnectionInfo;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(user), user, null);
+            }
+
+            if (connectionInfo == null) return false;
+            using (ScpClient scp = new ScpClient(connectionInfo))
+            {
+                try
+                {
+                    await Task.Run(() => scp.Connect());
+                }
+                catch (SshOperationTimeoutException)
+                {
+                    return false;
+                }
+                var settings = SettingsProvider.ExtensionSettingsPage;
+                bool verbose = settings.Verbose || settings.DebugMode;
+                if (verbose)
+                {
+                    OutputWriter.Instance.WriteLine($"Deploying File: {deployLocation}");
+                }
+                await Task.Run(() => scp.Upload(file, deployLocation));
+            }
+            return true;
+        }
+
+        public static async Task<bool> DeployFiles(IEnumerable<string> files, string deployLocation, ConnectionUser user)
         {
             ConnectionInfo connectionInfo;
             switch (user)

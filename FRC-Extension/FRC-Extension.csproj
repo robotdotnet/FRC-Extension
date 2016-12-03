@@ -178,6 +178,7 @@
     <Compile Include="MonoCode\MD5Helper.cs" />
     <Compile Include="MonoCode\MonoDeploy.cs" />
     <Compile Include="MonoCode\MonoFile.cs" />
+    <Compile Include="RoboRIOCode\CachedFileHelper.cs" />
     <Compile Include="RoboRIOCode\DeployManager.cs" />
     <Compile Include="RoboRIOCode\DeployProperties.cs" />
     <Compile Include="Guids.cs" />

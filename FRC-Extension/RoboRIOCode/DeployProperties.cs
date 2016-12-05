@@ -33,6 +33,9 @@
             ".vshost",
             ".config",
             ".manifest",
+            "FRC.NetworkTables.Core.DesktopLibraries.dll",
+            "FRC.OpenCvSharp.DesktopLibraries.dll",
+            "FRC.HAL.DesktopLibraries.dll"
         };
 
         public static readonly string[] RequiredFiles =
@@ -40,6 +43,8 @@
             "WPILib.dll",
             "HAL.dll",
             "FRC.NetworkTables.Core.dll",
+            "FRC.CameraServer.dll",
+            "FRC.OpenCvSharp.dll"
         };
 
         public const string CommandDir = "/home/lvuser";

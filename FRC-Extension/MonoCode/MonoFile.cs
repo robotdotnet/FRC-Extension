@@ -34,35 +34,6 @@ namespace RobotDotNet.FRC_Extension.MonoCode
             FileName = monoFolder + Path.DirectorySeparatorChar + DeployProperties.MonoVersion;
         }
 
-        private string Md5Sum()
-        {
-            byte[] fileMd5Sum = null;
-            
-
-            if (File.Exists(FileName))
-            {
-                using (FileStream stream = new FileStream(FileName, FileMode.Open))
-                {
-                    using (MD5 md5 = new MD5CryptoServiceProvider())
-                    {
-                        fileMd5Sum =  md5.ComputeHash(stream);
-                    }
-                }
-            }
-
-            if (fileMd5Sum == null)
-            {
-                return null;
-            }
-
-            StringBuilder builder = new StringBuilder();
-            foreach (var b in fileMd5Sum)
-            {
-                builder.Append(b);
-            }
-            return builder.ToString();
-        }
-
         public static string SelectMonoFile()
         {
             OpenFileDialog dialog = new OpenFileDialog {Filter = "Zip Files(*.zip)|*.zip"};
@@ -106,7 +77,7 @@ namespace RobotDotNet.FRC_Extension.MonoCode
 
         public bool CheckFileValid()
         {
-            string fileSum = Md5Sum();
+            string fileSum = MD5Helper.Md5Sum(FileName);
 
             return fileSum != null && fileSum.Equals(DeployProperties.MonoMd5);
         }

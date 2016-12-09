@@ -10,6 +10,8 @@
             ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r;",
         };
 
+        public const string UserLibraryDir = "/usr/local/frc/lib";
+
         public const string KillOnlyCommand = ". /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t";
 
         public const string DebugFlagDir = "/tmp/";
@@ -23,7 +25,7 @@
         public const string RoboRioMonoBin = "/usr/bin/mono";
 
         public const string RioImageSearchString = "FRC_roboRIO";
-        public static readonly int[] RoboRioAllowedImages = { 19 };
+        public static readonly int[] RoboRioAllowedImages = { 8 };
 
         public static readonly string[] IgnoreFiles =
         {
@@ -31,6 +33,9 @@
             ".vshost",
             ".config",
             ".manifest",
+            "FRC.NetworkTables.Core.DesktopLibraries.dll",
+            "FRC.OpenCvSharp.DesktopLibraries.dll",
+            "FRC.HAL.DesktopLibraries.dll"
         };
 
         public static readonly string[] RequiredFiles =
@@ -38,6 +43,8 @@
             "WPILib.dll",
             "HAL.dll",
             "FRC.NetworkTables.Core.dll",
+            "FRC.CameraServer.dll",
+            "FRC.OpenCvSharp.dll"
         };
 
         public const string CommandDir = "/home/lvuser";

@@ -132,9 +132,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Renci.SshNet, Version=2013.4.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SSH.NET.2013.4.7\lib\net40\Renci.SshNet.dll</HintPath>
+    <Reference Include="Renci.SshNet, Version=2016.0.0.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
+      <HintPath>..\packages\SSH.NET.2016.0.0\lib\net40\Renci.SshNet.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -175,9 +175,10 @@
     <Compile Include="Buttons\SaveMonoButton.cs" />
     <Compile Include="Buttons\SetMainRobotButton.cs" />
     <Compile Include="Buttons\SettingsButton.cs" />
-    <Compile Include="Maven\MavenProperties.cs" />
+    <Compile Include="MonoCode\MD5Helper.cs" />
     <Compile Include="MonoCode\MonoDeploy.cs" />
     <Compile Include="MonoCode\MonoFile.cs" />
+    <Compile Include="RoboRIOCode\CachedFileHelper.cs" />
     <Compile Include="RoboRIOCode\DeployManager.cs" />
     <Compile Include="RoboRIOCode\DeployProperties.cs" />
     <Compile Include="Guids.cs" />

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using EnvDTE;
 using EnvDTE80;
+using RobotDotNet.FRC_Extension.MonoCode;
 using RobotDotNet.FRC_Extension.SettingsPages;
 
 namespace RobotDotNet.FRC_Extension.RoboRIOCode
@@ -81,6 +83,18 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
                     //Force making mono directory
                     await CreateMonoDirectory();
 
+                    bool nativeDeploy =
+                        await
+                            CachedFileHelper.CheckAndDeployNativeLibraries(DeployProperties.UserLibraryDir, "NativeWPI",
+                                GetProjectPath(robotProject) + "wpinative" + Path.DirectorySeparatorChar,
+                                new List<string>());
+
+                    if (!nativeDeploy)
+                    {
+                        OutputWriter.Instance.WriteLine("Failed to deploy native files.");
+                        return false;
+                    }
+
                     //DeployAllFiles
                     bool retVal = await DeployRobotFiles(codeReturn.RobotFiles);
                     if (!retVal)
@@ -89,7 +103,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
                         return false;
                     }
                     OutputWriter.Instance.WriteLine("Successfully Deployed Files. Starting Code.");
-                    await UploadCode(codeReturn.RobotExe, debug, robotProject);
+                    await StartRobotCode(codeReturn.RobotExe, debug, robotProject);
                     OutputWriter.Instance.WriteLine("Successfully started robot code.");
                     return true;
                 }
@@ -288,6 +302,11 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             }
         }
 
+        internal string GetProjectPath(Project vsProject)
+        {
+            return vsProject.Properties.Item("FullPath").Value.ToString();
+        }
+
         internal string GetAssemblyPath(Project vsProject)
         {
             string fullPath = vsProject.Properties.Item("FullPath").Value.ToString();
@@ -299,7 +318,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             return assemblyPath;
         }
 
-        public async Task UploadCode(string robotName, bool debug, Project robotProject)
+        public async Task StartRobotCode(string robotName, bool debug, Project robotProject)
         {
             //TODO: Make debug work. Forcing debug to false for now so code always runs properly.
             debug = false;

@@ -44,7 +44,8 @@
             "HAL.dll",
             "FRC.NetworkTables.Core.dll",
             "FRC.CameraServer.dll",
-            "FRC.OpenCvSharp.dll"
+            "FRC.OpenCvSharp.dll",
+            "NativeLibraryUtilities.dll"
         };
 
         public const string CommandDir = "/home/lvuser";

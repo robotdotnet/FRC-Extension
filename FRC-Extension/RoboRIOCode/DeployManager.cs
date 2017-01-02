@@ -85,7 +85,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
 
                     bool nativeDeploy =
                         await
-                            CachedFileHelper.CheckAndDeployNativeLibraries(DeployProperties.UserLibraryDir, "NativeWPI",
+                            CachedFileHelper.CheckAndDeployNativeLibraries(DeployProperties.UserLibraryDir, "WPI_Native_Libraries",
                                 GetProjectPath(robotProject) + "wpinative" + Path.DirectorySeparatorChar,
                                 new List<string>());
 

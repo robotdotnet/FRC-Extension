@@ -74,6 +74,11 @@ namespace RobotDotNet.FRC_Extension.MonoCode
                         writer.WriteLine("Mono not installed successfully. Please try again.");
                     }
 
+                    writer.WriteLine("Cleaning up installation");
+                    // Set allow realtime on Mono instance
+                    await
+                        RoboRIOConnection.RunCommand("setcap cap_sys_nice=pe /usr/bin/mono-sgen", ConnectionUser.Admin);
+
                     //Removing ipk files from the RoboRIO
                     await RoboRIOConnection.RunCommand($"rm -rf {DeployProperties.RoboRioOpgkLocation}", ConnectionUser.Admin);
 

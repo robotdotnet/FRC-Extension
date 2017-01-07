@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="FRC_Extension" Version="2017.0.0" Language="en-US" Publisher="RobotDotNet" />
+    <Identity Id="FRC_Extension" Version="2017.0.1" Language="en-US" Publisher="RobotDotNet" />
     <DisplayName>FRC Extension</DisplayName>
     <Description xml:space="preserve">A plugin for deploying DotNet code onto FRC Robots. Includes an Extension and Templates.</Description>
     <License>LICENSE.txt</License>
@@ -31,6 +31,5 @@
     <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="LabVIEWRobot" d:TargetPath="|LabVIEWRobot;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
     <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:TargetPath="|AttributedCommandRobot;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
     <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="IterativeRobotVB" d:TargetPath="|IterativeRobotVB;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
-    <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="WindowsMonoGameSimulator" d:TargetPath="|WindowsMonoGameSimulator;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
   </Assets>
 </PackageManifest>

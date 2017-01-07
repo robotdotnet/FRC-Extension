@@ -30,9 +30,13 @@
   <WizardData>
     <packages repository="extension"
           repositoryId="FRC_Extension">
-      <package id="FRC.WPILib" version="2016.0.0.259"/>
-      <package id="FRC.WPILib.Extras" version="2016.0.0.259"/>
-      <package id="FRC.NetworkTables" version="2016.0.0.148"/>
+      <package id="FRC.CameraServer" version="1.0.0"/>
+      <package id="FRC.OpenCVSharp" version="1.0.0"/>
+      <package id="FRC.WPILib" version="2017.0.1"/>
+      <package id="FRC.WPILib.Extras" version="2017.0.1"/>
+      <package id="FRC.NetworkTables.Core" version="3.1.6"/>
+      <package id="FRC.WPILibNativeLibraries" version="2017.0.4"/>
+      <package id="NativeLibraryUtilities" version="1.0.0"/>
     </packages>
   </WizardData>
 </VSTemplate>

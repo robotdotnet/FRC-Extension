@@ -222,19 +222,25 @@
     <Content Include="LICENSE.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\monogame.framework.windowsdx.3.4.0.459.nupkg">
+    <Content Include="packages\frc.cameraserver.1.0.0.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\FRC.NetworkTables.2016.0.0.148.nupkg">
+    <Content Include="packages\frc.networktables.core.3.1.6.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\FRC.Simulators.MonoGameSimulator.2016.0.0.7.nupkg">
+    <Content Include="packages\frc.opencvsharp.1.0.0.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\FRC.WPILib.2016.0.0.259.nupkg">
+    <Content Include="packages\frc.wpilib.2017.0.1.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\FRC.WPILib.Extras.2016.0.0.259.nupkg">
+    <Content Include="packages\frc.wpilib.extras.2017.0.1.nupkg">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="packages\frc.wpilibnativelibraries.2017.0.4.nupkg">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="packages\nativelibraryutilities.1.0.0.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="source.extension.vsixmanifest">
@@ -269,13 +275,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Templates\CSharp\Project-Templates\WindowsMonoGameSimulator\WindowsMonoGameSimulator.csproj">
-      <Project>{5B5754D7-AF0E-428B-8A1F-D6382A18A4F5}</Project>
-      <Name>WindowsMonoGameSimulator</Name>
-      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-    </ProjectReference>
     <ProjectReference Include="..\Templates\VisualBasic\Project-Templates\IterativeRobotVB\IterativeRobotVB.vbproj">
       <Project>{F6724218-0C31-4428-A217-B4318E3026B2}</Project>
       <Name>IterativeRobotVB</Name>

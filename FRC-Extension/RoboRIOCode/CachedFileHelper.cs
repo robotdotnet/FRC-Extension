@@ -118,6 +118,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             OutputWriter.Instance.WriteLine("Deploying native files");
             bool nativeDeploy = await RoboRIOConnection.DeployFiles(fileList, remoteDirectory, ConnectionUser.Admin);
             bool md5Deploy = await RoboRIOConnection.DeployFile(memStream, $"{remoteDirectory}/{propertiesName}.properties", ConnectionUser.Admin);
+            await RoboRIOConnection.RunCommand("ldconfig", ConnectionUser.Admin);
 
             writer.Dispose();
             memStream.Dispose();

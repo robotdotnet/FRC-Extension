@@ -26,8 +26,9 @@ namespace RobotDotNet.FRC_Extension.Buttons
             DeployCommands.Add(OleMenuItem);
         }
 
-        private void DisableAllButtons()
+        private async Task DisableAllButtonsAsync()
         {
+            await ThreadHelperExtensions.SwitchToUiThread();
             foreach (var oleMenuCommand in DeployCommands)
             {
                 oleMenuCommand.Enabled = false;
@@ -35,8 +36,9 @@ namespace RobotDotNet.FRC_Extension.Buttons
             Deploying = true;
         }
 
-        private void EnableAllButtons()
+        private async Task EnableAllButtonsAsync()
         {
+            await ThreadHelperExtensions.SwitchToUiThread();
             foreach (var oleMenuCommand in DeployCommands)
             {
                 oleMenuCommand.Enabled = true;
@@ -63,25 +65,25 @@ namespace RobotDotNet.FRC_Extension.Buttons
                     if (teamNumber == null) return;
 
                     //Disable the deploy buttons
+                    await DisableAllButtonsAsync().ConfigureAwait(false);
                     await ThreadHelperExtensions.SwitchToUiThread();
-                    DisableAllButtons();
                     DeployManager m = new DeployManager(Package.PublicGetService<DTE>());
-                    bool success = await m.DeployCodeAsync(teamNumber, DebugButton, m_robotProject).ConfigureAwait(true);
-                    EnableAllButtons();
+                    bool success = await m.DeployCodeAsync(teamNumber, DebugButton, m_robotProject).ConfigureAwait(false);
+                    await EnableAllButtonsAsync().ConfigureAwait(false);
                     Output.ProgressBarLabel = success ? "Robot Code Deploy Successful" : "Robot Code Deploy Failed";
                 }
                 catch (SshConnectionException)
                 {
                     await Output.WriteLineAsync("Connection to RoboRIO lost. Deploy aborted.").ConfigureAwait(false);
                     await ThreadHelperExtensions.SwitchToUiThread();
-                    EnableAllButtons();
+                    await EnableAllButtonsAsync().ConfigureAwait(true);
                     Output.ProgressBarLabel = "Robot Code Deploy Failed";
                 }
                 catch (Exception ex)
                 {
                     await Output.WriteLineAsync(ex.ToString()).ConfigureAwait(false);
                     await ThreadHelperExtensions.SwitchToUiThread();
-                    EnableAllButtons();
+                    await EnableAllButtonsAsync().ConfigureAwait(true);
                     Output.ProgressBarLabel = "Robot Code Deploy Failed";
                 }
 

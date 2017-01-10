@@ -8,6 +8,7 @@ using Renci.SshNet.Common;
 using RobotDotNet.FRC_Extension.RoboRIOCode;
 using RobotDotNet.FRC_Extension.SettingsPages;
 using VSLangProj;
+using Task = System.Threading.Tasks.Task;
 
 namespace RobotDotNet.FRC_Extension.Buttons
 {
@@ -43,8 +44,9 @@ namespace RobotDotNet.FRC_Extension.Buttons
             Deploying = false;
         }
 
-        public override async void ButtonCallback(object sender, EventArgs e)
+        protected override async Task ButtonCallbackAsync(object sender, EventArgs e)
         {
+            await ThreadHelperExtensions.SwitchToUiThread();
             var menuCommand = sender as OleMenuCommand;
             if (menuCommand == null)
             {
@@ -55,27 +57,30 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 try
                 {
                     Output.ProgressBarLabel = "Deploying Robot Code";
-                    OutputWriter.Instance.Clear();
-                    string teamNumber = Package.GetTeamNumber();
+                    await OutputWriter.Instance.ClearAsync().ConfigureAwait(false);
+                    string teamNumber = await Package.GetTeamNumberAsync().ConfigureAwait(false);
 
                     if (teamNumber == null) return;
 
                     //Disable the deploy buttons
+                    await ThreadHelperExtensions.SwitchToUiThread();
                     DisableAllButtons();
-                    DeployManager m = new DeployManager(Package.PublicGetService(typeof (DTE)) as DTE);
-                    bool success = await m.DeployCode(teamNumber, DebugButton, m_robotProject);
+                    DeployManager m = new DeployManager(Package.PublicGetService<DTE>());
+                    bool success = await m.DeployCodeAsync(teamNumber, DebugButton, m_robotProject).ConfigureAwait(true);
                     EnableAllButtons();
                     Output.ProgressBarLabel = success ? "Robot Code Deploy Successful" : "Robot Code Deploy Failed";
                 }
                 catch (SshConnectionException)
                 {
-                    Output.WriteLine("Connection to RoboRIO lost. Deploy aborted.");
+                    await Output.WriteLineAsync("Connection to RoboRIO lost. Deploy aborted.").ConfigureAwait(false);
+                    await ThreadHelperExtensions.SwitchToUiThread();
                     EnableAllButtons();
                     Output.ProgressBarLabel = "Robot Code Deploy Failed";
                 }
                 catch (Exception ex)
                 {
-                    Output.WriteLine(ex.ToString());
+                    await Output.WriteLineAsync(ex.ToString()).ConfigureAwait(false);
+                    await ThreadHelperExtensions.SwitchToUiThread();
                     EnableAllButtons();
                     Output.ProgressBarLabel = "Robot Code Deploy Failed";
                 }
@@ -88,20 +93,20 @@ namespace RobotDotNet.FRC_Extension.Buttons
             var menuCommand = sender as OleMenuCommand;
             if (menuCommand != null)
             {
-                var dte = Package.PublicGetService(typeof(DTE)) as DTE;
+                var dte = Package.PublicGetService<DTE>();
 
                 bool visable = false;
                 m_robotProject = null;
 
                 if (SettingsProvider.ExtensionSettingsPage.DebugMode)
                 {
-                    var sb = (SolutionBuild2) dte.Solution.SolutionBuild;
+                    var sb = (SolutionBuild2)dte.Solution.SolutionBuild;
 
                     if (sb.StartupProjects != null)
                     {
                         if (sb.StartupProjects != null)
                         {
-                            string project = ((Array) sb.StartupProjects).Cast<string>().First();
+                            string project = ((Array)sb.StartupProjects).Cast<string>().First();
                             Project startupProject = dte.Solution.Item(project);
                             var vsproject = startupProject.Object as VSProject;
                             if (vsproject != null)
@@ -109,8 +114,8 @@ namespace RobotDotNet.FRC_Extension.Buttons
                                 //If we are an assembly, and its named WPILib, enable the deploy
                                 if (
                                     (from Reference reference in vsproject.References
-                                        where reference.SourceProject == null
-                                        select reference.Name).Any(name => name.Contains("WPILib")))
+                                     where reference.SourceProject == null
+                                     select reference.Name).Any(name => name.Contains("WPILib")))
                                 {
                                     m_robotProject = startupProject;
                                     visable = true;
@@ -151,7 +156,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
                                     /*
                                     if (reference.SourceProject == null)
                                     {
-                                        
+
                                     }
                                     */
                                 }

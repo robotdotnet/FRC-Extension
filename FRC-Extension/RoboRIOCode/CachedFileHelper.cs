@@ -1,31 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using EnvDTE;
 using RobotDotNet.FRC_Extension.MonoCode;
 
 namespace RobotDotNet.FRC_Extension.RoboRIOCode
 {
     public static class CachedFileHelper
     {
-        public static async Task<bool> CheckAndDeployNativeLibraries(string remoteDirectory, string propertiesName, string dirToUpload, IList<string> ignoreFiles)
+        public static async Task<bool> CheckAndDeployNativeLibrariesAsync(string remoteDirectory, string propertiesName, string dirToUpload, IList<string> ignoreFiles)
         {
             MemoryStream stream = new MemoryStream();
-            bool readFile =
-                    await
-                        RoboRIOConnection.ReceiveFile($"{remoteDirectory}/{propertiesName}.properties", stream,
-                            ConnectionUser.LvUser);
+            bool readFile = await RoboRIOConnection.ReceiveFileAsync($"{remoteDirectory}/{propertiesName}.properties", stream,
+                            ConnectionUser.LvUser).ConfigureAwait(false);
 
             string nativeLoc = dirToUpload;
 
-            var fileMd5List = await GetMD5ForFiles(nativeLoc, ignoreFiles);
+            var fileMd5List = GetMD5ForFiles(nativeLoc, ignoreFiles);
             if (!readFile)
             {
                 // Libraries definitely do not exist, deploy
-                return await DeployNativeLibraries(fileMd5List, remoteDirectory, propertiesName);
+                return await DeployNativeLibrariesAsync(fileMd5List, remoteDirectory, propertiesName).ConfigureAwait(false);
             }
 
             stream.Position = 0;
@@ -59,37 +54,34 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
 
             if (foundError || readCount != fileMd5List.Count)
             {
-                return await DeployNativeLibraries(fileMd5List, remoteDirectory, propertiesName);
+                return await DeployNativeLibrariesAsync(fileMd5List, remoteDirectory, propertiesName).ConfigureAwait(false);
             }
 
-            OutputWriter.Instance.WriteLine("Native libraries exist. Skipping deploy");
+            await OutputWriter.Instance.WriteLineAsync("Native libraries exist. Skipping deploy").ConfigureAwait(false);
             return true;
         }
 
-        public static async Task<List<Tuple<string, string>>> GetMD5ForFiles(string fileLocation, IList<string> ignoreFiles)
+        public static List<Tuple<string, string>> GetMD5ForFiles(string fileLocation, IList<string> ignoreFiles)
         {
             if (Directory.Exists(fileLocation))
             {
                 string[] files = Directory.GetFiles(fileLocation);
                 List<Tuple<string, string>> retList = new List<Tuple<string, string>>(files.Length);
-                await Task.Run(() =>
+                foreach (var file in files)
                 {
-                    foreach (var file in files)
+                    bool skip = false;
+                    foreach (string ignoreFile in ignoreFiles)
                     {
-                        bool skip = false;
-                        foreach (string ignoreFile in ignoreFiles)
+                        if (file.Contains(ignoreFile))
                         {
-                            if (file.Contains(ignoreFile))
-                            {
-                                skip = true;
-                                break;
-                            }
+                            skip = true;
+                            break;
                         }
-                        if (skip) continue;
-                        string md5 = MD5Helper.Md5Sum(file);
-                        retList.Add(new Tuple<string, string>(file, md5));
                     }
-                });
+                    if (skip) continue;
+                    string md5 = MD5Helper.Md5Sum(file);
+                    retList.Add(new Tuple<string, string>(file, md5));
+                }
                 return retList;
             }
             else
@@ -98,30 +90,28 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             }
         }
 
-        public static async Task<bool> DeployNativeLibraries(List<Tuple<string, string>> files, string remoteDirectory, string propertiesName)
+        public static async Task<bool> DeployNativeLibrariesAsync(List<Tuple<string, string>> files, string remoteDirectory, string propertiesName)
         {
             List<string> fileList = new List<string>(files.Count);
+            bool nativeDeploy = false;
+            bool md5Deploy = false;
 
-            MemoryStream memStream = new MemoryStream();
-            StreamWriter writer = new StreamWriter(memStream);
-
-            foreach (Tuple<string, string> tuple in files)
+            using (MemoryStream memStream = new MemoryStream())
+            using (StreamWriter writer = new StreamWriter(memStream))
             {
-                fileList.Add(tuple.Item1);
-                await writer.WriteLineAsync($"{tuple.Item1}={tuple.Item2}");
+                foreach (Tuple<string, string> tuple in files)
+                {
+                    fileList.Add(tuple.Item1);
+                    await writer.WriteLineAsync($"{tuple.Item1}={tuple.Item2}").ConfigureAwait(false);
+                }
+
+                writer.Flush();
+
+                await OutputWriter.Instance.WriteLineAsync("Deploying native files").ConfigureAwait(false);
+                nativeDeploy = await RoboRIOConnection.DeployFiles(fileList, remoteDirectory, ConnectionUser.Admin).ConfigureAwait(false);
+                md5Deploy = await RoboRIOConnection.DeployFileAsync(memStream, $"{remoteDirectory}/{propertiesName}.properties", ConnectionUser.Admin).ConfigureAwait(false);
+                await RoboRIOConnection.RunCommandAsync("ldconfig", ConnectionUser.Admin).ConfigureAwait(false);
             }
-
-            writer.Flush();
-
-            memStream.Position = 0;
-
-            OutputWriter.Instance.WriteLine("Deploying native files");
-            bool nativeDeploy = await RoboRIOConnection.DeployFiles(fileList, remoteDirectory, ConnectionUser.Admin);
-            bool md5Deploy = await RoboRIOConnection.DeployFile(memStream, $"{remoteDirectory}/{propertiesName}.properties", ConnectionUser.Admin);
-            await RoboRIOConnection.RunCommand("ldconfig", ConnectionUser.Admin);
-
-            writer.Dispose();
-            memStream.Dispose();
 
             return nativeDeploy && md5Deploy;
         }

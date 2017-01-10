@@ -23,6 +23,7 @@ namespace RobotDotNet.FRC_Extension.SimulatorWizards
         /// <param name="customParams"></param>
         public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var dte = automationObject as DTE;
             //Do nothing if we cannot access our automation object
             if (dte == null)
@@ -62,7 +63,7 @@ namespace RobotDotNet.FRC_Extension.SimulatorWizards
             }
             catch (Exception ex)
             {
-                OutputWriter.Instance.WriteLine(ex.StackTrace);
+                ThreadHelper.JoinableTaskFactory.Run(() => OutputWriter.Instance.WriteLineAsync(ex.StackTrace));
             }
         }
 
@@ -142,8 +143,8 @@ namespace RobotDotNet.FRC_Extension.SimulatorWizards
         public void ProjectFinishedGenerating(Project project)
         {
             var vsproject = project.Object as VSProject;
-            
-            
+
+
             if (vsproject != null && m_robotProject != null)
             {
                 vsproject.References.AddProject(m_robotProject);
@@ -158,7 +159,7 @@ namespace RobotDotNet.FRC_Extension.SimulatorWizards
 
         public void ProjectItemFinishedGenerating(ProjectItem projectItem)
         {
-            
+
         }
 
         public bool ShouldAddProjectItem(string filePath)
@@ -168,12 +169,12 @@ namespace RobotDotNet.FRC_Extension.SimulatorWizards
 
         public void BeforeOpeningFile(ProjectItem projectItem)
         {
-            
+
         }
 
         public void RunFinished()
         {
-            
+
         }
     }
 }

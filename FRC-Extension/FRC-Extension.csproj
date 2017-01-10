@@ -204,6 +204,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SimulatorWizards\MainProjectSearchWizard.cs" />
+    <Compile Include="ThreadHelperExtensions.cs" />
     <Compile Include="WPILibFolder\WPILibFolderStructure.cs" />
   </ItemGroup>
   <ItemGroup>

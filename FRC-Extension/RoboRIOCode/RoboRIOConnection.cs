@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.Shell;
 using Renci.SshNet;
 using Renci.SshNet.Common;
 using RobotDotNet.FRC_Extension.SettingsPages;
+using Task = System.Threading.Tasks.Task;
 
 namespace RobotDotNet.FRC_Extension.RoboRIOCode
 {
@@ -54,12 +55,12 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
         public static ConnectionInfo AdminConnectionInfo => s_adminConnectionInfo;
         public static ConnectionInfo LvUserConnectionInfo => s_lvUserConnectionInfo;
 
-        public static async Task<ConnectionReturn> CheckConnection(string teamNumberS)
+        public static async Task<ConnectionReturn> CheckConnectionAsync(string teamNumberS)
         {
-            return await CheckConnection(teamNumberS, TimeSpan.FromSeconds(2));
+            return await CheckConnectionAsync(teamNumberS, TimeSpan.FromSeconds(2)).ConfigureAwait(false);
         }
 
-        public static async Task<ConnectionReturn> CheckConnection(string teamNumberS, TimeSpan timeout)
+        public static async Task<ConnectionReturn> CheckConnectionAsync(string teamNumberS, TimeSpan timeout)
         {
             int teamNumber;
             int.TryParse(teamNumberS, out teamNumber);
@@ -72,15 +73,15 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             string roboRioMDNS = string.Format(RoboRioMdnsFormatString, teamNumber);
             string roboRIOIP = string.Format(RoboRioIpFormatString, teamNumber / 100, teamNumber % 100);
 
-            if (await GetWorkingConnectionInfo(roboRioMDNS, timeout))
+            if (await GetWorkingConnectionInfoAsync(roboRioMDNS, timeout).ConfigureAwait(false))
             {
                 return new ConnectionReturn(ConnectionType.MDNS, roboRioMDNS, true);
             }
-            else if (await GetWorkingConnectionInfo(RoboRioUSBIp, timeout))
+            else if (await GetWorkingConnectionInfoAsync(RoboRioUSBIp, timeout).ConfigureAwait(false))
             {
                 return new ConnectionReturn(ConnectionType.USB, RoboRioUSBIp, true);
             }
-            else if (await GetWorkingConnectionInfo(roboRIOIP, timeout))
+            else if (await GetWorkingConnectionInfoAsync(roboRIOIP, timeout).ConfigureAwait(false))
             {
                 return new ConnectionReturn(ConnectionType.IP, roboRIOIP, true);
             }
@@ -89,7 +90,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             return null;
         }
 
-        private static async Task<bool> GetWorkingConnectionInfo(string ip, TimeSpan timeout)
+        private static async Task<bool> GetWorkingConnectionInfoAsync(string ip, TimeSpan timeout)
         {
 
             //User auth method
@@ -130,7 +131,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             {
                 try
                 {
-                    await Task.Run(() => zeroConfClient.Connect());
+                    await Task.Run(() => zeroConfClient.Connect()).ConfigureAwait(false);
                     return true;
                 }
                 catch (SocketException)
@@ -144,7 +145,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             }
         }
 
-        public static async Task<Dictionary<string, SshCommand>> RunCommands(string[] commands, ConnectionUser user)
+        public static async Task<Dictionary<string, SshCommand>> RunCommandsAsync(string[] commands, ConnectionUser user)
         {
             ConnectionInfo connectionInfo;
             switch (user)
@@ -164,7 +165,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             {
                 try
                 {
-                    await Task.Run(() => ssh.Connect());
+                    await Task.Run(() => ssh.Connect()).ConfigureAwait(false);
                 }
                 catch (SshOperationTimeoutException)
                 {
@@ -176,20 +177,20 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
                 {
                     if (verbose)
                     {
-                        OutputWriter.Instance.WriteLine($"Running command: {s}");
+                        await OutputWriter.Instance.WriteLineAsync($"Running command: {s}").ConfigureAwait(false);
                     }
                     await Task.Run(() =>
                     {
                         var x = ssh.RunCommand(s);
 
                         retCommands.Add(s, x);
-                    });
+                    }).ConfigureAwait(false);
                 }
             }
             return retCommands;
         }
 
-        public static async Task<SshCommand> RunCommand(string command, ConnectionUser user)
+        public static async Task<SshCommand> RunCommandAsync(string command, ConnectionUser user)
         {
             ConnectionInfo connectionInfo;
             switch (user)
@@ -208,7 +209,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             {
                 try
                 {
-                    await Task.Run(() => ssh.Connect());
+                    await Task.Run(() => ssh.Connect()).ConfigureAwait(false);
                 }
                 catch (SshOperationTimeoutException)
                 {
@@ -218,13 +219,13 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
                 bool verbose = settings.Verbose || settings.DebugMode;
                 if (verbose)
                 {
-                    OutputWriter.Instance.WriteLine($"Running command: {command}");
+                    await OutputWriter.Instance.WriteLineAsync($"Running command: {command}").ConfigureAwait(false);
                 }
-                return await Task.Run(() => ssh.RunCommand(command));
+                return await Task.Run(() => ssh.RunCommand(command)).ConfigureAwait(false);
             }
         }
 
-        public static async Task<bool> ReceiveFile(string remoteFile, Stream receiveStream, ConnectionUser user)
+        public static async Task<bool> ReceiveFileAsync(string remoteFile, Stream receiveStream, ConnectionUser user)
         {
             ConnectionInfo connectionInfo;
             switch (user)
@@ -249,7 +250,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             {
                 try
                 {
-                    await Task.Run(() => scp.Connect());
+                    await Task.Run(() => scp.Connect()).ConfigureAwait(false);
                 }
                 catch (SshOperationTimeoutException)
                 {
@@ -259,11 +260,11 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
                 bool verbose = settings.Verbose || settings.DebugMode;
                 if (verbose)
                 {
-                    OutputWriter.Instance.WriteLine($"Receiving File: {remoteFile}");
+                    await OutputWriter.Instance.WriteLineAsync($"Receiving File: {remoteFile}").ConfigureAwait(false);
                 }
                 try
                 {
-                    await Task.Run(() => scp.Download(remoteFile, receiveStream));
+                    await Task.Run(() => scp.Download(remoteFile, receiveStream)).ConfigureAwait(false);
                 }
                 catch (SshException)
                 {
@@ -273,7 +274,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             return true;
         }
 
-        public static async Task<bool> DeployFile(Stream file, string deployLocation, ConnectionUser user)
+        public static async Task<bool> DeployFileAsync(Stream file, string deployLocation, ConnectionUser user)
         {
             ConnectionInfo connectionInfo;
             switch (user)
@@ -293,7 +294,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             {
                 try
                 {
-                    await Task.Run(() => scp.Connect());
+                    await Task.Run(() => scp.Connect()).ConfigureAwait(false);
                 }
                 catch (SshOperationTimeoutException)
                 {
@@ -303,9 +304,9 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
                 bool verbose = settings.Verbose || settings.DebugMode;
                 if (verbose)
                 {
-                    OutputWriter.Instance.WriteLine($"Deploying File: {deployLocation}");
+                    await OutputWriter.Instance.WriteLineAsync($"Deploying File: {deployLocation}").ConfigureAwait(false);
                 }
-                await Task.Run(() => scp.Upload(file, deployLocation));
+                await Task.Run(() => scp.Upload(file, deployLocation)).ConfigureAwait(false);
             }
             return true;
         }
@@ -330,7 +331,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             {
                 try
                 {
-                    await Task.Run(() => scp.Connect());
+                    await Task.Run(() => scp.Connect()).ConfigureAwait(false);
                 }
                 catch (SshOperationTimeoutException)
                 {
@@ -342,9 +343,9 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
                 {
                     if (verbose)
                     {
-                        OutputWriter.Instance.WriteLine($"Deploying File: {fileInfo.Name}");
+                        await OutputWriter.Instance.WriteLineAsync($"Deploying File: {fileInfo.Name}").ConfigureAwait(false);
                     }
-                    await Task.Run(() => scp.Upload(fileInfo, deployLocation));
+                    await Task.Run(() => scp.Upload(fileInfo, deployLocation)).ConfigureAwait(false);
                 }
             }
             return true;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
@@ -12,18 +13,22 @@ using RobotDotNet.FRC_Extension.SettingsPages;
 
 namespace RobotDotNet.FRC_Extension.RoboRIOCode
 {
-    public class DeployManager
+    public class DeployManager : IDisposable
     {
         //We need our DTE so we can grab our solution
         private readonly DTE m_dte;
 
-        ConnectionReturn m_connectionValues;
+        private RoboRioConnection m_roboRioConnection;
 
         public DeployManager(DTE dte)
         {
             m_dte = dte;
         }
 
+        public void Dispose()
+        {
+            m_roboRioConnection?.Dispose();
+        }
 
         //Uploads code to the robot and then runs it.
         public async Task<bool> DeployCodeAsync(string teamNumber, bool debug, Project robotProject)
@@ -39,106 +44,81 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
 
             //Connect to Robot Async
             await OutputWriter.Instance.WriteLineAsync("Attempting to Connect to RoboRIO").ConfigureAwait(false);
-            Task<bool> rioConnectionTask = StartConnectionTaskAsync(teamNumber);
-            Task delayTask = Task.Delay(10000);
+
+            Task<RoboRioConnection> rioConnectionTask = RoboRioConnection.StartConnectionTaskAsync(teamNumber);
 
             CodeReturnStruct codeReturn = await BuildAndPrepareCodeAsync(debug, robotProject).ConfigureAwait(false);
 
             if (codeReturn == null) return false;
 
             await writer.WriteLineAsync("Waiting for Connection to Finish").ConfigureAwait(false);
-            if (await Task.WhenAny(rioConnectionTask, delayTask).ConfigureAwait(false) == rioConnectionTask)
+            // Kill our connection if we have already ran once with this same object.
+            m_roboRioConnection?.Dispose();
+            m_roboRioConnection = await rioConnectionTask.ConfigureAwait(false);
+            if (m_roboRioConnection.Connected)
             {
-                //Completed on time
-                if (rioConnectionTask.Result)
+                //Connected successfully
+                await OutputWriter.Instance.WriteLineAsync("Successfully Connected to RoboRIO.").ConfigureAwait(false);
+
+                if (!await CheckMonoInstallAsync().ConfigureAwait(false))
                 {
-                    //Connected successfully
-                    await OutputWriter.Instance.WriteLineAsync("Successfully Connected to RoboRIO.").ConfigureAwait(false);
-
-                    if (!await CheckMonoInstallAsync().ConfigureAwait(false))
-                    {
-                        //TODO: Make this error message better
-                        await OutputWriter.Instance.WriteLineAsync("Mono not properly installed. Please try reinstalling to Mono Runtime.").ConfigureAwait(false);
-                        return false;
-                    }
-                    await OutputWriter.Instance.WriteLineAsync("Mono correctly installed").ConfigureAwait(false);
-
-                    await OutputWriter.Instance.WriteLineAsync("Checking RoboRIO Image").ConfigureAwait(false);
-                    if (!await CheckRoboRioImageAsync().ConfigureAwait(false))
-                    {
-                        // Ignore image requirement on selected option
-                        if (!SettingsProvider.ExtensionSettingsPage.IgnoreImageRequirements)
-                        {
-                            await OutputWriter.Instance.WriteLineAsync(
-                                "RoboRIO Image does not match plugin, allowed image versions: " +
-                                string.Join(", ", DeployProperties.RoboRioAllowedImages.ToArray())).ConfigureAwait(false);
-                            await OutputWriter.Instance.WriteLineAsync(
-                                "Please follow FIRST's instructions on imaging your RoboRIO, and try again.").ConfigureAwait(false);
-                            return false;
-                        }
-                    }
-                    await OutputWriter.Instance.WriteLineAsync("RoboRIO Image Correct").ConfigureAwait(false);
-                    //Force making mono directory
-                    await CreateMonoDirectoryAsync().ConfigureAwait(false);
-
-                    bool nativeDeploy =
-                        await
-                            CachedFileHelper.CheckAndDeployNativeLibrariesAsync(DeployProperties.UserLibraryDir, "WPI_Native_Libraries",
-                                await GetProjectPathAsync(robotProject).ConfigureAwait(false) + "wpinative" + Path.DirectorySeparatorChar,
-                                new List<string>()).ConfigureAwait(false);
-
-                    if (!nativeDeploy)
-                    {
-                        await OutputWriter.Instance.WriteLineAsync("Failed to deploy native files.").ConfigureAwait(false);
-                        return false;
-                    }
-
-                    //DeployAllFiles
-                    bool retVal = await DeployRobotFilesAsync(codeReturn.RobotFiles).ConfigureAwait(false);
-                    if (!retVal)
-                    {
-                        await OutputWriter.Instance.WriteLineAsync("File deploy failed.").ConfigureAwait(false);
-                        return false;
-                    }
-                    await OutputWriter.Instance.WriteLineAsync("Successfully Deployed Files. Starting Code.").ConfigureAwait(false);
-                    await StartRobotCodeAsync(codeReturn.RobotExe, debug, robotProject).ConfigureAwait(false);
-                    await OutputWriter.Instance.WriteLineAsync("Successfully started robot code.").ConfigureAwait(false);
-                    return true;
-                }
-                else
-                {
-                    //Failed to connect
-                    await writer.WriteLineAsync("Failed to Connect to RoboRIO. Exiting.").ConfigureAwait(false);
+                    //TODO: Make this error message better
+                    await OutputWriter.Instance.WriteLineAsync("Mono not properly installed. Please try reinstalling to Mono Runtime.").ConfigureAwait(false);
                     return false;
                 }
+                await OutputWriter.Instance.WriteLineAsync("Mono correctly installed").ConfigureAwait(false);
+
+                await OutputWriter.Instance.WriteLineAsync("Checking RoboRIO Image").ConfigureAwait(false);
+                if (!await CheckRoboRioImageAsync().ConfigureAwait(false))
+                {
+                    // Ignore image requirement on selected option
+                    if (!SettingsProvider.ExtensionSettingsPage.IgnoreImageRequirements)
+                    {
+                        await OutputWriter.Instance.WriteLineAsync(
+                            "RoboRIO Image does not match plugin, allowed image versions: " +
+                            string.Join(", ", DeployProperties.RoboRioAllowedImages.ToArray())).ConfigureAwait(false);
+                        await OutputWriter.Instance.WriteLineAsync(
+                            "Please follow FIRST's instructions on imaging your RoboRIO, and try again.").ConfigureAwait(false);
+                        return false;
+                    }
+                }
+                await OutputWriter.Instance.WriteLineAsync("RoboRIO Image Correct").ConfigureAwait(false);
+                //Force making mono directory
+                await CreateMonoDirectoryAsync().ConfigureAwait(false);
+
+                bool nativeDeploy =
+                    await
+                        CachedFileHelper.CheckAndDeployNativeLibrariesAsync(DeployProperties.UserLibraryDir, "WPI_Native_Libraries",
+                            await GetProjectPathAsync(robotProject).ConfigureAwait(false) + "wpinative" + Path.DirectorySeparatorChar,
+                            new List<string>(), m_roboRioConnection).ConfigureAwait(false);
+
+                if (!nativeDeploy)
+                {
+                    await OutputWriter.Instance.WriteLineAsync("Failed to deploy native files.").ConfigureAwait(false);
+                    return false;
+                }
+
+                //DeployAllFiles
+                bool retVal = await DeployRobotFilesAsync(codeReturn.RobotFiles).ConfigureAwait(false);
+                if (!retVal)
+                {
+                    await OutputWriter.Instance.WriteLineAsync("File deploy failed.").ConfigureAwait(false);
+                    return false;
+                }
+                await OutputWriter.Instance.WriteLineAsync("Successfully Deployed Files. Starting Code.").ConfigureAwait(false);
+                await StartRobotCodeAsync(codeReturn.RobotExe, debug, robotProject).ConfigureAwait(false);
+                await OutputWriter.Instance.WriteLineAsync("Successfully started robot code.").ConfigureAwait(false);
+                return true;
             }
             else
             {
-                //Timedout
+                //Failed to connect
                 await writer.WriteLineAsync("Failed to Connect to RoboRIO. Exiting.").ConfigureAwait(false);
                 return false;
             }
         }
 
-        public async Task<bool> StartConnectionTaskAsync(string teamNumber)
-        {
-            ConnectionReturn connected = await RoboRIOConnection.CheckConnectionAsync(teamNumber).ConfigureAwait(false);
-            if (connected != null)
-            {
-                StringBuilder builder = new StringBuilder();
-                builder.AppendLine("Connected to RoboRIO...");
-                builder.AppendLine("Interface: " + connected.ConnectionType);
-                builder.Append("IP Address: " + connected.ConnectionIp);
-                await OutputWriter.Instance.WriteLineAsync(builder.ToString()).ConfigureAwait(false);
-                m_connectionValues = connected;
-                return true;
-            }
-            else
-            {
-                await OutputWriter.Instance.WriteLineAsync("Failed to Connect to RoboRIO...").ConfigureAwait(false);
-                return false;
-            }
-        }
+        
 
         private class CodeReturnStruct
         {
@@ -250,19 +230,19 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
         public async Task<bool> DeployRobotFilesAsync(List<string> files)
         {
             await OutputWriter.Instance.WriteLineAsync("Deploying robot files").ConfigureAwait(false);
-            return await RoboRIOConnection.DeployFiles(files, DeployProperties.DeployDir, ConnectionUser.LvUser).ConfigureAwait(false);
+            return await m_roboRioConnection.DeployFiles(files, DeployProperties.DeployDir, ConnectionUser.LvUser).ConfigureAwait(false);
         }
 
         public async Task CreateMonoDirectoryAsync()
         {
             await OutputWriter.Instance.WriteLineAsync("Creating Mono Deploy Directory").ConfigureAwait(false);
-            await RoboRIOConnection.RunCommandAsync($"mkdir -p {DeployProperties.DeployDir}", ConnectionUser.LvUser).ConfigureAwait(false);
+            await m_roboRioConnection.RunCommandAsync($"mkdir -p {DeployProperties.DeployDir}", ConnectionUser.LvUser).ConfigureAwait(false);
         }
 
         public async Task<bool> CheckMonoInstallAsync()
         {
             await OutputWriter.Instance.WriteLineAsync("Checking for Mono install").ConfigureAwait(false);
-            var retVal = await RoboRIOConnection.RunCommandAsync($"test -e {DeployProperties.RoboRioMonoBin}", ConnectionUser.LvUser).ConfigureAwait(false);
+            var retVal = await m_roboRioConnection.RunCommandAsync($"test -e {DeployProperties.RoboRioMonoBin}", ConnectionUser.LvUser).ConfigureAwait(false);
             return retVal.ExitStatus == 0;
         }
 
@@ -271,7 +251,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             using (WebClient wc = new WebClient())
             {
 
-                byte[] result = await wc.UploadValuesTaskAsync($"http://{m_connectionValues.ConnectionIp}/nisysapi/server", "POST",
+                byte[] result = await wc.UploadValuesTaskAsync($"http://{m_roboRioConnection.IPAddress.ToString()}/nisysapi/server", "POST",
                     new NameValueCollection
                     {
                         {"Function", "GetPropertiesOfItem"},
@@ -340,7 +320,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             string args = await GetCommandLineArgumentsAsync(robotProject).ConfigureAwait(false);
 
             //Kill the currently running robot program
-            await RoboRIOConnection.RunCommandAsync(DeployProperties.KillOnlyCommand, ConnectionUser.LvUser).ConfigureAwait(false);
+            await m_roboRioConnection.RunCommandAsync(DeployProperties.KillOnlyCommand, ConnectionUser.LvUser).ConfigureAwait(false);
 
             //Combining all other commands, since they should be safe running together.
             List<string> commands = new List<string>();
@@ -355,10 +335,10 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             //Add all commands to restart
             commands.AddRange(DeployProperties.DeployKillCommand);
             //run all commands
-            await RoboRIOConnection.RunCommandsAsync(commands.ToArray(), ConnectionUser.LvUser).ConfigureAwait(false);
+            await m_roboRioConnection.RunCommandsAsync(commands.ToArray(), ConnectionUser.LvUser).ConfigureAwait(false);
 
             //Run sync so files are written to disk.
-            await RoboRIOConnection.RunCommandAsync("sync", ConnectionUser.LvUser).ConfigureAwait(false);
+            await m_roboRioConnection.RunCommandAsync("sync", ConnectionUser.LvUser).ConfigureAwait(false);
         }
 
         /// <summary>

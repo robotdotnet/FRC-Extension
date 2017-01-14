@@ -8,10 +8,10 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
 {
     public static class CachedFileHelper
     {
-        public static async Task<bool> CheckAndDeployNativeLibrariesAsync(string remoteDirectory, string propertiesName, string dirToUpload, IList<string> ignoreFiles)
+        public static async Task<bool> CheckAndDeployNativeLibrariesAsync(string remoteDirectory, string propertiesName, string dirToUpload, IList<string> ignoreFiles, RoboRioConnection rioConn)
         {
             MemoryStream stream = new MemoryStream();
-            bool readFile = await RoboRIOConnection.ReceiveFileAsync($"{remoteDirectory}/{propertiesName}.properties", stream,
+            bool readFile = await rioConn.ReceiveFileAsync($"{remoteDirectory}/{propertiesName}.properties", stream,
                             ConnectionUser.LvUser).ConfigureAwait(false);
 
             string nativeLoc = dirToUpload;
@@ -20,7 +20,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             if (!readFile)
             {
                 // Libraries definitely do not exist, deploy
-                return await DeployNativeLibrariesAsync(fileMd5List, remoteDirectory, propertiesName).ConfigureAwait(false);
+                return await DeployNativeLibrariesAsync(fileMd5List, remoteDirectory, propertiesName, rioConn).ConfigureAwait(false);
             }
 
             stream.Position = 0;
@@ -54,7 +54,7 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
 
             if (foundError || readCount != fileMd5List.Count)
             {
-                return await DeployNativeLibrariesAsync(fileMd5List, remoteDirectory, propertiesName).ConfigureAwait(false);
+                return await DeployNativeLibrariesAsync(fileMd5List, remoteDirectory, propertiesName, rioConn).ConfigureAwait(false);
             }
 
             await OutputWriter.Instance.WriteLineAsync("Native libraries exist. Skipping deploy").ConfigureAwait(false);
@@ -90,13 +90,14 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             }
         }
 
-        public static async Task<bool> DeployNativeLibrariesAsync(List<Tuple<string, string>> files, string remoteDirectory, string propertiesName)
+        public static async Task<bool> DeployNativeLibrariesAsync(List<Tuple<string, string>> files, string remoteDirectory, string propertiesName, RoboRioConnection rioConn)
         {
             List<string> fileList = new List<string>(files.Count);
             bool nativeDeploy = false;
-            bool md5Deploy = false;
 
-            using (MemoryStream memStream = new MemoryStream())
+            string tempFile = Path.Combine(Path.GetTempPath(), $"{propertiesName}.properties");
+
+            using (FileStream memStream = new FileStream(tempFile, FileMode.Create))
             using (StreamWriter writer = new StreamWriter(memStream))
             {
                 foreach (Tuple<string, string> tuple in files)
@@ -107,13 +108,25 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
 
                 writer.Flush();
 
-                await OutputWriter.Instance.WriteLineAsync("Deploying native files").ConfigureAwait(false);
-                nativeDeploy = await RoboRIOConnection.DeployFiles(fileList, remoteDirectory, ConnectionUser.Admin).ConfigureAwait(false);
-                md5Deploy = await RoboRIOConnection.DeployFileAsync(memStream, $"{remoteDirectory}/{propertiesName}.properties", ConnectionUser.Admin).ConfigureAwait(false);
-                await RoboRIOConnection.RunCommandAsync("ldconfig", ConnectionUser.Admin).ConfigureAwait(false);
+                fileList.Add(tempFile);
             }
 
-            return nativeDeploy && md5Deploy;
+            await OutputWriter.Instance.WriteLineAsync("Deploying native files").ConfigureAwait(false);
+            nativeDeploy = await rioConn.DeployFiles(fileList, remoteDirectory, ConnectionUser.Admin).ConfigureAwait(false);
+            // TODO: Figure out why trying to deploy the raw MemoryStream was Deadlocking
+            //md5Deploy = await rioConn.DeployFileAsync(memStream, $"{remoteDirectory}/{propertiesName}32.properties", ConnectionUser.Admin).ConfigureAwait(false);
+            await rioConn.RunCommandAsync("ldconfig", ConnectionUser.Admin).ConfigureAwait(false);
+
+            try
+            {
+                File.Delete(tempFile);
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return nativeDeploy;
         }
     }
 }

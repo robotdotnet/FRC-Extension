@@ -67,8 +67,12 @@ namespace RobotDotNet.FRC_Extension.Buttons
                     //Disable the deploy buttons
                     await DisableAllButtonsAsync().ConfigureAwait(false);
                     await ThreadHelperExtensions.SwitchToUiThread();
-                    DeployManager m = new DeployManager(Package.PublicGetService<DTE>());
-                    bool success = await m.DeployCodeAsync(teamNumber, DebugButton, m_robotProject).ConfigureAwait(false);
+                    bool success = false;
+                    using (DeployManager m = new DeployManager(Package.PublicGetService<DTE>()))
+                    {
+                        success =
+                            await m.DeployCodeAsync(teamNumber, DebugButton, m_robotProject).ConfigureAwait(false);
+                    }
                     await EnableAllButtonsAsync().ConfigureAwait(false);
                     Output.ProgressBarLabel = success ? "Robot Code Deploy Successful" : "Robot Code Deploy Failed";
                 }

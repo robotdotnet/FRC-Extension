@@ -29,7 +29,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 {
                     menuCommand.Visible = false;
                     menuCommand.Enabled = false;
-                }               
+                }
             }
         }
 
@@ -87,7 +87,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
                         /*
                         if (reference.SourceProject == null)
                         {
-                            
+
                         }
                         */
                     }
@@ -109,7 +109,6 @@ namespace RobotDotNet.FRC_Extension.Buttons
             }
         }
 
-
         public override void ButtonCallback(object sender, EventArgs e)
         {
             Project project = GetSelectedProject();
@@ -128,7 +127,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
 
         private void ClearAllProjectsInSolution()
         {
-            var dte = Package.PublicGetService(typeof(DTE)) as DTE;
+            var dte = Package.PublicGetService<DTE>();
             var sb = dte?.Solution;
             if (sb == null)
             {
@@ -149,6 +148,11 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 }
                 p.Save();
             }
+        }
+
+        protected override System.Threading.Tasks.Task ButtonCallbackAsync(object sender, EventArgs e)
+        {
+            return System.Threading.Tasks.Task.FromResult(false);
         }
     }
 }

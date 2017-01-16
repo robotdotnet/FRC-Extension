@@ -82,7 +82,7 @@ namespace RobotDotNet.FRC_Extension.MonoCode
             return fileSum != null && fileSum.Equals(DeployProperties.MonoMd5);
         }
 
-        public async Task DownloadMono(IProgress<int> progress = null)
+        public async Task DownloadMonoAsync(IProgress<int> progress = null)
         {
             string target = DeployProperties.MonoUrl + DeployProperties.MonoVersion;
 
@@ -95,22 +95,22 @@ namespace RobotDotNet.FRC_Extension.MonoCode
                     {
                         progress?.Report(e.ProgressPercentage);
                     };
-                    await client.DownloadFileTaskAsync(new Uri(target), FileName);
+                    await client.DownloadFileTaskAsync(new Uri(target), FileName).ConfigureAwait(false);
                 }
             }
             catch (Exception)
             {
                 var writer = OutputWriter.Instance;
-                writer.WriteLine($"Could not download file: {DeployProperties.MonoVersion}");
+                await writer.WriteLineAsync($"Could not download file: {DeployProperties.MonoVersion}").ConfigureAwait(false);
             }
         }
 
         public List<string> GetUnzippedFileList()
         {
             return Directory.GetFiles(m_extractPath).ToList();
-        } 
+        }
 
-        public async Task<bool> UnzipMonoFile()
+        public async Task<bool> UnzipMonoFileAsync()
         {
             CleanupMonoFile();
 
@@ -120,7 +120,7 @@ namespace RobotDotNet.FRC_Extension.MonoCode
 
             try
             {
-                await Task.Run(() => ZipFile.ExtractToDirectory(FileName, m_extractPath));
+                await Task.Run(() => ZipFile.ExtractToDirectory(FileName, m_extractPath)).ConfigureAwait(false);
                 return true;
             }
             catch (IOException)

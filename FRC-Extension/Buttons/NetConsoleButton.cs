@@ -2,6 +2,7 @@
 using System.IO;
 using Microsoft.VisualStudio.Shell;
 using RobotDotNet.FRC_Extension.RoboRIOCode;
+using Task = System.Threading.Tasks.Task;
 
 namespace RobotDotNet.FRC_Extension.Buttons
 {
@@ -29,9 +30,9 @@ namespace RobotDotNet.FRC_Extension.Buttons
         /// <summary>
         /// This function is called when the NetConsole button is pressed.
         /// </summary>
-        public override async void ButtonCallback(object sender, EventArgs e)
+        protected override async Task ButtonCallbackAsync(object sender, EventArgs e)
         {
-            await DeployManager.StartNetConsole();
+            await DeployManager.StartNetConsoleAsync().ConfigureAwait(false);
         }
     }
 }

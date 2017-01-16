@@ -3,6 +3,7 @@ using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Task = System.Threading.Tasks.Task;
 
 namespace RobotDotNet.FRC_Extension
 {
@@ -23,7 +24,6 @@ namespace RobotDotNet.FRC_Extension
 
         private OutputWriter()
         {
-
         }
 
         private void Initialize()
@@ -52,21 +52,20 @@ namespace RobotDotNet.FRC_Extension
                 return;
 
             m_initialized = true;
-
-
-
         }
 
-        public void Clear()
+        public async Task ClearAsync()
         {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             if (!m_initialized)
                 Initialize();
             if (!m_initialized) return;
             m_outputPane.Clear();
         }
 
-        public void Write(string value)
+        public async Task WriteAsync(string value)
         {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             if (!m_initialized)
                 Initialize();
             if (!m_initialized) return;
@@ -75,18 +74,19 @@ namespace RobotDotNet.FRC_Extension
             m_outputPane.Activate();
         }
 
-        public void Write(int value)
+        public Task WriteAsync(int value)
         {
-            Write(value.ToString());
+            return WriteAsync(value.ToString());
         }
 
-        public void Write(double value)
+        public Task WriteAsync(double value)
         {
-            Write(value.ToString());
+            return WriteAsync(value.ToString());
         }
 
-        public void WriteLine(string value)
+        public async Task WriteLineAsync(string value)
         {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             if (!m_initialized)
                 Initialize();
             if (!m_initialized) return;
@@ -95,20 +95,21 @@ namespace RobotDotNet.FRC_Extension
             m_outputPane.Activate();
         }
 
-        public void WriteLine(int value)
+        public Task WriteLineAsync(int value)
         {
-            WriteLine(value.ToString());
+            return WriteLineAsync(value.ToString());
         }
 
-        public void WriteLine(double value)
+        public Task WriteLineAsync(double value)
         {
-            WriteLine(value.ToString());
+            return WriteLineAsync(value.ToString());
         }
 
         private uint m_cookie;
         private string m_progressLabel;
 
-        public string ProgressBarLabel {
+        public string ProgressBarLabel
+        {
             get { return m_progressLabel; }
             set
             {

@@ -3,14 +3,15 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
-using Microsoft.VisualStudio.Shell.Interop;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using RobotDotNet.FRC_Extension.Buttons;
 using RobotDotNet.FRC_Extension.MonoCode;
 using RobotDotNet.FRC_Extension.RoboRIOCode;
 using RobotDotNet.FRC_Extension.SettingsPages;
 using RobotDotNet.FRC_Extension.WPILibFolder;
-
+using Task = System.Threading.Tasks.Task;
 
 namespace RobotDotNet.FRC_Extension
 {
@@ -20,8 +21,8 @@ namespace RobotDotNet.FRC_Extension
     /// The minimum requirement for a class to be considered a valid package for Visual Studio
     /// is to implement the IVsPackage interface and register itself with the shell.
     /// This package uses the helper classes defined inside the Managed Package Framework (MPF)
-    /// to do it: it derives from the Package class that provides the implementation of the 
-    /// IVsPackage interface and uses the registration attributes defined in the framework to 
+    /// to do it: it derives from the Package class that provides the implementation of the
+    /// IVsPackage interface and uses the registration attributes defined in the framework to
     /// register itself and its components with the shell.
     /// </summary>
     // This attribute tells the PkgDef creation utility (CreatePkgDef.exe) that this class is
@@ -44,9 +45,9 @@ namespace RobotDotNet.FRC_Extension
     {
         /// <summary>
         /// Default constructor of the package.
-        /// Inside this method you can place any initialization code that does not require 
-        /// any Visual Studio service because at this point the package object is created but 
-        /// not sited yet inside Visual Studio environment. The place to do all the other 
+        /// Inside this method you can place any initialization code that does not require
+        /// any Visual Studio service because at this point the package object is created but
+        /// not sited yet inside Visual Studio environment. The place to do all the other
         /// initialization is the Initialize method.
         /// </summary>
         public Frc_ExtensionPackage()
@@ -60,10 +61,9 @@ namespace RobotDotNet.FRC_Extension
 
         public static Frc_ExtensionPackage Instance { get; private set; }
 
-        internal object PublicGetService(Type serviceType)
-        {
-            return GetService(serviceType);
-        }
+        internal InterfaceType PublicGetService<InterfaceType, ServiceType>() => (InterfaceType)GetService(typeof(ServiceType));
+
+        internal InterfaceType PublicGetService<InterfaceType>() => (InterfaceType)GetService(typeof(InterfaceType));
 
         internal DialogPage PublicGetDialogPage(Type dialogPageType)
         {
@@ -97,7 +97,7 @@ namespace RobotDotNet.FRC_Extension
         protected override void Initialize()
         {
             Instance = this;
-            Debug.WriteLine (string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
+            Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
             base.Initialize();
 
             m_writer = OutputWriter.Instance;
@@ -113,7 +113,7 @@ namespace RobotDotNet.FRC_Extension
             m_debugButton = new DeployDebugButton(this, (int)PkgCmdIDList.cmdidDebugCode, true);
 
             m_killButton = new KillButton(this);
-            
+
 
             string monoFolder = WPILibFolderStructure.CreateMonoFolder();
 
@@ -124,19 +124,17 @@ namespace RobotDotNet.FRC_Extension
             m_installMonoButton = new InstallMonoButton(this, m_monoFile);
             m_downloadMonoButton = new DownloadMonoButton(this, m_monoFile, m_installMonoButton);
             m_saveMonoButton = new SaveMonoButton(this, m_monoFile);
-            
+
 
             m_aboutButton = new AboutButton(this);
             m_netConsoleButton = new NetConsoleButton(this);
             m_settingsButton = new SettingsButton(this);
 
             m_setMainRobotButton = new SetMainRobotButton(this);
-            
-
         }
         #endregion
 
-        internal string GetTeamNumber()
+        internal async Task<string> GetTeamNumberAsync()
         {
             var page = SettingsProvider.TeamSettingsPage;
             //Get Team Number
@@ -144,16 +142,16 @@ namespace RobotDotNet.FRC_Extension
             if (teamNumber == "0")
             {
                 //If its 0, we pop up a window asking teams to set it.
-                TeamNumberNotSetErrorPopup();
+                await TeamNumberNotSetErrorPopupAsync().ConfigureAwait(false);
                 return null;
-
             }
             return teamNumber;
         }
 
-        public void TeamNumberNotSetErrorPopup()
+        public async Task TeamNumberNotSetErrorPopupAsync()
         {
-            OutputWriter.Instance.WriteLine("Team Number Not Set");
+            await OutputWriter.Instance.WriteLineAsync("Team Number Not Set").ConfigureAwait(false);
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
             IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
             Guid clsid = Guid.Empty;
@@ -168,8 +166,5 @@ namespace RobotDotNet.FRC_Extension
                 ShowOptionPage(typeof(TeamSettingsPage));
             }
         }
-
-        
     }
-    
 }

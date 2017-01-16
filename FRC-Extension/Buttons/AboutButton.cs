@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Globalization;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace RobotDotNet.FRC_Extension.Buttons
 {
     public class AboutButton : ButtonBase
-    { 
+    {
 
         public AboutButton(Frc_ExtensionPackage package) : base(package, false, GuidList.guidFRC_ExtensionCmdSet, (int)PkgCmdIDList.cmdidAboutButton)
         {
@@ -16,7 +17,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
             //TODO: Get version
 
             // Show a Message Box to prove we were here
-            IVsUIShell uiShell = (IVsUIShell)Package.PublicGetService(typeof(SVsUIShell));
+            IVsUIShell uiShell = Package.PublicGetService<IVsUIShell, SVsUIShell>();
             Guid clsid = Guid.Empty;
             int result;
             Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
@@ -31,6 +32,11 @@ namespace RobotDotNet.FRC_Extension.Buttons
                        OLEMSGICON.OLEMSGICON_INFO,
                        0,        // false
                        out result));
+        }
+
+        protected override Task ButtonCallbackAsync(object sender, EventArgs e)
+        {
+            return Task.FromResult(false);
         }
     }
 }

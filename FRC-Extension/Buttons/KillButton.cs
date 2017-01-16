@@ -17,8 +17,9 @@ namespace RobotDotNet.FRC_Extension.Buttons
 
         }
 
-        public override async void ButtonCallback(object sender, EventArgs e)
+        protected override async Task ButtonCallbackAsync(object sender, EventArgs e)
         {
+            await ThreadHelperExtensions.SwitchToUiThread();
             var menuCommand = sender as OleMenuCommand;
             if (menuCommand == null)
             {
@@ -28,11 +29,9 @@ namespace RobotDotNet.FRC_Extension.Buttons
             {
                 try
                 {
-                    string teamNumber = Package.GetTeamNumber();
+                    string teamNumber = await Package.GetTeamNumberAsync().ConfigureAwait(true);
 
                     if (teamNumber == null) return;
-
-                    DeployManager m = new DeployManager(Package.PublicGetService(typeof (DTE)) as DTE);
 
                     var writer = OutputWriter.Instance;
 
@@ -40,47 +39,39 @@ namespace RobotDotNet.FRC_Extension.Buttons
                     m_killing = true;
 
                     //Connect to RoboRIO
-                    writer.WriteLine("Attempting to Connect to RoboRIO");
-
-                    Task<bool> rioConnectionTask = m.StartConnectionTask(teamNumber);
-                    Task delayTask = Task.Delay(10000);
-
-                    //Successfully extracted files.
-
-                    writer.WriteLine("Waiting for Connection to Finish");
-                    if (await Task.WhenAny(rioConnectionTask, delayTask) == rioConnectionTask)
+                    await writer.WriteLineAsync("Attempting to Connect to RoboRIO").ConfigureAwait(false);
+                    using (var rioConn = await RoboRioConnection.StartConnectionTaskAsync(teamNumber).ConfigureAwait(false))
                     {
-                        //Connected
-                        if (rioConnectionTask.Result)
+                        if (rioConn.Connected)
                         {
-                            writer.WriteLine("Killing currently running robot code.");
-                            await RoboRIOConnection.RunCommand(DeployProperties.KillOnlyCommand, ConnectionUser.LvUser);
-                            writer.WriteLine("Done.");
+                            //Connected
+                            await
+                                writer.WriteLineAsync("Killing currently running robot code.").ConfigureAwait(false);
+                            await
+                                rioConn.RunCommandAsync(DeployProperties.KillOnlyCommand,
+                                    ConnectionUser.LvUser).ConfigureAwait(false);
+                            await writer.WriteLineAsync("Done.").ConfigureAwait(false);
+                            await ThreadHelperExtensions.SwitchToUiThread();
                             m_killing = false;
                             menuCommand.Visible = true;
                         }
                         else
                         {
-                            //Did not successfully connect
-                            writer.WriteLine("Failed to Connect to RoboRIO. Exiting.");
+                            //Timedout
+                            await writer.WriteLineAsync("RoboRIO connection timedout. Exiting.").ConfigureAwait(false);
+                            await ThreadHelperExtensions.SwitchToUiThread();
                             m_killing = false;
                             menuCommand.Visible = true;
                         }
                     }
-                    else
-                    {
-                        //Timedout
-                        writer.WriteLine("RoboRIO connection timedout. Exiting.");
-                        m_killing = false;
-                        menuCommand.Visible = true;
-                    }
                 }
                 catch (Exception ex)
                 {
-                    Output.WriteLine(ex.ToString());
+                    await Output.WriteLineAsync(ex.ToString()).ConfigureAwait(false);
+                    await ThreadHelperExtensions.SwitchToUiThread();
                     m_killing = false;
                     menuCommand.Visible = true;
-                    OutputWriter.Instance.WriteLine("Code Kill Failed");
+                    await OutputWriter.Instance.WriteLineAsync("Code Kill Failed").ConfigureAwait(false);
                 }
             }
         }

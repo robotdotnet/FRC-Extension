@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.Shell;
 using RobotDotNet.FRC_Extension.MonoCode;
+using Task = System.Threading.Tasks.Task;
 
 namespace RobotDotNet.FRC_Extension.Buttons
 {
@@ -14,7 +15,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
             m_monoFile = monoFile;
         }
 
-        public override async void ButtonCallback(object sender, EventArgs e)
+        public override void ButtonCallback(object sender, EventArgs e)
         {
             m_monoFile.SaveMonoFile();
         }
@@ -34,8 +35,13 @@ namespace RobotDotNet.FRC_Extension.Buttons
             }
             catch (Exception ex)
             {
-                OutputWriter.Instance.WriteLine(ex.StackTrace);
+                ThreadHelper.JoinableTaskFactory.Run(() => OutputWriter.Instance.WriteLineAsync(ex.StackTrace));
             }
+        }
+
+        protected override Task ButtonCallbackAsync(object sender, EventArgs e)
+        {
+            return Task.FromResult(false);
         }
     }
 }

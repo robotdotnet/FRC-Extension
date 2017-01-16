@@ -33,8 +33,6 @@ namespace RobotDotNet.FRC_Extension.Buttons
 
                     if (teamNumber == null) return;
 
-                    DeployManager m = new DeployManager(Package.PublicGetService<DTE>());
-
                     var writer = OutputWriter.Instance;
 
                     menuCommand.Visible = false;
@@ -42,20 +40,16 @@ namespace RobotDotNet.FRC_Extension.Buttons
 
                     //Connect to RoboRIO
                     await writer.WriteLineAsync("Attempting to Connect to RoboRIO").ConfigureAwait(false);
-
-                    Task<bool> rioConnectionTask = m.StartConnectionTaskAsync(teamNumber);
-                    Task delayTask = Task.Delay(10000);
-
-                    //Successfully extracted files.
-
-                    await writer.WriteLineAsync("Waiting for Connection to Finish").ConfigureAwait(false);
-                    if (await Task.WhenAny(rioConnectionTask, delayTask).ConfigureAwait(false) == rioConnectionTask)
+                    using (var rioConn = await RoboRioConnection.StartConnectionTaskAsync(teamNumber).ConfigureAwait(false))
                     {
-                        //Connected
-                        if (rioConnectionTask.Result)
+                        if (rioConn.Connected)
                         {
-                            await writer.WriteLineAsync("Killing currently running robot code.").ConfigureAwait(false);
-                            await RoboRIOConnection.RunCommandAsync(DeployProperties.KillOnlyCommand, ConnectionUser.LvUser).ConfigureAwait(false);
+                            //Connected
+                            await
+                                writer.WriteLineAsync("Killing currently running robot code.").ConfigureAwait(false);
+                            await
+                                rioConn.RunCommandAsync(DeployProperties.KillOnlyCommand,
+                                    ConnectionUser.LvUser).ConfigureAwait(false);
                             await writer.WriteLineAsync("Done.").ConfigureAwait(false);
                             await ThreadHelperExtensions.SwitchToUiThread();
                             m_killing = false;
@@ -63,20 +57,12 @@ namespace RobotDotNet.FRC_Extension.Buttons
                         }
                         else
                         {
-                            //Did not successfully connect
-                            await writer.WriteLineAsync("Failed to Connect to RoboRIO. Exiting.").ConfigureAwait(false);
+                            //Timedout
+                            await writer.WriteLineAsync("RoboRIO connection timedout. Exiting.").ConfigureAwait(false);
                             await ThreadHelperExtensions.SwitchToUiThread();
                             m_killing = false;
                             menuCommand.Visible = true;
                         }
-                    }
-                    else
-                    {
-                        //Timedout
-                        await writer.WriteLineAsync("RoboRIO connection timedout. Exiting.").ConfigureAwait(false);
-                        await ThreadHelperExtensions.SwitchToUiThread();
-                        m_killing = false;
-                        menuCommand.Visible = true;
                     }
                 }
                 catch (Exception ex)

@@ -1,20 +1,26 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using EnvDTE;
 using RobotDotNet.FRC_Extension.RoboRIOCode;
 
 namespace RobotDotNet.FRC_Extension.MonoCode
 {
     public class MonoDeploy
     {
-        private readonly DeployManager m_deployManager;
         private readonly MonoFile m_monoFile;
         private readonly string m_teamNumber;
 
-        public MonoDeploy(string teamNumber, DeployManager deployManager, MonoFile monoFile)
+        public MonoDeploy(string teamNumber, MonoFile monoFile)
         {
-            m_deployManager = deployManager;
             m_teamNumber = teamNumber;
             m_monoFile = monoFile;
+        }
+
+        public async Task<bool> CheckMonoInstallAsync(RoboRioConnection rioConn)
+        {
+            await OutputWriter.Instance.WriteLineAsync("Checking for Mono install").ConfigureAwait(false);
+            var retVal = await rioConn.RunCommandAsync($"test -e {DeployProperties.RoboRioMonoBin}", ConnectionUser.LvUser).ConfigureAwait(false);
+            return retVal.ExitStatus == 0;
         }
 
         internal async Task DeployMonoAsync()
@@ -25,8 +31,8 @@ namespace RobotDotNet.FRC_Extension.MonoCode
             //Connect to RoboRIO
             await writer.WriteLineAsync("Attempting to Connect to RoboRIO").ConfigureAwait(false);
 
-            Task<bool> rioConnectionTask = m_deployManager.StartConnectionTaskAsync(m_teamNumber);
-            Task delayTask = Task.Delay(10000);
+            Task<RoboRioConnection> rioConnectionTask = RoboRioConnection.StartConnectionTaskAsync(m_teamNumber);
+
 
             bool success = await m_monoFile.UnzipMonoFileAsync().ConfigureAwait(false);
 
@@ -35,10 +41,9 @@ namespace RobotDotNet.FRC_Extension.MonoCode
             //Successfully extracted files.
 
             await writer.WriteLineAsync("Waiting for Connection to Finish").ConfigureAwait(false);
-            if (await Task.WhenAny(rioConnectionTask, delayTask).ConfigureAwait(false) == rioConnectionTask)
+            using (var roboRioConnection = await rioConnectionTask.ConfigureAwait(false))
             {
-                //Completed
-                if (rioConnectionTask.Result)
+                if (roboRioConnection.Connected)
                 {
                     await writer.WriteLineAsync("Successfully Connected to RoboRIO").ConfigureAwait(false);
 
@@ -46,11 +51,16 @@ namespace RobotDotNet.FRC_Extension.MonoCode
 
                     await writer.WriteLineAsync("Creating Opkg Directory").ConfigureAwait(false);
 
-                    await RoboRIOConnection.RunCommandAsync($"mkdir -p {DeployProperties.RoboRioOpgkLocation}", ConnectionUser.Admin).ConfigureAwait(false);
+                    await
+                        roboRioConnection.RunCommandAsync($"mkdir -p {DeployProperties.RoboRioOpgkLocation}",
+                            ConnectionUser.Admin).ConfigureAwait(false);
 
                     await writer.WriteLineAsync("Deploying Mono Files").ConfigureAwait(false);
 
-                    success = await RoboRIOConnection.DeployFiles(deployFiles, DeployProperties.RoboRioOpgkLocation, ConnectionUser.Admin).ConfigureAwait(false);
+                    success =
+                        await
+                            roboRioConnection.DeployFiles(deployFiles, DeployProperties.RoboRioOpgkLocation,
+                                ConnectionUser.Admin).ConfigureAwait(false);
 
                     if (!success)
                     {
@@ -59,10 +69,13 @@ namespace RobotDotNet.FRC_Extension.MonoCode
 
                     await writer.WriteLineAsync("Installing Mono").ConfigureAwait(false);
 
-                    var monoRet = await RoboRIOConnection.RunCommandAsync(DeployProperties.OpkgInstallCommand, ConnectionUser.Admin).ConfigureAwait(false);
+                    var monoRet =
+                        await
+                            roboRioConnection.RunCommandAsync(DeployProperties.OpkgInstallCommand, ConnectionUser.Admin)
+                                .ConfigureAwait(false);
 
                     //Check for success.
-                    bool monoSuccess = await m_deployManager.CheckMonoInstallAsync().ConfigureAwait(false);
+                    bool monoSuccess = await CheckMonoInstallAsync(roboRioConnection).ConfigureAwait(false);
 
                     if (monoSuccess)
                     {
@@ -70,16 +83,21 @@ namespace RobotDotNet.FRC_Extension.MonoCode
                     }
                     else
                     {
-                        await writer.WriteLineAsync("Mono not installed successfully. Please try again.").ConfigureAwait(false);
+                        await
+                            writer.WriteLineAsync("Mono not installed successfully. Please try again.")
+                                .ConfigureAwait(false);
                     }
 
                     await writer.WriteLineAsync("Cleaning up installation").ConfigureAwait(false);
                     // Set allow realtime on Mono instance
                     await
-                        RoboRIOConnection.RunCommandAsync("setcap cap_sys_nice=pe /usr/bin/mono-sgen", ConnectionUser.Admin).ConfigureAwait(false);
+                        roboRioConnection.RunCommandAsync("setcap cap_sys_nice=pe /usr/bin/mono-sgen",
+                            ConnectionUser.Admin).ConfigureAwait(false);
 
                     //Removing ipk files from the RoboRIO
-                    await RoboRIOConnection.RunCommandAsync($"rm -rf {DeployProperties.RoboRioOpgkLocation}", ConnectionUser.Admin).ConfigureAwait(false);
+                    await
+                        roboRioConnection.RunCommandAsync($"rm -rf {DeployProperties.RoboRioOpgkLocation}",
+                            ConnectionUser.Admin).ConfigureAwait(false);
 
                     await writer.WriteLineAsync("Done. You may now deploy code to your robot.").ConfigureAwait(false);
                 }
@@ -88,11 +106,6 @@ namespace RobotDotNet.FRC_Extension.MonoCode
                     //Did not successfully connect
                     await writer.WriteLineAsync("Failed to Connect to RoboRIO. Exiting.").ConfigureAwait(false);
                 }
-            }
-            else
-            {
-                //Timedout
-                await writer.WriteLineAsync("RoboRIO connection timedout. Exiting.").ConfigureAwait(false);
             }
         }
     }

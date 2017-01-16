@@ -112,8 +112,7 @@ namespace RobotDotNet.FRC_Extension.Buttons
                 m_installing = true;
                 menuCommand.Visible = false;
 
-                DeployManager m = new DeployManager(Package.PublicGetService<DTE>());
-                MonoDeploy deploy = new MonoDeploy(teamNumber, m, m_monoFile);
+                MonoDeploy deploy = new MonoDeploy(teamNumber, m_monoFile);
 
                 await deploy.DeployMonoAsync().ConfigureAwait(true);
 

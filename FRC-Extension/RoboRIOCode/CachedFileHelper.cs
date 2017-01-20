@@ -17,6 +17,14 @@ namespace RobotDotNet.FRC_Extension.RoboRIOCode
             string nativeLoc = dirToUpload;
 
             var fileMd5List = GetMD5ForFiles(nativeLoc, ignoreFiles);
+            if (fileMd5List == null)
+            {
+                await
+                    OutputWriter.Instance.WriteLineAsync(
+                            "Native libraries cannot be found. Please see our troubleshooting site (https://robotdotnet.github.io/articles/troubleshooting.html) for instructions for fixing this.")
+                        .ConfigureAwait(false);
+                return false;
+            }
             if (!readFile)
             {
                 // Libraries definitely do not exist, deploy

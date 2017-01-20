@@ -5,7 +5,7 @@
     <Description>A robot project used for small sample programs or for hightly advanced programs with more complete control over program flow.</Description>
     <Icon>SampleRobot.ico</Icon>
     <ProjectType>CSharp</ProjectType>
-    <RequiredFrameworkVersion>4.5</RequiredFrameworkVersion>
+    <RequiredFrameworkVersion>4.5.2</RequiredFrameworkVersion>
     <SortOrder>1000</SortOrder>
     <TemplateID>076daed5-6714-45b5-8977-e04fe7d1714b</TemplateID>
     <CreateNewFolder>true</CreateNewFolder>

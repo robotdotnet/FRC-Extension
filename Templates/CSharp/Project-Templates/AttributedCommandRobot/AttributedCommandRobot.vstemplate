@@ -5,7 +5,7 @@
     <Description>A robot project that uses .NET attributes to enable set up commands and subsystems without requiring extra code.</Description>
     <Icon>AttributedCommandRobot.ico</Icon>
     <ProjectType>CSharp</ProjectType>
-    <RequiredFrameworkVersion>4.5</RequiredFrameworkVersion>
+    <RequiredFrameworkVersion>4.5.2</RequiredFrameworkVersion>
     <SortOrder>1000</SortOrder>
     <TemplateID>7c7380d9-641b-494d-ac67-71c83e98af07</TemplateID>
     <CreateNewFolder>true</CreateNewFolder>

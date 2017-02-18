@@ -311,6 +311,13 @@
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
     </ProjectReference>
+    <ProjectReference Include="..\Templates\CSharp\Item-Templates\Commands\InstantCommand\InstantCommand.csproj">
+      <Project>{9706E478-3929-494D-B65A-CA2FD747973E}</Project>
+      <Name>InstantCommand</Name>
+      <VSIXSubPath>ItemTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
     <ProjectReference Include="..\Templates\CSharp\Item-Templates\Commands\PIDSubsystem\PIDSubsystem.csproj">
       <Project>{263618AC-BE45-4C95-AFEB-6E613628FA93}</Project>
       <Name>PIDSubsystem</Name>

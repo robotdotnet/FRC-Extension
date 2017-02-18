@@ -48,6 +48,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VisualBasic", "VisualBasic"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProjectTemplates", "ProjectTemplates", "{820D222D-AE85-4C05-9C06-8EF43458FF0E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstantCommand", "Templates\CSharp\Item-Templates\Commands\InstantCommand\InstantCommand.csproj", "{9706E478-3929-494D-B65A-CA2FD747973E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -168,6 +170,14 @@ Global
 		{F6724218-0C31-4428-A217-B4318E3026B2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F6724218-0C31-4428-A217-B4318E3026B2}.Release|x86.ActiveCfg = Release|Any CPU
 		{F6724218-0C31-4428-A217-B4318E3026B2}.Release|x86.Build.0 = Release|Any CPU
+		{9706E478-3929-494D-B65A-CA2FD747973E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9706E478-3929-494D-B65A-CA2FD747973E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9706E478-3929-494D-B65A-CA2FD747973E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9706E478-3929-494D-B65A-CA2FD747973E}.Debug|x86.Build.0 = Debug|Any CPU
+		{9706E478-3929-494D-B65A-CA2FD747973E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9706E478-3929-494D-B65A-CA2FD747973E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9706E478-3929-494D-B65A-CA2FD747973E}.Release|x86.ActiveCfg = Release|Any CPU
+		{9706E478-3929-494D-B65A-CA2FD747973E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -192,5 +202,6 @@ Global
 		{F6724218-0C31-4428-A217-B4318E3026B2} = {820D222D-AE85-4C05-9C06-8EF43458FF0E}
 		{1DC75549-19D8-4430-9219-D6A5E5208461} = {B9F75D30-BCEA-499B-AC12-2A89253CAD51}
 		{820D222D-AE85-4C05-9C06-8EF43458FF0E} = {1DC75549-19D8-4430-9219-D6A5E5208461}
+		{9706E478-3929-494D-B65A-CA2FD747973E} = {BEC57D35-61CB-496A-BB37-85DD187880DF}
 	EndGlobalSection
 EndGlobal

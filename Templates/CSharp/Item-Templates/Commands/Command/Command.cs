@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-$if$ ($targetframeworkversion$ >= 3.5)using System.Linq;
-$endif$using System.Text;
-using WPILib;
-using WPILib.Commands;
+﻿using WPILib.Commands;
 
 namespace $rootnamespace$
 {
-	public class $safeitemname$ : Command
-	{
+    public class $safeitemname$ : Command
+    {
          public $safeitemname$() {
             // Use Requires() here to declare subsystem dependencies
             // eg. Requires(chassis);
@@ -35,5 +30,5 @@ namespace $rootnamespace$
         // subsystems is scheduled to run
         protected override void Interrupted() {
         }
-	}
+    }
 }

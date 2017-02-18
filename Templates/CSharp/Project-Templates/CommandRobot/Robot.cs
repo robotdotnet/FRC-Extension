@@ -18,7 +18,7 @@ namespace $safeprojectname$
     public class $safeprojectname$ : IterativeRobot
     {
         public static readonly ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
-	    public static OI oi;
+        public static OI oi;
 
         Command autonomousCommand;
         SendableChooser chooser;
@@ -28,7 +28,7 @@ namespace $safeprojectname$
         //
         public override void RobotInit()
         {
-		    oi = new OI();
+            oi = new OI();
             // instantiate the command used for the autonomous period
             autonomousCommand = new ExampleCommand();
             chooser = new SendableChooser();
@@ -36,11 +36,11 @@ namespace $safeprojectname$
             //chooser.AddObject("My Auto", new MyAutoCommand);
             SmartDashboard.PutData("Chooser", chooser);
         }
-	
-	    public override void DisabledPeriodic()
+    
+        public override void DisabledPeriodic()
         {
-		    Scheduler.Instance.Run();
-	    }
+            Scheduler.Instance.Run();
+        }
 
         // This autonomous (along with the sendable chooser above) shows how to select between
         // different autonomous modes using the dashboard. The senable chooser code works with
@@ -68,7 +68,7 @@ namespace $safeprojectname$
             }
             */
             // schedule the autonomous command (example)
-            if (autonomousCommand != null) autonomousCommand.Start();
+            autonomousCommand?.Start();
         }
 
 
@@ -78,11 +78,11 @@ namespace $safeprojectname$
         }
 
         public override void TeleopInit() {
-		    // This makes sure that the autonomous stops running when
+            // This makes sure that the autonomous stops running when
             // teleop starts running. If you want the autonomous to 
             // continue until interrupted by another command, remove
             // this line or comment it out.
-            if (autonomousCommand != null) autonomousCommand.Cancel();
+            autonomousCommand?.Cancel();
         }
 
         //

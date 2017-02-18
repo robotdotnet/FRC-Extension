@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-$if$ ($targetframeworkversion$ >= 3.5)using System.Linq;
-$endif$using System.Text;
-using WPILib;
+﻿using WPILib;
 using WPILib.Commands;
 
 namespace $rootnamespace$
 {
-	public class $safeitemname$ : PIDSubsystem
-	{
+    public class $safeitemname$ : PIDSubsystem
+    {
         // Initialize your subsystem here
         public $safeitemname$() : base()
         {
@@ -29,7 +25,7 @@ namespace $rootnamespace$
             // Return your input value for the PID loop
             // e.g. a sensor, like a potentiometer:
             // yourPot.GetAverageVoltage() / kYourMaxVoltage;
-    	    return 0.0;
+            return 0.0;
         }
 
         protected override void UsePIDOutput(double output)
@@ -37,5 +33,5 @@ namespace $rootnamespace$
             // Use output to drive your system, like a motor
             // e.g. yourMotor.Set(output);
         }
-	}
+    }
 }

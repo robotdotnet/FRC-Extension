@@ -8,11 +8,11 @@ using WPILib;
 
 namespace $safeprojectname$
 {
-	public class Program
-	{
+    public class Program
+    {
         static void Main()
         {
             RobotBase.Main(null, typeof($safeprojectname$));
         }
-	}
+    }
 }

@@ -5,7 +5,7 @@
     <Description>A robot project that allows robots to be implemented using the command based model to allow complex functionality to be developed from simpler functionality</Description>
     <Icon>CommandRobot.ico</Icon>
     <ProjectType>CSharp</ProjectType>
-    <RequiredFrameworkVersion>4.5.2</RequiredFrameworkVersion>
+    <RequiredFrameworkVersion>4.6.1</RequiredFrameworkVersion>
     <SortOrder>1000</SortOrder>
     <TemplateID>3efbf3c9-baad-452e-9e64-f8727be573b6</TemplateID>
     <CreateNewFolder>true</CreateNewFolder>
@@ -30,13 +30,13 @@
   <WizardData>
     <packages repository="extension"
           repositoryId="FRC_Extension">
-      <package id="FRC.CameraServer" version="1.0.0"/>
-      <package id="FRC.OpenCVSharp" version="1.0.0"/>
-      <package id="FRC.WPILib" version="2017.0.1"/>
-      <package id="FRC.WPILib.Extras" version="2017.0.1"/>
-      <package id="FRC.NetworkTables.Core" version="3.1.6"/>
-      <package id="FRC.WPILibNativeLibraries" version="2017.0.4"/>
-      <package id="NativeLibraryUtilities" version="1.0.0"/>
+      <package id="FRC.CameraServer" version="1.0.2"/>
+      <package id="FRC.OpenCVSharp" version="1.0.3"/>
+      <package id="FRC.WPILib" version="2018.1.0"/>
+      <package id="FRC.WPILib.Extras" version="2018.1.0"/>
+      <package id="FRC.NetworkTables" version="3.1.8"/>
+      <package id="FRC.WPILibNativeLibraries" version="2018.1.0"/>
+      <package id="NativeLibraryUtilities" version="1.0.3"/>
     </packages>
   </WizardData>
 </VSTemplate>

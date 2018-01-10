@@ -6,7 +6,7 @@
     <Icon>Trigger.ico</Icon>
     <TemplateID>dc4afd27-2109-49c3-a7f5-0f1809e24335</TemplateID>
     <ProjectType>CSharp</ProjectType>
-    <RequiredFrameworkVersion>4.5</RequiredFrameworkVersion>
+    <RequiredFrameworkVersion>4.6.1</RequiredFrameworkVersion>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
     <DefaultName>MyTrigger.cs</DefaultName>
   </TemplateData>

@@ -5,7 +5,7 @@
     <Description>A robot project used for small sample programs or for hightly advanced programs with more complete control over program flow.</Description>
     <Icon>SampleRobot.ico</Icon>
     <ProjectType>CSharp</ProjectType>
-    <RequiredFrameworkVersion>4.5.2</RequiredFrameworkVersion>
+    <RequiredFrameworkVersion>4.6.1</RequiredFrameworkVersion>
     <SortOrder>1000</SortOrder>
     <TemplateID>076daed5-6714-45b5-8977-e04fe7d1714b</TemplateID>
     <CreateNewFolder>true</CreateNewFolder>
@@ -26,13 +26,13 @@
   <WizardData>
     <packages repository="extension"
           repositoryId="FRC_Extension">
-      <package id="FRC.CameraServer" version="1.0.0"/>
-      <package id="FRC.OpenCVSharp" version="1.0.0"/>
-      <package id="FRC.WPILib" version="2017.0.1"/>
-      <package id="FRC.WPILib.Extras" version="2017.0.1"/>
-      <package id="FRC.NetworkTables.Core" version="3.1.6"/>
-      <package id="FRC.WPILibNativeLibraries" version="2017.0.4"/>
-      <package id="NativeLibraryUtilities" version="1.0.0"/>
+      <package id="FRC.CameraServer" version="1.0.2"/>
+      <package id="FRC.OpenCVSharp" version="1.0.3"/>
+      <package id="FRC.WPILib" version="2018.1.0"/>
+      <package id="FRC.WPILib.Extras" version="2018.1.0"/>
+      <package id="FRC.NetworkTables" version="3.1.8"/>
+      <package id="FRC.WPILibNativeLibraries" version="2018.1.0"/>
+      <package id="NativeLibraryUtilities" version="1.0.3"/>
     </packages>
   </WizardData>
 </VSTemplate>

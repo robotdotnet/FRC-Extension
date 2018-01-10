@@ -6,7 +6,7 @@
     <Icon>Subsystem.ico</Icon>
     <TemplateID>c95e2a5e-ed94-43d1-bf57-ef5b222d262f</TemplateID>
     <ProjectType>CSharp</ProjectType>
-    <RequiredFrameworkVersion>4.5</RequiredFrameworkVersion>
+    <RequiredFrameworkVersion>4.6.1</RequiredFrameworkVersion>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
     <DefaultName>MySubsystem.cs</DefaultName>
   </TemplateData>

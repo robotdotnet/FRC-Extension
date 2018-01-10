@@ -6,7 +6,7 @@
     <Icon>SingletonClass.ico</Icon>
     <TemplateID>7d841564-a26d-4f83-8c1e-9ba8dc2af171</TemplateID>
     <ProjectType>CSharp</ProjectType>
-    <RequiredFrameworkVersion>4.5</RequiredFrameworkVersion>
+    <RequiredFrameworkVersion>4.6.1</RequiredFrameworkVersion>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
     <DefaultName>MyClass.cs</DefaultName>
   </TemplateData>

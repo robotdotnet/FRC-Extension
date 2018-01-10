@@ -25,7 +25,7 @@
         public const string RoboRioMonoBin = "/usr/bin/mono";
 
         public const string RioImageSearchString = "FRC_roboRIO";
-        public static readonly int[] RoboRioAllowedImages = { 8 };
+        public static readonly int[] RoboRioAllowedImages = { 16 };
 
         public static readonly string[] IgnoreFiles =
         {
@@ -42,7 +42,7 @@
         {
             "WPILib.dll",
             "HAL.dll",
-            "FRC.NetworkTables.Core.dll",
+            "FRC.NetworkTables.dll",
             "FRC.CameraServer.dll",
             "FRC.OpenCvSharp.dll",
             "NativeLibraryUtilities.dll"
@@ -58,9 +58,9 @@
 
         public const string RobotCommandFileName = "robotCommand";
 
-        public const string MonoMd5 = "1852022171552091945152452461853193134197150";
+        public const string MonoMd5 = "1010724125414723619010587175662351173512114";
 
-        public const string MonoVersion = "Mono4.2.1.zip";
+        public const string MonoVersion = "Mono5.4.1.zip";
 
         public const string MonoUrl = "https://dl.bintray.com/robotdotnet/Mono/";
 

@@ -6,7 +6,7 @@
     <Icon>CommandGroup.ico</Icon>
     <TemplateID>73784c92-fe91-4cc4-8b94-f9c3ab4d083c</TemplateID>
     <ProjectType>CSharp</ProjectType>
-    <RequiredFrameworkVersion>4.5</RequiredFrameworkVersion>
+    <RequiredFrameworkVersion>4.6.1</RequiredFrameworkVersion>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
     <DefaultName>MyCommandGroup.cs</DefaultName>
   </TemplateData>

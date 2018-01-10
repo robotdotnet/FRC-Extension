@@ -223,25 +223,25 @@
     <Content Include="LICENSE.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\frc.cameraserver.1.0.0.nupkg">
+    <Content Include="packages\frc.cameraserver.1.0.2.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\frc.networktables.core.3.1.6.nupkg">
+    <Content Include="packages\frc.networktables.3.1.8.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\frc.opencvsharp.1.0.0.nupkg">
+    <Content Include="packages\frc.opencvsharp.1.0.3.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\frc.wpilib.2017.0.1.nupkg">
+    <Content Include="packages\FRC.WPILib.2018.1.0.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\frc.wpilib.extras.2017.0.1.nupkg">
+    <Content Include="packages\FRC.WPILib.Extras.2018.1.0.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\frc.wpilibnativelibraries.2017.0.4.nupkg">
+    <Content Include="packages\frc.wpilibnativelibraries.2018.1.0.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\nativelibraryutilities.1.0.0.nupkg">
+    <Content Include="packages\nativelibraryutilities.1.0.3.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="source.extension.vsixmanifest">

@@ -6,7 +6,7 @@
     <Icon>WPILibClass.ico</Icon>
     <TemplateID>67d1c9bb-63e8-4fd2-99af-6cf7eb25c4a5</TemplateID>
     <ProjectType>CSharp</ProjectType>
-    <RequiredFrameworkVersion>4.5</RequiredFrameworkVersion>
+    <RequiredFrameworkVersion>4.6.1</RequiredFrameworkVersion>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
     <DefaultName>MyClass.cs</DefaultName>
   </TemplateData>

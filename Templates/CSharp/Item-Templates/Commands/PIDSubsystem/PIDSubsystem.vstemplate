@@ -6,7 +6,7 @@
     <Icon>PIDSubsystem.ico</Icon>
     <TemplateID>c2bc7cac-5107-458b-82f5-77421ce84edc</TemplateID>
     <ProjectType>CSharp</ProjectType>
-    <RequiredFrameworkVersion>4.5</RequiredFrameworkVersion>
+    <RequiredFrameworkVersion>4.6.1</RequiredFrameworkVersion>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
     <DefaultName>MyPIDSubsystem.cs</DefaultName>
   </TemplateData>

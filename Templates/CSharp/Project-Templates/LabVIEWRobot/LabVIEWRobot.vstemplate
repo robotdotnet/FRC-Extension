@@ -5,7 +5,7 @@
     <Description>Creates a robot with a similar structure to a LabVIEW robot</Description>
     <Icon>LabVIEWRobot.ico</Icon>
     <ProjectType>CSharp</ProjectType>
-    <RequiredFrameworkVersion>4.5.2</RequiredFrameworkVersion>
+    <RequiredFrameworkVersion>4.6.1</RequiredFrameworkVersion>
     <SortOrder>1000</SortOrder>
     <TemplateID>eb91ac24-26c4-4edd-b19b-0e0372eddfe8</TemplateID>
     <CreateNewFolder>true</CreateNewFolder>
@@ -26,13 +26,13 @@
   <WizardData>
     <packages repository="extension"
           repositoryId="FRC_Extension">
-      <package id="FRC.CameraServer" version="1.0.0"/>
-      <package id="FRC.OpenCVSharp" version="1.0.0"/>
-      <package id="FRC.WPILib" version="2017.0.1"/>
-      <package id="FRC.WPILib.Extras" version="2017.0.1"/>
-      <package id="FRC.NetworkTables.Core" version="3.1.6"/>
-      <package id="FRC.WPILibNativeLibraries" version="2017.0.4"/>
-      <package id="NativeLibraryUtilities" version="1.0.0"/>
+      <package id="FRC.CameraServer" version="1.0.2"/>
+      <package id="FRC.OpenCVSharp" version="1.0.3"/>
+      <package id="FRC.WPILib" version="2018.1.0"/>
+      <package id="FRC.WPILib.Extras" version="2018.1.0"/>
+      <package id="FRC.NetworkTables" version="3.1.8"/>
+      <package id="FRC.WPILibNativeLibraries" version="2018.1.0"/>
+      <package id="NativeLibraryUtilities" version="1.0.3"/>
     </packages>
   </WizardData>
 </VSTemplate>
